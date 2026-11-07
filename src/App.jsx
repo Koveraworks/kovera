@@ -574,7 +574,7 @@ export default function App() {
           <nav className="hidden lg:flex items-center gap-6 text-sm font-semibold text-[#181A32]">
             <button onClick={() => scrollToSection('shift-explorer')} className="hover:text-[#18A999] transition flex items-center gap-1.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2 py-1">
               <span>Shift Explorer</span>
-              <span className="text-xs font-bold uppercase tracking-wider bg-[#E4F7F3] text-[#18A999] px-1.5 py-0.5 rounded-full">New</span>
+              <span className="text-xs font-bold uppercase tracking-wider bg-[#E4F7F3] text-[#0E6E63] px-1.5 py-0.5 rounded-full">New</span>
             </button>
             <button onClick={() => scrollToSection('shift-calculator')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2 py-1">
               Rates &amp; Ledger
@@ -628,7 +628,7 @@ export default function App() {
               className="block w-full text-left px-3 py-2.5 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl flex items-center justify-between"
             >
               <span>Shift Explorer</span>
-              <span className="text-xs font-bold uppercase tracking-wider bg-[#E4F7F3] text-[#18A999] px-1.5 py-0.5 rounded-full">New</span>
+              <span className="text-xs font-bold uppercase tracking-wider bg-[#E4F7F3] text-[#0E6E63] px-1.5 py-0.5 rounded-full">New</span>
             </button>
             <button 
               onClick={() => scrollToSection('shift-calculator')} 
@@ -933,27 +933,27 @@ export default function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* The Old Pain */}
-                <div className="bg-white rounded-2xl p-6 border border-red-100 shadow-2xs">
-                  <div className="flex items-center gap-2 text-red-600 font-bold text-sm mb-3">
-                    <AlertCircle className="w-4 h-4" />
+                <div className="bg-white rounded-2xl p-6 border border-red-200/70 shadow-2xs">
+                  <div className="flex items-center gap-2 text-red-700 font-bold text-sm mb-3">
+                    <AlertCircle className="w-4 h-4 text-red-600" />
                     <span>Traditional Staffing</span>
                   </div>
-                  <ul className="space-y-2 text-sm text-[#62677D]">
+                  <ul className="space-y-2 text-sm text-[#524444]">
                     <li className="flex items-start gap-2">
-                      <span className="text-red-400 font-bold">✕</span> 2-3 weeks to post ads and interview
+                      <span className="text-red-500 font-bold">✕</span> 2-3 weeks to post ads and interview
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-red-400 font-bold">✕</span> Long-term contracts for short-term surges
+                      <span className="text-red-500 font-bold">✕</span> Long-term contracts for short-term surges
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-red-400 font-bold">✕</span> Store owners forced to work overtime and stress
+                      <span className="text-red-500 font-bold">✕</span> Store owners forced to work overtime and stress
                     </li>
                   </ul>
                 </div>
 
                 {/* The Kovera Solution */}
-                <div className="bg-[#E4F7F3]/60 rounded-2xl p-6 border border-[#18A999]/30 shadow-2xs">
-                  <div className="flex items-center gap-2 text-[#302F80] font-bold text-sm mb-3">
+                <div className="bg-[#E4F7F3] rounded-2xl p-6 border border-[#18A999]/30 shadow-2xs">
+                  <div className="flex items-center gap-2 text-[#128679] font-bold text-sm mb-3">
                     <CheckCircle2 className="w-4 h-4 text-[#18A999]" />
                     <span>Kovera Local Backup</span>
                   </div>
@@ -1033,7 +1033,7 @@ export default function App() {
                     </div>
                     <div className="flex items-center gap-2.5 flex-wrap">
                       <h3 className="text-2xl font-bold text-[#181A32]">{roleTemplates[selectedRole].title}</h3>
-                      <span className="px-2.5 py-0.5 rounded-full bg-[#E4F7F3] text-[#18A999] text-xs font-bold">
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#E4F7F3] text-[#0E6E63] text-xs font-bold border border-[#18A999]/20">
                         Panipat Pilot
                       </span>
                     </div>
@@ -1064,7 +1064,7 @@ export default function App() {
                     </span>
                     <div className="flex flex-wrap gap-2">
                       {roleTemplates[selectedRole].checklist.map((item, idx) => (
-                        <span key={idx} className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#E4F7F3] text-[#302F80] rounded-lg text-xs font-semibold">
+                        <span key={idx} className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#E4F7F3] text-[#0E6E63] rounded-lg text-xs font-semibold border border-[#18A999]/20">
                           <Check className="w-3.5 h-3.5 text-[#18A999]" />
                           <span>{item}</span>
                         </span>
@@ -1212,7 +1212,7 @@ export default function App() {
                                 {role.title}
                               </span>
                             </div>
-                            <span className="text-xs text-[#18A999] font-extrabold tabular-nums block">
+                            <span className="text-xs text-[#0E6E63] font-extrabold tabular-nums block">
                               ₹{role.minPay} – ₹{role.maxPay} / hr
                             </span>
                           </button>
@@ -1228,7 +1228,7 @@ export default function App() {
                         <label className="block text-xs font-black uppercase tracking-wider text-[#181A32]">
                           Shift Duration
                         </label>
-                        <span className="text-xs font-bold text-[#18A999]">Daytime window (8am–8pm)</span>
+                        <span className="text-xs font-bold text-[#302F80]">Daytime window (8am–8pm)</span>
                       </div>
                       <div className="grid grid-cols-3 gap-2.5">
                         {[
@@ -1261,7 +1261,7 @@ export default function App() {
                         <label className="block text-xs font-black uppercase tracking-wider text-[#181A32]">
                           Available Shifts Per Week
                         </label>
-                        <span className="text-xs font-bold text-[#18A999]">4-hour daylight slots</span>
+                        <span className="text-xs font-bold text-[#0E6E63]">4-hour daylight slots</span>
                       </div>
                       <div className="grid grid-cols-4 gap-2">
                         {[
@@ -1303,7 +1303,7 @@ export default function App() {
                       <span className="text-xs font-black uppercase tracking-wider text-[#302F80]">
                         {calcSide === 'business' ? 'ESTIMATED SHIFT LEDGER' : 'ESTIMATED EARNINGS LEDGER'}
                       </span>
-                      <span className="text-xs font-bold text-[#18A999] bg-[#E4F7F3] px-2 py-0.5 rounded-full">
+                      <span className="text-xs font-bold text-[#0E6E63] bg-[#E4F7F3] px-2 py-0.5 rounded-full border border-[#18A999]/20">
                         ₹0 Platform Fee
                       </span>
                     </div>
@@ -1323,7 +1323,7 @@ export default function App() {
                         <div className="space-y-2.5 py-4 border-y border-[#EEEFFC] text-xs">
                           <div className="flex items-center justify-between">
                             <span className="text-[#62677D]">Kovera Pilot Fee:</span>
-                            <span className="font-extrabold text-[#18A999]">₹0 (100% Free Pilot)</span>
+                            <span className="font-extrabold text-[#0E6E63]">₹0 (100% Free Pilot)</span>
                           </div>
                           <div className="flex items-center justify-between">
                             <span className="text-[#62677D]">Est. Dispatch Response:</span>
@@ -1367,13 +1367,13 @@ export default function App() {
                           </div>
                           <div className="flex items-center justify-between">
                             <span className="text-[#62677D]">Weekly Payout:</span>
-                            <span key={`weekly-${calcRole}-${calcWeeklyShifts}`} className="font-extrabold text-[#18A999] tabular-nums animate-value-pop">
+                            <span key={`weekly-${calcRole}-${calcWeeklyShifts}`} className="font-extrabold text-[#0E6E63] tabular-nums animate-value-pop">
                               ₹{calculatorRates[calcRole].minPay * 4 * calcWeeklyShifts} – ₹{calculatorRates[calcRole].maxPay * 4 * calcWeeklyShifts}
                             </span>
                           </div>
                           <div className="flex items-center justify-between">
                             <span className="text-[#62677D]">Worker Platform Fee:</span>
-                            <span className="font-extrabold text-[#18A999]">₹0 (Keep 100% of pay)</span>
+                            <span className="font-extrabold text-[#0E6E63]">₹0 (Keep 100% of pay)</span>
                           </div>
                         </div>
 
@@ -1431,7 +1431,7 @@ export default function App() {
                       <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isSelected ? 'bg-white/15 text-white' : 'bg-[#EEEFFC] text-[#302F80]'}`}>
                         <ZoneIcon className="w-4 h-4" />
                       </div>
-                      <span className="text-xs font-extrabold tabular-nums text-[#18A999]">
+                      <span className={`text-xs font-extrabold tabular-nums ${isSelected ? 'text-[#E4F7F3]' : 'text-[#0E6E63]'}`}>
                         {zone.responseTime}
                       </span>
                     </div>
@@ -1461,7 +1461,7 @@ export default function App() {
 
                       <h3 className="text-2xl sm:text-3xl font-extrabold text-[#181A32] mb-2 flex items-center gap-2">
                         <span>{activeZoneData.name}</span>
-                        <span className="text-xs font-bold text-[#18A999] px-2 py-0.5 rounded-md bg-[#E4F7F3]">
+                        <span className="text-xs font-bold text-[#0E6E63] px-2 py-0.5 rounded-md bg-[#E4F7F3] border border-[#18A999]/20">
                           {activeZoneData.sector}
                         </span>
                       </h3>
@@ -1499,7 +1499,7 @@ export default function App() {
                         <button
                           type="button"
                           onClick={() => handleApplyZoneToWorker(activeZoneData)}
-                          className="px-5 py-2.5 bg-[#E4F7F3] hover:bg-[#d5f3ec] text-[#18A999] hover:text-[#128679] border border-[#18A999]/30 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[0.98] cursor-pointer"
+                          className="px-5 py-2.5 bg-[#E4F7F3] hover:bg-[#d5f3ec] text-[#0E6E63] hover:text-[#094841] border border-[#18A999]/30 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[0.98] cursor-pointer"
                         >
                           <span>I can work in {activeZoneData.name}</span>
                           <ArrowRight className="w-3.5 h-3.5" />
@@ -1559,7 +1559,7 @@ export default function App() {
                   <h3 className="text-2xl sm:text-3xl font-bold text-[#181A32] mb-4 leading-snug">
                     When work piles up, get help finding the fit.
                   </h3>
-                  <p className="text-[#62677D] text-base leading-relaxed mb-6">
+                  <p className="text-[#3B3A6F] text-base leading-relaxed mb-6">
                     Share your staffing need, shift timing and the kind of support required. Our team will review the request and coordinate next steps when a suitable match is available.
                   </p>
                   <div className="space-y-2.5 mb-8">
@@ -1588,7 +1588,7 @@ export default function App() {
               <div className="bg-[#E4F7F3] rounded-3xl p-8 sm:p-10 border border-[#18A999]/25 flex flex-col justify-between hover:shadow-xl transition">
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <span className="px-3.5 py-1.5 bg-white text-[#18A999] text-xs font-extrabold rounded-full shadow-2xs">
+                    <span className="px-3.5 py-1.5 bg-white text-[#0E6E63] text-xs font-extrabold rounded-full shadow-2xs">
                       FOR WORKERS
                     </span>
                     <Users className="w-5 h-5 text-[#18A999]" />
@@ -1596,17 +1596,17 @@ export default function App() {
                   <h3 className="text-2xl sm:text-3xl font-bold text-[#181A32] mb-4 leading-snug">
                     Your skills deserve the right opportunity.
                   </h3>
-                  <p className="text-[#62677D] text-base leading-relaxed mb-6">
+                  <p className="text-[#14564E] text-base leading-relaxed mb-6">
                     Tell us what you can do, where you’re based and when you’re available. We’ll use that information to explore suitable opportunities as the local pilot develops.
                   </p>
                   <div className="space-y-2.5 mb-8">
-                    <div className="flex items-center gap-2 text-sm text-[#18A999] font-semibold">
+                    <div className="flex items-center gap-2 text-sm text-[#0E6E63] font-semibold">
                       <CheckCircle2 className="w-4 h-4 text-[#18A999]" /> ₹0 registration or platform fees
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-[#18A999] font-semibold">
+                    <div className="flex items-center gap-2 text-sm text-[#0E6E63] font-semibold">
                       <CheckCircle2 className="w-4 h-4 text-[#18A999]" /> Flexible daytime hours that suit your week
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-[#18A999] font-semibold">
+                    <div className="flex items-center gap-2 text-sm text-[#0E6E63] font-semibold">
                       <CheckCircle2 className="w-4 h-4 text-[#18A999]" /> Safe, public commercial workplaces only
                     </div>
                   </div>
@@ -1614,7 +1614,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => goToWaitlist('worker')}
-                  className="inline-flex items-center gap-2 text-[#302F80] font-extrabold hover:gap-3 transition-all text-base cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg p-1"
+                  className="inline-flex items-center gap-2 text-[#0E6E63] hover:text-[#094841] font-extrabold hover:gap-3 transition-all text-base cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg p-1"
                 >
                   <span>Join the worker waitlist</span>
                   <ArrowRight className="w-5 h-5 text-[#18A999]" />
@@ -1704,8 +1704,8 @@ export default function App() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-4 mt-2">
-                    <span className="text-xs font-extrabold text-[#18A999] tracking-wider uppercase">Q1 – Q2 2026</span>
-                    <span className="px-2.5 py-1 bg-[#E4F7F3] text-[#302F80] text-xs font-bold rounded-lg">Panipat Core</span>
+                    <span className="text-xs font-extrabold text-[#0E6E63] tracking-wider uppercase">Q1 – Q2 2026</span>
+                    <span className="px-2.5 py-1 bg-[#E4F7F3] text-[#0E6E63] text-xs font-bold rounded-lg border border-[#18A999]/20">Panipat Core</span>
                   </div>
                   <h3 className="text-2xl font-bold text-[#181A32] mb-3">Hyperlocal Intake Pilot</h3>
                   <p className="text-sm text-[#62677D] leading-relaxed mb-6">
@@ -1732,7 +1732,7 @@ export default function App() {
                 </div>
                 <div className="pt-4 border-t border-[#EEEFFC] flex items-center justify-between text-xs">
                   <span className="font-bold text-[#302F80]">Current Stage</span>
-                  <span className="font-extrabold text-[#18A999] flex items-center gap-1.5">
+                  <span className="font-extrabold text-[#0E6E63] flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-[#18A999] animate-pulse" /> Live in Panipat
                   </span>
                 </div>
@@ -1743,7 +1743,7 @@ export default function App() {
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-xs font-extrabold text-[#62677D] tracking-wider uppercase">PHASE 1 · Q3 2026</span>
-                    <span className="px-2.5 py-1 bg-[#EEEFFC] text-[#302F80] text-xs font-bold rounded-lg">Expansion</span>
+                    <span className="px-2.5 py-1 bg-[#E4F7F3] text-[#0E6E63] text-xs font-bold rounded-lg border border-[#18A999]/20">Expansion</span>
                   </div>
                   <h3 className="text-2xl font-bold text-[#181A32] mb-3">Live Dispatch Network</h3>
                   <p className="text-sm text-[#62677D] leading-relaxed mb-6">
@@ -1751,19 +1751,19 @@ export default function App() {
                   </p>
                   <ul className="space-y-3 text-xs text-[#62677D] mb-8 font-medium">
                     <li className="flex items-start gap-2.5">
-                      <Clock className="w-4 h-4 text-[#302F80] shrink-0 mt-0.5" />
+                      <Clock className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" />
                       <span>Direct WhatsApp bot instant intake &amp; broadcast</span>
                     </li>
                     <li className="flex items-start gap-2.5">
-                      <Clock className="w-4 h-4 text-[#302F80] shrink-0 mt-0.5" />
+                      <Clock className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" />
                       <span>Automated SMS shift reminders &amp; verification codes</span>
                     </li>
                     <li className="flex items-start gap-2.5">
-                      <Clock className="w-4 h-4 text-[#302F80] shrink-0 mt-0.5" />
+                      <Clock className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" />
                       <span>Launch in Chandigarh Sector 17/35 &amp; Mohali 3B2</span>
                     </li>
                     <li className="flex items-start gap-2.5">
-                      <Clock className="w-4 h-4 text-[#302F80] shrink-0 mt-0.5" />
+                      <Clock className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" />
                       <span>Optional merchant expedited match tier</span>
                     </li>
                   </ul>
@@ -1857,7 +1857,7 @@ export default function App() {
 
               {/* Trust Item 4 */}
               <div className="bg-[#302F67] rounded-3xl p-6 border border-white/10 flex flex-col items-start hover:border-[#18A999]/50 transition">
-                <div className="w-12 h-12 rounded-2xl bg-[#302F80] text-[#18A999] font-black text-base flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-2xl bg-[#18A999] text-white font-black text-base flex items-center justify-center mb-4">
                   ₹0
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">Workers never pay fees</h3>
@@ -2123,7 +2123,7 @@ export default function App() {
               {(activeFormTab === 'both' || activeFormTab === 'worker') && (
                 <div className="bg-white rounded-3xl p-6 sm:p-8 md:p-10 border border-[#EEEFFC] shadow-lg animate-dispatch-arrival">
                   <div className="flex items-center justify-between mb-6">
-                    <span className="px-3 py-1 bg-[#E4F7F3] text-[#18A999] text-xs font-bold rounded-full">
+                    <span className="px-3 py-1 bg-[#E4F7F3] text-[#0E6E63] text-xs font-bold rounded-full border border-[#18A999]/20">
                       WORKER WAITLIST
                     </span>
                     <Users className="w-5 h-5 text-[#18A999]" />
@@ -2155,7 +2155,7 @@ export default function App() {
                     <div>
                       <label htmlFor="worker-phone" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">Phone number</label>
                       <div className={`flex rounded-xl transition overflow-hidden ${workerErrors.phone ? 'border border-red-400 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus-within:bg-white focus-within:border-[#18A999] focus-within:ring-2 focus-within:ring-[#18A999]/20'}`}>
-                        <span className={`inline-flex items-center px-3.5 text-sm font-bold select-none border-r transition ${workerErrors.phone ? 'bg-red-100/50 text-red-700 border-red-300' : 'bg-[#E4F7F3] text-[#18A999] border-[#EEEFFC]'}`}>
+                        <span className={`inline-flex items-center px-3.5 text-sm font-bold select-none border-r transition ${workerErrors.phone ? 'bg-red-100/50 text-red-700 border-red-300' : 'bg-[#E4F7F3] text-[#0E6E63] border-[#EEEFFC]'}`}>
                           +91
                         </span>
                         <input

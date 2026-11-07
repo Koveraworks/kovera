@@ -19,10 +19,7 @@ import {
   Coffee, 
   ShoppingBag,
   AlertCircle,
-  Calculator,
-  MessageCircle,
-  Milestone,
-  Compass
+  MessageCircle
 } from 'lucide-react';
 import { 
   submitBusinessRegistration, 
@@ -680,7 +677,7 @@ export default function App() {
 
       <main>
         {/* 02 — Hero Section: Split Showcase with 3D Workspace */}
-        <section className="relative pt-12 pb-20 md:pt-16 md:pb-28 overflow-hidden bg-gradient-to-b from-[#F7F8FC] via-white to-[#F7F8FC]">
+        <section className="relative pt-16 pb-24 md:pt-20 md:pb-32 overflow-hidden bg-gradient-to-b from-[#F7F8FC] via-white to-[#F7F8FC]">
           
           {/* Subtle Ambient Background Gradients */}
           <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-[#E4F7F3]/50 rounded-full blur-3xl -z-10 pointer-events-none" />
@@ -864,7 +861,7 @@ export default function App() {
                         <span>{dispatchScenarios[activeDispatchScenario].workerMeta}</span>
                       </div>
 
-                      <div className="bg-white/90 rounded-xl px-3 py-2 border border-[#18A999]/20 flex flex-wrap items-center justify-between gap-2 text-xs">
+                      <div className="pt-2.5 mt-2.5 border-t border-[#18A999]/20 flex flex-wrap items-center justify-between gap-2 text-xs">
                         <span className="font-extrabold text-[#181A32] tabular-nums">{dispatchScenarios[activeDispatchScenario].workerComp}</span>
                         <span className="font-bold text-[#128679]">₹0 Worker Fee · Direct Pay</span>
                       </div>
@@ -921,17 +918,14 @@ export default function App() {
         </section>
 
         {/* 03 — Editorial Callout: "The 4-Hour Problem" */}
-        <section className="py-16 bg-white border-y border-[#EEEFFC]">
+        <section className="py-20 md:py-24 bg-white border-y border-[#EEEFFC]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto bg-[#F7F8FC] rounded-3xl p-8 sm:p-12 border border-[#EEEFFC] shadow-sm">
-              <div className="text-center mb-8">
-                <span className="text-xs font-black text-[#18A999] tracking-widest uppercase mb-2 block">
-                  REALITY OF LOCAL RETAIL
-                </span>
+              <div className="text-center mb-10">
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#181A32] mb-3">
                   Not a hiring problem. A 4-hour problem.
                 </h2>
-                <p className="text-base sm:text-lg text-[#62677D] max-w-2xl mx-auto">
+                <p className="text-base sm:text-lg text-[#62677D] max-w-2xl mx-auto leading-relaxed">
                   When a team member calls in sick on a Saturday afternoon, you don’t need weeks of interviews and contracts. You just need dependable hands for 4 hours.
                 </p>
               </div>
@@ -993,16 +987,13 @@ export default function App() {
         </section>
 
         {/* 04 — Interactive Shift Explorer */}
-        <section id="shift-explorer" className="py-20 bg-[#F7F8FC]">
+        <section id="shift-explorer" className="py-20 md:py-24 bg-[#F7F8FC]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-14">
-              <span className="text-xs font-black text-[#18A999] tracking-widest uppercase mb-2 block">
-                EXPLORE PILOT SUPPORT
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-4">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-3">
                 What does a Kovera shift look like?
               </h2>
-              <p className="text-base sm:text-lg text-[#62677D]">
+              <p className="text-base sm:text-lg text-[#62677D] max-w-2xl mx-auto leading-relaxed">
                 Select your business type and see typical shift coverage, requirements, and pilot hotspots in Panipat.
               </p>
             </div>
@@ -1080,60 +1071,67 @@ export default function App() {
                 </div>
 
                 {/* Right Shift Configurator & Preset CTA */}
-                <div className="md:col-span-5 bg-[#F7F8FC] rounded-2xl p-6 border border-[#EEEFFC]">
-                  <span className="text-xs font-black text-[#302F80] uppercase tracking-wider block mb-3">
-                    Choose Shift Length
-                  </span>
+                <div className="md:col-span-5 md:border-l md:border-[#EEEFFC] md:pl-8 pt-6 md:pt-0 border-t md:border-t-0 border-[#EEEFFC] flex flex-col justify-between">
+                  <div>
+                    <span className="text-xs font-black text-[#302F80] uppercase tracking-wider block mb-3">
+                      Choose Shift Length
+                    </span>
 
-                  <div className="space-y-2 mb-6">
-                    {[
-                      { id: '4hours', label: '4-Hour Rush Shift', desc: 'Peak daytime hours' },
-                      { id: 'weekend', label: 'Weekend Peak', desc: 'Saturday or Sunday rush' },
-                      { id: 'fullday', label: 'Full Daytime Shift', desc: 'Continuous shop assistance' }
-                    ].map(option => (
-                      <button
-                        key={option.id}
-                        onClick={() => setSelectedDuration(option.id)}
-                        className={`w-full text-left p-3 rounded-xl border transition flex items-center justify-between ${
-                          selectedDuration === option.id 
-                            ? 'bg-white border-[#302F80] shadow-xs' 
-                            : 'bg-white/60 border-transparent hover:border-[#EEEFFC]'
-                        }`}
-                      >
-                        <div>
-                          <p className="text-xs font-bold text-[#181A32]">{option.label}</p>
-                          <p className="text-xs text-[#62677D]">{option.desc}</p>
-                        </div>
-                        {selectedDuration === option.id && (
-                          <div className="w-5 h-5 rounded-full bg-[#302F80] text-white flex items-center justify-center">
-                            <Check className="w-3 h-3" />
+                    <div className="space-y-2 mb-6">
+                      {[
+                        { id: '4hours', label: '4-Hour Rush Shift', desc: 'Peak daytime hours' },
+                        { id: 'weekend', label: 'Weekend Peak', desc: 'Saturday or Sunday rush' },
+                        { id: 'fullday', label: 'Full Daytime Shift', desc: 'Continuous shop assistance' }
+                      ].map(option => (
+                        <button
+                          key={option.id}
+                          type="button"
+                          onClick={() => setSelectedDuration(option.id)}
+                          className={`w-full text-left p-3.5 rounded-xl border transition flex items-center justify-between cursor-pointer active:scale-[0.98] ${
+                            selectedDuration === option.id 
+                              ? 'bg-white border-[#302F80] shadow-xs ring-1 ring-[#302F80]/20' 
+                              : 'bg-[#F7F8FC] border-[#EEEFFC] hover:bg-white'
+                          }`}
+                        >
+                          <div>
+                            <p className="text-xs font-bold text-[#181A32]">{option.label}</p>
+                            <p className="text-xs text-[#62677D]">{option.desc}</p>
                           </div>
-                        )}
+                          {selectedDuration === option.id && (
+                            <div className="w-5 h-5 rounded-full bg-[#302F80] text-white flex items-center justify-center">
+                              <Check className="w-3 h-3" />
+                            </div>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="space-y-2.5">
+                      <button
+                        type="button"
+                        onClick={() => handleApplyPresetToBusiness(selectedRole, selectedDuration)}
+                        className="w-full py-3.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-sm rounded-xl transition shadow-md flex items-center justify-center gap-2 group cursor-pointer active:scale-[0.98]"
+                      >
+                        <span>I'm a Business: Request this support</span>
+                        <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                       </button>
-                    ))}
+
+                      <button
+                        type="button"
+                        onClick={() => handleApplyPresetToWorker(selectedRole, selectedDuration)}
+                        className="w-full py-3 bg-[#E4F7F3] hover:bg-[#d5f3ec] text-[#18A999] hover:text-[#128679] border border-[#18A999]/30 font-bold text-sm rounded-xl transition shadow-2xs flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+                      >
+                        <CheckCircle2 className="w-4 h-4 text-[#18A999]" />
+                        <span>I'm a Worker: Available for this role</span>
+                      </button>
+                    </div>
+
+                    <p className="text-xs text-center text-[#62677D] mt-3">
+                      Prefills the waitlist form for either business or worker registration.
+                    </p>
                   </div>
-
-                  <div className="space-y-2.5">
-                    <button
-                      onClick={() => handleApplyPresetToBusiness(selectedRole, selectedDuration)}
-                      className="w-full py-3.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-sm rounded-xl transition shadow-md flex items-center justify-center gap-2 group"
-                    >
-                      <span>I'm a Business: Request this support</span>
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-                    </button>
-
-                    <button
-                      onClick={() => handleApplyPresetToWorker(selectedRole, selectedDuration)}
-                      className="w-full py-3 bg-[#E4F7F3] hover:bg-[#d5f3ec] text-[#18A999] hover:text-[#128679] border border-[#18A999]/30 font-bold text-sm rounded-xl transition shadow-2xs flex items-center justify-center gap-2"
-                    >
-                      <CheckCircle2 className="w-4 h-4 text-[#18A999]" />
-                      <span>I'm a Worker: Available for this role</span>
-                    </button>
-                  </div>
-
-                  <p className="text-xs text-center text-[#62677D] mt-3">
-                    Prefills the waitlist form for either business or worker registration.
-                  </p>
                 </div>
 
               </div>
@@ -1142,17 +1140,13 @@ export default function App() {
         </section>
 
         {/* 04b — The 4-Hour Shift & Compensation Ledger (Calculator) */}
-        <section id="shift-calculator" className="py-20 bg-white border-y border-[#EEEFFC]">
+        <section id="shift-calculator" className="py-24 md:py-28 bg-white border-y border-[#EEEFFC]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-14">
-              <span className="text-xs font-black text-[#18A999] tracking-widest uppercase mb-2 inline-flex items-center gap-1.5">
-                <Calculator className="w-3.5 h-3.5 text-[#18A999]" />
-                <span>TRANSPARENT ECONOMICS · THE 4-HOUR LEDGER</span>
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-4">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-3">
                 Transparent shift rates. Zero surprises.
               </h2>
-              <p className="text-base sm:text-lg text-[#62677D]">
+              <p className="text-base sm:text-lg text-[#62677D] max-w-2xl mx-auto leading-relaxed">
                 Whether you’re budgeting backup coverage for a Saturday surge or estimating supplementary student earnings, calculate your exact numbers upfront.
               </p>
 
@@ -1184,7 +1178,7 @@ export default function App() {
             </div>
 
             {/* Calculator Main Grid */}
-            <div className="max-w-4xl mx-auto bg-[#F7F8FC] rounded-3xl p-6 sm:p-10 border border-[#EEEFFC] shadow-lg">
+            <div className="max-w-4xl mx-auto bg-white rounded-3xl p-6 sm:p-10 border border-[#EEEFFC] shadow-xl">
               <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
                 
                 {/* Left Controls */}
@@ -1293,14 +1287,14 @@ export default function App() {
                     </div>
                   )}
 
-                  <div className="p-4 bg-white rounded-2xl border border-[#EEEFFC] text-xs text-[#62677D]">
+                  <div className="p-3.5 bg-[#F7F8FC] rounded-xl border border-[#EEEFFC] text-xs text-[#62677D]">
                     <span className="font-bold text-[#181A32]">Included Tasks: </span>
                     {calculatorRates[calcRole].tasks}
                   </div>
                 </div>
 
-                {/* Right Result Card */}
-                <div className="md:col-span-5 bg-white rounded-2xl p-6 border border-[#EEEFFC] shadow-sm flex flex-col justify-between">
+                {/* Right Result Column */}
+                <div className="md:col-span-5 md:border-l md:border-[#EEEFFC] md:pl-8 pt-6 md:pt-0 border-t md:border-t-0 border-[#EEEFFC] flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between pb-3 border-b border-[#EEEFFC] mb-4">
                       <span className="text-xs font-black uppercase tracking-wider text-[#302F80]">
@@ -1403,17 +1397,13 @@ export default function App() {
         </section>
 
         {/* 04c — Panipat Hyperlocal Coverage Radar */}
-        <section id="coverage-zones" className="py-20 bg-[#F7F8FC]">
+        <section id="coverage-zones" className="py-20 md:py-24 bg-[#F7F8FC]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-14">
-              <span className="text-xs font-black text-[#18A999] tracking-widest uppercase mb-2 inline-flex items-center gap-1.5">
-                <Compass className="w-3.5 h-3.5 text-[#18A999]" />
-                <span>LOCAL GROUND TRUTH · PANIPAT PILOT</span>
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-4">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-3">
                 Active shift corridors in Panipat
               </h2>
-              <p className="text-base sm:text-lg text-[#62677D]">
+              <p className="text-base sm:text-lg text-[#62677D] max-w-2xl mx-auto leading-relaxed">
                 We focus on high-density commercial clusters to guarantee reliable 15-to-30 minute match dispatch and daytime workplace safety.
               </p>
             </div>
@@ -1514,8 +1504,8 @@ export default function App() {
                       </div>
                     </div>
 
-                    <div className="md:col-span-5 bg-[#F7F8FC] rounded-2xl p-6 border border-[#EEEFFC] text-center">
-                      <div className="w-16 h-16 rounded-2xl bg-white border border-[#EEEFFC] text-[#302F80] flex items-center justify-center mx-auto mb-4 shadow-xs">
+                    <div className="md:col-span-5 md:border-l md:border-[#EEEFFC] md:pl-8 text-center pt-6 md:pt-0 border-t md:border-t-0 border-[#EEEFFC]">
+                      <div className="w-16 h-16 rounded-2xl bg-[#F7F8FC] border border-[#EEEFFC] text-[#302F80] flex items-center justify-center mx-auto mb-4 shadow-xs">
                         <ActiveIcon className="w-8 h-8 text-[#302F80]" />
                       </div>
                       <span className="text-xs font-black uppercase tracking-wider text-[#62677D] block mb-1">
@@ -1540,17 +1530,14 @@ export default function App() {
         </section>
 
         {/* 05 — Two-Sided Marketplace */}
-        <section id="marketplace" className="py-20 bg-white">
+        <section id="marketplace" className="py-24 md:py-28 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="text-xs font-black text-[#18A999] tracking-widest uppercase mb-2 block">
-                A BETTER FIT FOR BOTH SIDES
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-4">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-3">
                 A little less searching. A lot more clarity.
               </h2>
-              <p className="text-base sm:text-lg text-[#62677D]">
+              <p className="text-base sm:text-lg text-[#62677D] max-w-2xl mx-auto leading-relaxed">
                 Whether you need an extra pair of hands or you’re looking for your next opportunity, start in the right place.
               </p>
             </div>
@@ -1631,25 +1618,23 @@ export default function App() {
         </section>
 
         {/* 06 — How It Works (Three-Step Process) */}
-        <section id="how-it-works" className="py-20 bg-[#F7F8FC]">
+        <section id="how-it-works" className="py-20 md:py-24 bg-[#F7F8FC]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="text-xs font-black text-[#18A999] tracking-widest uppercase mb-2 block">
-                SIMPLE BY DESIGN
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-4">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-3">
                 From a need to a clear next step
               </h2>
-              <p className="text-base sm:text-lg text-[#62677D]">
+              <p className="text-base sm:text-lg text-[#62677D] max-w-2xl mx-auto leading-relaxed">
                 We’re starting hands-on so every request can be understood before a match is promised.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="hidden md:block absolute top-14 left-1/6 right-1/6 h-[2px] bg-gradient-to-r from-[#302F80]/20 via-[#18A999]/30 to-[#F4B86A]/40 -z-0" aria-hidden="true" />
               
               {/* Step 1 */}
-              <div className="bg-white rounded-3xl p-8 border border-[#EEEFFC] shadow-sm hover:shadow-md transition">
+              <div className="bg-white rounded-3xl p-8 border border-[#EEEFFC] shadow-sm hover:shadow-md transition relative z-10">
                 <div className="w-12 h-12 rounded-2xl bg-[#EEEFFC] text-[#302F80] font-black text-xl flex items-center justify-center mb-6">
                   01
                 </div>
@@ -1660,7 +1645,7 @@ export default function App() {
               </div>
 
               {/* Step 2 */}
-              <div className="bg-white rounded-3xl p-8 border border-[#EEEFFC] shadow-sm hover:shadow-md transition">
+              <div className="bg-white rounded-3xl p-8 border border-[#EEEFFC] shadow-sm hover:shadow-md transition relative z-10">
                 <div className="w-12 h-12 rounded-2xl bg-[#E4F7F3] text-[#18A999] font-black text-xl flex items-center justify-center mb-6">
                   02
                 </div>
@@ -1671,7 +1656,7 @@ export default function App() {
               </div>
 
               {/* Step 3 */}
-              <div className="bg-white rounded-3xl p-8 border border-[#EEEFFC] shadow-sm hover:shadow-md transition">
+              <div className="bg-white rounded-3xl p-8 border border-[#EEEFFC] shadow-sm hover:shadow-md transition relative z-10">
                 <div className="w-12 h-12 rounded-2xl bg-[#FFF2E1] text-[#302F80] font-black text-xl flex items-center justify-center mb-6">
                   03
                 </div>
@@ -1689,17 +1674,13 @@ export default function App() {
         </section>
 
         {/* 06b — Strategic Evolution Roadmap: From Pilot to Regional Grid */}
-        <section id="roadmap" className="py-20 bg-white">
+        <section id="roadmap" className="py-24 md:py-28 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="text-xs font-black text-[#18A999] tracking-widest uppercase mb-2 inline-flex items-center gap-1.5">
-                <Milestone className="w-3.5 h-3.5 text-[#18A999]" />
-                <span>STRATEGIC ROADMAP</span>
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-4">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-3">
                 From Panipat pilot to regional grid
               </h2>
-              <p className="text-base sm:text-lg text-[#62677D]">
+              <p className="text-base sm:text-lg text-[#62677D] max-w-2xl mx-auto leading-relaxed">
                 We are intentionally starting with human curation to understand real retail needs before introducing algorithmic dispatch.
               </p>
             </div>
@@ -1822,17 +1803,14 @@ export default function App() {
         </section>
 
         {/* 07 — Trust and Clarity Section (Navy Theme) */}
-        <section id="trust" className="py-20 bg-[#201F53] text-white">
+        <section id="trust" className="py-24 md:py-28 bg-[#201F53] text-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div className="max-w-3xl mx-auto text-center mb-16">
-              <span className="inline-block px-3.5 py-1.5 bg-[#39386F] text-white text-xs font-black rounded-full mb-4 tracking-wider uppercase">
-                PILOT-FIRST · PEOPLE-FIRST
-              </span>
-              <h2 className="text-3xl sm:text-5xl font-extrabold text-white mb-6 leading-tight">
+              <h2 className="text-3xl sm:text-5xl font-extrabold text-white mb-4 leading-tight">
                 A good match starts with clear expectations.
               </h2>
-              <p className="text-base sm:text-lg text-[#D9DDF1] leading-relaxed">
+              <p className="text-base sm:text-lg text-[#D9DDF1] leading-relaxed max-w-2xl mx-auto">
                 We’re building the network carefully—prioritizing suitability, clear shift details and safer working conditions over promises we can’t yet support.
               </p>
             </div>
@@ -1942,17 +1920,14 @@ export default function App() {
         </section>
 
         {/* 08 — Lead Intake: Waitlist Registration (Supabase Integrated) */}
-        <section id="waitlist" className="py-20 bg-[#F7F8FC]">
+        <section id="waitlist" className="py-24 md:py-28 bg-[#F7F8FC]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div className="text-center max-w-3xl mx-auto mb-12">
-              <span className="text-xs font-black text-[#18A999] tracking-widest uppercase mb-2 block">
-                YOUR FIRST STEP
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-4">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-3">
                 Join the Kovera early network
               </h2>
-              <p className="text-base text-[#62677D]">
+              <p className="text-base text-[#62677D] max-w-2xl mx-auto leading-relaxed">
                 Tell us which side of the marketplace you’re on to get started with our Panipat pilot.
               </p>
 
@@ -2268,17 +2243,14 @@ export default function App() {
         </section>
 
         {/* 09 — Frequently Asked Questions */}
-        <section className="py-20 bg-white">
+        <section className="py-20 md:py-24 bg-white">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div className="text-center mb-16">
-              <span className="text-xs font-black text-[#18A999] tracking-widest uppercase mb-2 block">
-                GOOD TO KNOW
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-4">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-3">
                 A few things worth making clear
               </h2>
-              <p className="text-base text-[#62677D]">
+              <p className="text-base sm:text-lg text-[#62677D] max-w-2xl mx-auto leading-relaxed">
                 We’re starting small, learning from real local needs and keeping the first experience straightforward.
               </p>
             </div>

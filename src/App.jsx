@@ -18,7 +18,11 @@ import {
   Scissors, 
   Coffee, 
   ShoppingBag,
-  AlertCircle
+  AlertCircle,
+  Calculator,
+  MessageCircle,
+  Milestone,
+  Compass
 } from 'lucide-react';
 import { 
   submitBusinessRegistration, 
@@ -38,6 +42,15 @@ export default function App() {
   // Living Civic Dispatch State
   const [activeDispatchScenario, setActiveDispatchScenario] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
+
+  // 4-Hour Shift & Compensation Ledger State
+  const [calcSide, setCalcSide] = useState('business'); // 'business' or 'worker'
+  const [calcRole, setCalcRole] = useState('boutique');
+  const [calcDuration, setCalcDuration] = useState(4); // 4, 6, 8 hours
+  const [calcWeeklyShifts, setCalcWeeklyShifts] = useState(3); // 1, 2, 3, 5 shifts/week
+
+  // Coverage Zones State
+  const [selectedZone, setSelectedZone] = useState('insar');
 
   const dispatchScenarios = [
     {
@@ -178,6 +191,135 @@ export default function App() {
     setWorkerForm(prev => ({
       ...prev,
       experience: `Available for ${role.title} (${durationLabel})`
+    }));
+    goToWaitlist('worker');
+  };
+
+  const calculatorRates = {
+    boutique: {
+      title: 'Designer Boutique & Studio',
+      icon: ShoppingBag,
+      ratePerHour: 200,
+      minPay: 190,
+      maxPay: 225,
+      tasks: 'Trial room queue organization, garment steamer handling & floor assist',
+      estMatch: '25 mins'
+    },
+    handloom: {
+      title: 'Retail Handlooms & Textiles',
+      icon: Store,
+      ratePerHour: 190,
+      minPay: 180,
+      maxPay: 210,
+      tasks: 'Customer greeting, stock folding & weekend festival inventory staging',
+      estMatch: '30 mins'
+    },
+    cafe: {
+      title: 'Café & Quick Bites',
+      icon: Coffee,
+      ratePerHour: 185,
+      minPay: 175,
+      maxPay: 200,
+      tasks: 'Peak counter assist, order runner, and quick table turnover',
+      estMatch: '25 mins'
+    },
+    salon: {
+      title: 'Salon Station Prep',
+      icon: Scissors,
+      ratePerHour: 195,
+      minPay: 185,
+      maxPay: 220,
+      tasks: 'Station sanitization, towel replenishment & client greeting assist',
+      estMatch: '20 mins'
+    }
+  };
+
+  const pilotZones = [
+    {
+      id: 'insar',
+      name: 'Insar Bazaar',
+      sector: 'Textile & Handloom District',
+      icon: Store,
+      responseTime: '20–30 Mins',
+      demandLevel: 'High Weekend Demand',
+      description: 'The historic commercial center of Panipat. Peak shift demand happens around weekend festival shopping, seasonal stock turnover, and bridal cloth retail.',
+      typicalRoles: ['Handloom counter greeting', 'Saree & cloth roll folding', 'Billing queue assist'],
+      hours: '11:00 AM – 7:00 PM',
+      landmarks: 'Clock Tower Road, Handloom Chowk, Jain Mandir Road'
+    },
+    {
+      id: 'model-town',
+      name: 'Model Town',
+      sector: 'Fashion Boutiques & Salons',
+      icon: ShoppingBag,
+      responseTime: '15–25 Mins',
+      demandLevel: 'Fastest Local Dispatch',
+      description: 'Panipat’s premier lifestyle & bridal retail strip. High demand for well-presented, articulate store assistants during afternoon fitting queues and salon prep.',
+      typicalRoles: ['Trial room assistant', 'Garment steamer handling', 'Salon hygiene & prep'],
+      hours: '12:00 PM – 8:00 PM',
+      landmarks: 'Main Market Road, Model Town Park Corner, HUDA Lane'
+    },
+    {
+      id: 'sector12',
+      name: 'Sector 11 & 12 HUDA',
+      sector: 'Cafés, Bistros & Modern Dining',
+      icon: Coffee,
+      responseTime: '20–35 Mins',
+      demandLevel: 'Evening Rush Zone',
+      description: 'Growing dining hub with quick-service cafes, bakeries, and casual dining outlets needing dynamic table turnover and counter runners during evening peaks.',
+      typicalRoles: ['Rush table turnover', 'Takeaway packing assist', 'Counter order runner'],
+      hours: '1:00 PM – 8:00 PM',
+      landmarks: 'HUDA Market Square, Sector 12 City Mall Road'
+    },
+    {
+      id: 'gt-road',
+      name: 'GT Road Corridor',
+      sector: 'Multi-Brand Showrooms & Retail',
+      icon: Building2,
+      responseTime: '15–30 Mins',
+      demandLevel: 'Consistent Daytime Flow',
+      description: 'Main highway commercial corridor with electronics, appliances, footwear, and consumer retail needing reliable floor staff during promotional periods.',
+      typicalRoles: ['Product display upkeep', 'Inventory staging', 'Customer orientation'],
+      hours: '10:30 AM – 6:30 PM',
+      landmarks: 'Bus Stand Commercial Belt, Sanjay Chowk stretch'
+    }
+  ];
+
+  const handleApplyCalcToBusiness = () => {
+    const roleInfo = calculatorRates[calcRole];
+    const totalEstMin = roleInfo.minPay * calcDuration;
+    const totalEstMax = roleInfo.maxPay * calcDuration;
+    setBusinessForm(prev => ({
+      ...prev,
+      supportNeed: `${roleInfo.title} (${calcDuration} Hours Daytime Shift · ₹${totalEstMin}–₹${totalEstMax} est.) - ${roleInfo.tasks}`
+    }));
+    goToWaitlist('business');
+  };
+
+  const handleApplyCalcToWorker = () => {
+    const roleInfo = calculatorRates[calcRole];
+    const weeklyMin = roleInfo.minPay * 4 * calcWeeklyShifts;
+    const weeklyMax = roleInfo.maxPay * 4 * calcWeeklyShifts;
+    setWorkerForm(prev => ({
+      ...prev,
+      experience: `Available for ${roleInfo.title}`,
+      availability: `${calcWeeklyShifts} daytime shifts/week (Prefers 4-hr slots · est. ₹${weeklyMin}–₹${weeklyMax}/wk)`
+    }));
+    goToWaitlist('worker');
+  };
+
+  const handleApplyZoneToBusiness = (zone) => {
+    setBusinessForm(prev => ({
+      ...prev,
+      workLocation: `${zone.name}, Panipat`
+    }));
+    goToWaitlist('business');
+  };
+
+  const handleApplyZoneToWorker = (zone) => {
+    setWorkerForm(prev => ({
+      ...prev,
+      locality: `${zone.name}, Panipat`
     }));
     goToWaitlist('worker');
   };
@@ -362,7 +504,10 @@ export default function App() {
       
       {/* Toast Notification Modal */}
       {toastMessage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs transition-opacity animate-fade-in">
+        <div 
+          onClick={(e) => { if (e.target === e.currentTarget) setToastMessage(null); }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs transition-opacity animate-fade-in"
+        >
           <div 
             role="dialog"
             aria-modal="true"
@@ -374,6 +519,7 @@ export default function App() {
                 <CheckCircle2 className="w-7 h-7" />
               </div>
               <button 
+                type="button"
                 onClick={() => setToastMessage(null)}
                 aria-label="Close notification"
                 className="text-[#62677D] hover:text-[#181A32] p-1.5 rounded-lg hover:bg-[#F7F8FC] transition cursor-pointer"
@@ -390,8 +536,10 @@ export default function App() {
               </div>
             )}
             <button
+              type="button"
+              autoFocus
               onClick={() => setToastMessage(null)}
-              className="w-full py-3.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold rounded-xl transition shadow-md cursor-pointer"
+              className="w-full py-3.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold rounded-xl transition shadow-md cursor-pointer active:scale-[0.98]"
             >
               Done
             </button>
@@ -427,21 +575,24 @@ export default function App() {
           </a>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden lg:flex items-center gap-7 text-sm font-semibold text-[#181A32]">
-            <button onClick={() => scrollToSection('marketplace')} className="hover:text-[#18A999] transition">
-              For businesses
-            </button>
-            <button onClick={() => scrollToSection('marketplace')} className="hover:text-[#18A999] transition">
-              For workers
-            </button>
-            <button onClick={() => scrollToSection('shift-explorer')} className="hover:text-[#18A999] transition flex items-center gap-1.5">
+          <nav className="hidden lg:flex items-center gap-6 text-sm font-semibold text-[#181A32]">
+            <button onClick={() => scrollToSection('shift-explorer')} className="hover:text-[#18A999] transition flex items-center gap-1.5 cursor-pointer">
               <span>Shift Explorer</span>
               <span className="text-xs font-bold uppercase tracking-wider bg-[#E4F7F3] text-[#18A999] px-1.5 py-0.5 rounded-full">New</span>
             </button>
-            <button onClick={() => scrollToSection('how-it-works')} className="hover:text-[#18A999] transition">
+            <button onClick={() => scrollToSection('shift-calculator')} className="hover:text-[#18A999] transition cursor-pointer">
+              Rates &amp; Ledger
+            </button>
+            <button onClick={() => scrollToSection('coverage-zones')} className="hover:text-[#18A999] transition cursor-pointer">
+              Pilot Zones
+            </button>
+            <button onClick={() => scrollToSection('how-it-works')} className="hover:text-[#18A999] transition cursor-pointer">
               How it works
             </button>
-            <button onClick={() => scrollToSection('trust')} className="hover:text-[#18A999] transition">
+            <button onClick={() => scrollToSection('roadmap')} className="hover:text-[#18A999] transition cursor-pointer">
+              Roadmap
+            </button>
+            <button onClick={() => scrollToSection('trust')} className="hover:text-[#18A999] transition cursor-pointer">
               Our approach
             </button>
           </nav>
@@ -454,7 +605,7 @@ export default function App() {
             </div>
             <button 
               onClick={() => goToWaitlist('business')}
-              className="px-5 py-2.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-sm rounded-xl transition shadow-md hover:shadow-lg flex items-center gap-1.5 cursor-pointer"
+              className="px-5 py-2.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-sm rounded-xl transition shadow-md hover:shadow-lg flex items-center gap-1.5 cursor-pointer active:scale-[0.98]"
             >
               <span>Join waitlist</span>
               <ArrowRight className="w-4 h-4" />
@@ -464,7 +615,7 @@ export default function App() {
           {/* Mobile Menu Button */}
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-[#181A32] hover:text-[#302F80] rounded-lg"
+            className="lg:hidden p-2 text-[#181A32] hover:text-[#302F80] rounded-lg cursor-pointer"
             aria-label="Toggle Navigation Menu"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -473,19 +624,7 @@ export default function App() {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-b border-[#EEEFFC] px-5 pt-3 pb-6 space-y-3 shadow-xl animate-slide-down">
-            <button 
-              onClick={() => scrollToSection('marketplace')} 
-              className="block w-full text-left px-3 py-2.5 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
-            >
-              For businesses
-            </button>
-            <button 
-              onClick={() => scrollToSection('marketplace')} 
-              className="block w-full text-left px-3 py-2.5 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
-            >
-              For workers
-            </button>
+          <div className="lg:hidden bg-white border-b border-[#EEEFFC] px-5 pt-3 pb-6 space-y-2 shadow-xl animate-slide-down">
             <button 
               onClick={() => scrollToSection('shift-explorer')} 
               className="block w-full text-left px-3 py-2.5 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl flex items-center justify-between"
@@ -494,10 +633,34 @@ export default function App() {
               <span className="text-xs font-bold uppercase tracking-wider bg-[#E4F7F3] text-[#18A999] px-1.5 py-0.5 rounded-full">New</span>
             </button>
             <button 
+              onClick={() => scrollToSection('shift-calculator')} 
+              className="block w-full text-left px-3 py-2.5 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
+            >
+              Rates &amp; Ledger
+            </button>
+            <button 
+              onClick={() => scrollToSection('coverage-zones')} 
+              className="block w-full text-left px-3 py-2.5 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
+            >
+              Pilot Zones (Panipat)
+            </button>
+            <button 
+              onClick={() => scrollToSection('marketplace')} 
+              className="block w-full text-left px-3 py-2.5 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
+            >
+              For businesses &amp; workers
+            </button>
+            <button 
               onClick={() => scrollToSection('how-it-works')} 
               className="block w-full text-left px-3 py-2.5 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
             >
               How it works
+            </button>
+            <button 
+              onClick={() => scrollToSection('roadmap')} 
+              className="block w-full text-left px-3 py-2.5 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
+            >
+              Roadmap (Pilot to Grid)
             </button>
             <button 
               onClick={() => scrollToSection('trust')} 
@@ -507,7 +670,7 @@ export default function App() {
             </button>
             <button 
               onClick={() => goToWaitlist('business')}
-              className="w-full mt-3 py-3.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-sm rounded-xl text-center shadow-md transition cursor-pointer"
+              className="w-full mt-3 py-3.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-sm rounded-xl text-center shadow-md transition cursor-pointer active:scale-[0.98]"
             >
               Join the waitlist
             </button>
@@ -978,6 +1141,404 @@ export default function App() {
           </div>
         </section>
 
+        {/* 04b — The 4-Hour Shift & Compensation Ledger (Calculator) */}
+        <section id="shift-calculator" className="py-20 bg-white border-y border-[#EEEFFC]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-3xl mx-auto mb-14">
+              <span className="text-xs font-black text-[#18A999] tracking-widest uppercase mb-2 inline-flex items-center gap-1.5">
+                <Calculator className="w-3.5 h-3.5 text-[#18A999]" />
+                <span>TRANSPARENT ECONOMICS · THE 4-HOUR LEDGER</span>
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-4">
+                Transparent shift rates. Zero surprises.
+              </h2>
+              <p className="text-base sm:text-lg text-[#62677D]">
+                Whether you’re budgeting backup coverage for a Saturday surge or estimating supplementary student earnings, calculate your exact numbers upfront.
+              </p>
+
+              {/* Side Switcher (Business vs Worker) */}
+              <div className="mt-8 inline-flex items-center p-1.5 bg-[#F7F8FC] rounded-2xl border border-[#EEEFFC] gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setCalcSide('business')}
+                  className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer active:scale-[0.98] ${
+                    calcSide === 'business'
+                      ? 'bg-[#302F80] text-white shadow-xs'
+                      : 'text-[#62677D] hover:text-[#181A32]'
+                  }`}
+                >
+                  For Businesses: Shift Cost
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCalcSide('worker')}
+                  className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer active:scale-[0.98] ${
+                    calcSide === 'worker'
+                      ? 'bg-[#18A999] text-white shadow-xs'
+                      : 'text-[#62677D] hover:text-[#181A32]'
+                  }`}
+                >
+                  For Workers: Earning Estimator
+                </button>
+              </div>
+            </div>
+
+            {/* Calculator Main Grid */}
+            <div className="max-w-4xl mx-auto bg-[#F7F8FC] rounded-3xl p-6 sm:p-10 border border-[#EEEFFC] shadow-lg">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                
+                {/* Left Controls */}
+                <div className="md:col-span-7 space-y-6">
+                  {/* Role Selector */}
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-wider text-[#181A32] mb-3">
+                      Select Retail Category
+                    </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      {Object.entries(calculatorRates).map(([key, role]) => {
+                        const RoleIcon = role.icon;
+                        const isSelected = calcRole === key;
+                        return (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => setCalcRole(key)}
+                            className={`p-3.5 rounded-xl border text-left transition cursor-pointer active:scale-[0.98] ${
+                              isSelected
+                                ? 'bg-white border-[#302F80] shadow-xs ring-1 ring-[#302F80]/20'
+                                : 'bg-white/70 border-[#EEEFFC] hover:bg-white text-[#62677D]'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 mb-1">
+                              <RoleIcon className={`w-4 h-4 ${isSelected ? 'text-[#302F80]' : 'text-[#62677D]'}`} />
+                              <span className={`text-xs font-bold ${isSelected ? 'text-[#181A32]' : 'text-[#62677D]'}`}>
+                                {role.title}
+                              </span>
+                            </div>
+                            <span className="text-xs text-[#18A999] font-extrabold tabular-nums block">
+                              ₹{role.minPay} – ₹{role.maxPay} / hr
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {calcSide === 'business' ? (
+                    /* Business Duration Pills */
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <label className="block text-xs font-black uppercase tracking-wider text-[#181A32]">
+                          Shift Duration
+                        </label>
+                        <span className="text-xs font-bold text-[#18A999]">Daytime window (8am–8pm)</span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2.5">
+                        {[
+                          { hours: 4, label: '4 Hours', desc: 'Peak Rush' },
+                          { hours: 6, label: '6 Hours', desc: 'Half Day' },
+                          { hours: 8, label: '8 Hours', desc: 'Full Day' }
+                        ].map(dur => (
+                          <button
+                            key={dur.hours}
+                            type="button"
+                            onClick={() => setCalcDuration(dur.hours)}
+                            className={`p-3 rounded-xl text-center border transition cursor-pointer active:scale-[0.98] ${
+                              calcDuration === dur.hours
+                                ? 'bg-[#302F80] text-white border-[#302F80] shadow-xs'
+                                : 'bg-white border-[#EEEFFC] text-[#181A32] hover:border-[#302F80]/40'
+                            }`}
+                          >
+                            <span className="text-sm font-extrabold block tabular-nums">{dur.label}</span>
+                            <span className={`text-xs ${calcDuration === dur.hours ? 'text-white/80' : 'text-[#62677D]'}`}>
+                              {dur.desc}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    /* Worker Weekly Shifts Pills */
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <label className="block text-xs font-black uppercase tracking-wider text-[#181A32]">
+                          Available Shifts Per Week
+                        </label>
+                        <span className="text-xs font-bold text-[#18A999]">4-hour daylight slots</span>
+                      </div>
+                      <div className="grid grid-cols-4 gap-2">
+                        {[
+                          { count: 1, label: '1 Shift' },
+                          { count: 2, label: '2 Shifts' },
+                          { count: 3, label: '3 Shifts' },
+                          { count: 5, label: '5 Shifts' }
+                        ].map(shift => (
+                          <button
+                            key={shift.count}
+                            type="button"
+                            onClick={() => setCalcWeeklyShifts(shift.count)}
+                            className={`p-3 rounded-xl text-center border transition cursor-pointer active:scale-[0.98] ${
+                              calcWeeklyShifts === shift.count
+                                ? 'bg-[#18A999] text-white border-[#18A999] shadow-xs'
+                                : 'bg-white border-[#EEEFFC] text-[#181A32] hover:border-[#18A999]/40'
+                            }`}
+                          >
+                            <span className="text-sm font-extrabold block tabular-nums">{shift.label}</span>
+                            <span className={`text-xs ${calcWeeklyShifts === shift.count ? 'text-white/80' : 'text-[#62677D]'}`}>
+                              / week
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="p-4 bg-white rounded-2xl border border-[#EEEFFC] text-xs text-[#62677D]">
+                    <span className="font-bold text-[#181A32]">Included Tasks: </span>
+                    {calculatorRates[calcRole].tasks}
+                  </div>
+                </div>
+
+                {/* Right Result Card */}
+                <div className="md:col-span-5 bg-white rounded-2xl p-6 border border-[#EEEFFC] shadow-sm flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between pb-3 border-b border-[#EEEFFC] mb-4">
+                      <span className="text-xs font-black uppercase tracking-wider text-[#302F80]">
+                        {calcSide === 'business' ? 'ESTIMATED SHIFT LEDGER' : 'ESTIMATED EARNINGS LEDGER'}
+                      </span>
+                      <span className="text-xs font-bold text-[#18A999] bg-[#E4F7F3] px-2 py-0.5 rounded-full">
+                        ₹0 Platform Fee
+                      </span>
+                    </div>
+
+                    {calcSide === 'business' ? (
+                      <>
+                        <div className="mb-4">
+                          <span className="text-xs text-[#62677D] block mb-1">Worker Direct Compensation ({calcDuration} Hours)</span>
+                          <p className="text-3xl font-black text-[#181A32] tabular-nums">
+                            ₹{calculatorRates[calcRole].minPay * calcDuration} – ₹{calculatorRates[calcRole].maxPay * calcDuration}
+                          </p>
+                          <span className="text-xs text-[#62677D] mt-1 block">
+                            Direct settlement at shift completion.
+                          </span>
+                        </div>
+
+                        <div className="space-y-2.5 py-4 border-y border-[#EEEFFC] text-xs">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[#62677D]">Kovera Pilot Fee:</span>
+                            <span className="font-extrabold text-[#18A999]">₹0 (100% Free Pilot)</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-[#62677D]">Est. Dispatch Response:</span>
+                            <span className="font-bold text-[#181A32] tabular-nums">{calculatorRates[calcRole].estMatch}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-[#62677D]">Safety Standard:</span>
+                            <span className="font-bold text-[#181A32]">Public Daytime Retail</span>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={handleApplyCalcToBusiness}
+                          className="w-full mt-5 py-3.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-sm rounded-xl transition shadow-md flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer"
+                        >
+                          <span>Request this {calcDuration}-Hour Shift</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <div className="mb-4">
+                          <span className="text-xs text-[#62677D] block mb-1">
+                            Estimated Monthly Supplementary Income
+                          </span>
+                          <p className="text-3xl font-black text-[#18A999] tabular-nums">
+                            ₹{calculatorRates[calcRole].minPay * 4 * calcWeeklyShifts * 4} – ₹{calculatorRates[calcRole].maxPay * 4 * calcWeeklyShifts * 4}
+                          </p>
+                          <span className="text-xs text-[#62677D] mt-1 block">
+                            Based on {calcWeeklyShifts} four-hour shift{calcWeeklyShifts > 1 ? 's' : ''}/week.
+                          </span>
+                        </div>
+
+                        <div className="space-y-2.5 py-4 border-y border-[#EEEFFC] text-xs">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[#62677D]">Per-Shift Take Home:</span>
+                            <span className="font-bold text-[#181A32] tabular-nums">
+                              ₹{calculatorRates[calcRole].minPay * 4} – ₹{calculatorRates[calcRole].maxPay * 4}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-[#62677D]">Weekly Payout:</span>
+                            <span className="font-extrabold text-[#18A999] tabular-nums">
+                              ₹{calculatorRates[calcRole].minPay * 4 * calcWeeklyShifts} – ₹{calculatorRates[calcRole].maxPay * 4 * calcWeeklyShifts}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-[#62677D]">Worker Platform Fee:</span>
+                            <span className="font-extrabold text-[#18A999]">₹0 (Keep 100% of pay)</span>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={handleApplyCalcToWorker}
+                          className="w-full mt-5 py-3.5 bg-[#18A999] hover:bg-[#128679] text-white font-bold text-sm rounded-xl transition shadow-md flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer"
+                        >
+                          <CheckCircle2 className="w-4 h-4" />
+                          <span>Claim Shifts for this Schedule</span>
+                        </button>
+                      </>
+                    )}
+
+                    <p className="text-xs text-center text-[#62677D] mt-3">
+                      Prefills the intake form with your selected rate and scheduling preferences.
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 04c — Panipat Hyperlocal Coverage Radar */}
+        <section id="coverage-zones" className="py-20 bg-[#F7F8FC]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-3xl mx-auto mb-14">
+              <span className="text-xs font-black text-[#18A999] tracking-widest uppercase mb-2 inline-flex items-center gap-1.5">
+                <Compass className="w-3.5 h-3.5 text-[#18A999]" />
+                <span>LOCAL GROUND TRUTH · PANIPAT PILOT</span>
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-4">
+                Active shift corridors in Panipat
+              </h2>
+              <p className="text-base sm:text-lg text-[#62677D]">
+                We focus on high-density commercial clusters to guarantee reliable 15-to-30 minute match dispatch and daytime workplace safety.
+              </p>
+            </div>
+
+            {/* Zone Selector Pills */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto mb-8">
+              {pilotZones.map(zone => {
+                const ZoneIcon = zone.icon;
+                const isSelected = selectedZone === zone.id;
+                return (
+                  <button
+                    key={zone.id}
+                    type="button"
+                    onClick={() => setSelectedZone(zone.id)}
+                    className={`p-4 rounded-2xl text-left border transition cursor-pointer active:scale-[0.98] ${
+                      isSelected
+                        ? 'bg-[#302F80] text-white border-[#302F80] shadow-md'
+                        : 'bg-white text-[#181A32] border-[#EEEFFC] hover:border-[#18A999]/40'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isSelected ? 'bg-white/15 text-white' : 'bg-[#EEEFFC] text-[#302F80]'}`}>
+                        <ZoneIcon className="w-4 h-4" />
+                      </div>
+                      <span className="text-xs font-extrabold tabular-nums text-[#18A999]">
+                        {zone.responseTime}
+                      </span>
+                    </div>
+                    <p className="font-extrabold text-sm">{zone.name}</p>
+                    <p className={`text-xs mt-0.5 truncate ${isSelected ? 'text-white/80' : 'text-[#62677D]'}`}>{zone.sector}</p>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Active Zone Detail Card */}
+            {(() => {
+              const activeZoneData = pilotZones.find(z => z.id === selectedZone) || pilotZones[0];
+              const ActiveIcon = activeZoneData.icon;
+              return (
+                <div className="max-w-4xl mx-auto bg-white rounded-3xl p-6 sm:p-10 border border-[#EEEFFC] shadow-xl animate-fade-in">
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+                    <div className="md:col-span-7">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="px-3 py-1 bg-[#E4F7F3] text-[#302F80] text-xs font-bold rounded-full">
+                          {activeZoneData.demandLevel}
+                        </span>
+                        <span className="text-xs font-bold text-[#62677D] flex items-center gap-1">
+                          <Clock className="w-3.5 h-3.5 text-[#18A999]" /> {activeZoneData.hours}
+                        </span>
+                      </div>
+
+                      <h3 className="text-2xl sm:text-3xl font-extrabold text-[#181A32] mb-2 flex items-center gap-2">
+                        <span>{activeZoneData.name}</span>
+                        <span className="text-xs font-bold text-[#18A999] px-2 py-0.5 rounded-md bg-[#E4F7F3]">
+                          {activeZoneData.sector}
+                        </span>
+                      </h3>
+
+                      <p className="text-sm text-[#62677D] leading-relaxed mb-6">
+                        {activeZoneData.description}
+                      </p>
+
+                      <div className="space-y-3 mb-6 text-xs">
+                        <div className="flex items-start gap-2 text-[#181A32]">
+                          <span className="font-bold text-[#62677D] uppercase w-24 shrink-0">Key Corridors:</span>
+                          <span className="font-semibold text-[#181A32]">{activeZoneData.landmarks}</span>
+                        </div>
+                        <div className="flex items-start gap-2 text-[#181A32]">
+                          <span className="font-bold text-[#62677D] uppercase w-24 shrink-0">Typical Tasks:</span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {activeZoneData.typicalRoles.map((role, idx) => (
+                              <span key={idx} className="bg-[#F7F8FC] border border-[#EEEFFC] px-2.5 py-1 rounded-md text-[#302F80] font-semibold">
+                                {role}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-[#EEEFFC]">
+                        <button
+                          type="button"
+                          onClick={() => handleApplyZoneToBusiness(activeZoneData)}
+                          className="px-5 py-2.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-xs rounded-xl transition shadow-sm hover:shadow flex items-center justify-center gap-1.5 active:scale-[0.98] cursor-pointer"
+                        >
+                          <span>I run a shop in {activeZoneData.name}</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleApplyZoneToWorker(activeZoneData)}
+                          className="px-5 py-2.5 bg-[#E4F7F3] hover:bg-[#d5f3ec] text-[#18A999] hover:text-[#128679] border border-[#18A999]/30 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[0.98] cursor-pointer"
+                        >
+                          <span>I can work in {activeZoneData.name}</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="md:col-span-5 bg-[#F7F8FC] rounded-2xl p-6 border border-[#EEEFFC] text-center">
+                      <div className="w-16 h-16 rounded-2xl bg-white border border-[#EEEFFC] text-[#302F80] flex items-center justify-center mx-auto mb-4 shadow-xs">
+                        <ActiveIcon className="w-8 h-8 text-[#302F80]" />
+                      </div>
+                      <span className="text-xs font-black uppercase tracking-wider text-[#62677D] block mb-1">
+                        Average Response Window
+                      </span>
+                      <p className="text-3xl font-extrabold text-[#181A32] tabular-nums mb-2">
+                        {activeZoneData.responseTime}
+                      </p>
+                      <p className="text-xs text-[#62677D] leading-relaxed mb-4">
+                        Coordinated by local Panipat dispatch with direct phone verification.
+                      </p>
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-[#EEEFFC] rounded-full text-xs font-bold text-[#18A999]">
+                        <ShieldCheck className="w-3.5 h-3.5 text-[#18A999]" />
+                        <span>Public Commercial Venue Only</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        </section>
+
         {/* 05 — Two-Sided Marketplace */}
         <section id="marketplace" className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1127,6 +1688,139 @@ export default function App() {
           </div>
         </section>
 
+        {/* 06b — Strategic Evolution Roadmap: From Pilot to Regional Grid */}
+        <section id="roadmap" className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <span className="text-xs font-black text-[#18A999] tracking-widest uppercase mb-2 inline-flex items-center gap-1.5">
+                <Milestone className="w-3.5 h-3.5 text-[#18A999]" />
+                <span>STRATEGIC ROADMAP</span>
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-4">
+                From Panipat pilot to regional grid
+              </h2>
+              <p className="text-base sm:text-lg text-[#62677D]">
+                We are intentionally starting with human curation to understand real retail needs before introducing algorithmic dispatch.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+              {/* Phase 0 */}
+              <div className="bg-[#F7F8FC] rounded-3xl p-8 border-2 border-[#302F80] shadow-md relative flex flex-col justify-between">
+                <div className="absolute -top-3.5 left-6 px-3 py-1 bg-[#302F80] text-white text-xs font-black uppercase tracking-wider rounded-full shadow-xs">
+                  PHASE 0 · ACTIVE NOW
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-4 mt-2">
+                    <span className="text-xs font-extrabold text-[#18A999] tracking-wider uppercase">Q1 – Q2 2026</span>
+                    <span className="px-2.5 py-1 bg-[#E4F7F3] text-[#302F80] text-xs font-bold rounded-lg">Panipat Core</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-[#181A32] mb-3">Hyperlocal Intake Pilot</h3>
+                  <p className="text-sm text-[#62677D] leading-relaxed mb-6">
+                    Hands-on demand &amp; supply validation across Insar Bazaar, Model Town, and Sector 11/12 with dedicated human coordinators.
+                  </p>
+                  <ul className="space-y-3 text-xs text-[#181A32] mb-8 font-medium">
+                    <li className="flex items-start gap-2.5">
+                      <CheckCircle2 className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" />
+                      <span>100% Free pilot testing with ₹0 worker fees</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <CheckCircle2 className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" />
+                      <span>In-person 18+ adult identity verification</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <CheckCircle2 className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" />
+                      <span>Direct WhatsApp &amp; phone coordinator matching</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <CheckCircle2 className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" />
+                      <span>Public commercial daylight shifts only</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="pt-4 border-t border-[#EEEFFC] flex items-center justify-between text-xs">
+                  <span className="font-bold text-[#302F80]">Current Stage</span>
+                  <span className="font-extrabold text-[#18A999] flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-[#18A999] animate-pulse" /> Live in Panipat
+                  </span>
+                </div>
+              </div>
+
+              {/* Phase 1 */}
+              <div className="bg-white rounded-3xl p-8 border border-[#EEEFFC] shadow-sm relative flex flex-col justify-between hover:border-[#18A999]/40 transition">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-xs font-extrabold text-[#62677D] tracking-wider uppercase">PHASE 1 · Q3 2026</span>
+                    <span className="px-2.5 py-1 bg-[#EEEFFC] text-[#302F80] text-xs font-bold rounded-lg">Expansion</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-[#181A32] mb-3">Live Dispatch Network</h3>
+                  <p className="text-sm text-[#62677D] leading-relaxed mb-6">
+                    Automating match routing with an official WhatsApp bot and expanding shift corridors into Chandigarh and Mohali commercial hubs.
+                  </p>
+                  <ul className="space-y-3 text-xs text-[#62677D] mb-8 font-medium">
+                    <li className="flex items-start gap-2.5">
+                      <Clock className="w-4 h-4 text-[#302F80] shrink-0 mt-0.5" />
+                      <span>Direct WhatsApp bot instant intake &amp; broadcast</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <Clock className="w-4 h-4 text-[#302F80] shrink-0 mt-0.5" />
+                      <span>Automated SMS shift reminders &amp; verification codes</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <Clock className="w-4 h-4 text-[#302F80] shrink-0 mt-0.5" />
+                      <span>Launch in Chandigarh Sector 17/35 &amp; Mohali 3B2</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <Clock className="w-4 h-4 text-[#302F80] shrink-0 mt-0.5" />
+                      <span>Optional merchant expedited match tier</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="pt-4 border-t border-[#EEEFFC] flex items-center justify-between text-xs text-[#62677D]">
+                  <span className="font-bold">Next Milestone</span>
+                  <span className="font-semibold text-[#302F80]">In Preparation</span>
+                </div>
+              </div>
+
+              {/* Phase 2 */}
+              <div className="bg-white rounded-3xl p-8 border border-[#EEEFFC] shadow-sm relative flex flex-col justify-between hover:border-[#18A999]/40 transition">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-xs font-extrabold text-[#62677D] tracking-wider uppercase">PHASE 2 · 2027</span>
+                    <span className="px-2.5 py-1 bg-[#FFF8EB] text-[#8F5B10] text-xs font-bold rounded-lg border border-[#F4B86A]/40">Vision</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-[#181A32] mb-3">The Regional Grid</h3>
+                  <p className="text-sm text-[#62677D] leading-relaxed mb-6">
+                    A self-serve regional shift grid allowing retail chains to hold backup retainers and trusted workers to build local reputation.
+                  </p>
+                  <ul className="space-y-3 text-xs text-[#62677D] mb-8 font-medium">
+                    <li className="flex items-start gap-2.5">
+                      <Sparkles className="w-4 h-4 text-[#F4B86A] shrink-0 mt-0.5" />
+                      <span>Self-serve merchant backup scheduling dashboard</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <Sparkles className="w-4 h-4 text-[#F4B86A] shrink-0 mt-0.5" />
+                      <span>Merchant on-demand shift backup retainers</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <Sparkles className="w-4 h-4 text-[#F4B86A] shrink-0 mt-0.5" />
+                      <span>Worker reliability scores &amp; priority shift alerts</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <Sparkles className="w-4 h-4 text-[#F4B86A] shrink-0 mt-0.5" />
+                      <span>Multi-city Haryana &amp; Punjab commercial coverage</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="pt-4 border-t border-[#EEEFFC] flex items-center justify-between text-xs text-[#62677D]">
+                  <span className="font-bold">Scale Vision</span>
+                  <span className="font-semibold text-[#8F5B10]">Regional Network</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* 07 — Trust and Clarity Section (Navy Theme) */}
         <section id="trust" className="py-20 bg-[#201F53] text-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1196,6 +1890,53 @@ export default function App() {
                 <span>Register your interest</span>
                 <ArrowRight className="w-5 h-5 text-[#18A999] group-hover:translate-x-1 transition-transform" />
               </button>
+            </div>
+          </div>
+        </section>
+
+        {/* 07b — Direct Dispatch Hotline / Instant WhatsApp Help */}
+        <section className="py-12 bg-gradient-to-r from-[#EEEFFC] via-[#E4F7F3] to-[#EEEFFC] border-y border-[#EEEFFC]">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#EEEFFC] shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-[#E4F7F3] text-[#18A999] flex items-center justify-center shrink-0 shadow-xs">
+                  <MessageCircle className="w-7 h-7" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-black uppercase tracking-wider text-[#302F80]">
+                      DIRECT DISPATCH HOTLINE
+                    </span>
+                    <span className="w-2 h-2 rounded-full bg-[#18A999] animate-pulse" />
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-[#181A32]">
+                    Need urgent shift coverage in Panipat today?
+                  </h3>
+                  <p className="text-sm text-[#62677D] mt-1">
+                    Connect directly with our local coordinator desk via WhatsApp or phone for immediate assistance.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto shrink-0">
+                <a
+                  href="https://wa.me/919876543210?text=Hello%20Kovera%20Panipat%20Team%2C%20I%20need%20shift%20support%20today."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto px-6 py-3.5 bg-[#18A999] hover:bg-[#128679] text-white font-bold text-sm rounded-xl transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>WhatsApp Coordinator</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => goToWaitlist('business')}
+                  className="w-full sm:w-auto px-6 py-3.5 bg-white hover:bg-[#F7F8FC] text-[#302F80] border border-[#EEEFFC] font-bold text-sm rounded-xl transition shadow-2xs flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer"
+                >
+                  <span>Open Intake Form</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
         </section>
@@ -1625,12 +2366,13 @@ export default function App() {
             </div>
 
             <div className="flex flex-wrap items-center gap-6 text-sm text-[#D9DDF1]">
-              <button onClick={() => scrollToSection('marketplace')} className="hover:text-white transition cursor-pointer">For businesses</button>
-              <button onClick={() => scrollToSection('marketplace')} className="hover:text-white transition cursor-pointer">For workers</button>
               <button onClick={() => scrollToSection('shift-explorer')} className="hover:text-white transition cursor-pointer">Shift explorer</button>
+              <button onClick={() => scrollToSection('shift-calculator')} className="hover:text-white transition cursor-pointer">Rates &amp; ledger</button>
+              <button onClick={() => scrollToSection('coverage-zones')} className="hover:text-white transition cursor-pointer">Pilot zones</button>
               <button onClick={() => scrollToSection('how-it-works')} className="hover:text-white transition cursor-pointer">How it works</button>
+              <button onClick={() => scrollToSection('roadmap')} className="hover:text-white transition cursor-pointer">Roadmap</button>
               <button onClick={() => scrollToSection('trust')} className="hover:text-white transition cursor-pointer">Our approach</button>
-              <button onClick={() => goToWaitlist('business')} className="text-white font-bold hover:text-[#18A999] transition cursor-pointer flex items-center gap-1.5">
+              <button onClick={() => goToWaitlist('business')} className="text-white font-bold hover:text-[#18A999] transition cursor-pointer flex items-center gap-1.5 active:scale-[0.98]">
                 <span>Register interest</span>
                 <ArrowRight className="w-3.5 h-3.5 text-[#18A999]" />
               </button>

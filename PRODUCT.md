@@ -29,8 +29,12 @@ Kovera acts as an on-demand, hyperlocal backup workforce layer connecting local 
 ## Capabilities and Constraints
 
 - **Phase 0 Pilot & Waitlist**: Controlled launch focusing on demand validation, intake registration, and manual/hands-on match curation before opening automated self-serve scheduling or dispatch.
+- **The 4-Hour Shift & Compensation Ledger**: Transparent upfront rate calculator allowing merchants to budget daytime shift costs (₹750–₹900) and workers to forecast supplementary monthly income with a ₹0 platform fee guarantee.
+- **Hyperlocal Pilot Corridors**: Active coverage mapped across Panipat's commercial anchors—Insar Bazaar (textiles/handlooms), Model Town (boutiques/salons), Sector 11/12 HUDA (cafes/dining), and GT Road (showrooms)—guaranteeing 15-to-30 minute match response times.
+- **Strategic Evolution Roadmap**: Transparent 3-stage platform progression from Phase 0 (Hyperlocal Pilot) to Phase 1 (Live Dispatch with WhatsApp Bot & Chandigarh/Mohali expansion) to Phase 2 (Regional Shift Grid & retainers).
+- **Direct Dispatch Hotline**: Instant WhatsApp coordinator touchpoint for urgent daytime retail coverage.
 - **Commercial Model**: 100% free pilot to build network trust; worker participation is strictly ₹0.
-- **Safety Boundaries**: Confined strictly to daytime shifts (no late-night shifts), public and verified workplaces (shops, cafes, retail counters), and age 18+ adult workers.
+- **Safety Boundaries**: Confined strictly to daytime shifts (8:00 AM – 8:00 PM, no late-night shifts), public and verified workplaces (shops, cafes, retail counters), and age 18+ adult workers.
 - **Technical Architecture**: Single-page React 19 application built with Vite and Tailwind CSS v4, backed by Supabase PostgreSQL with strict Row Level Security (public write-only, anonymous read-restricted), hosted on Cloudflare Pages.
 
 ## Brand Commitments
@@ -42,9 +46,10 @@ Kovera acts as an on-demand, hyperlocal backup workforce layer connecting local 
 
 ## Evidence on Hand
 
-- Verified single-page web app at `src/App.jsx` implementing the full dual-sided pilot registration flow.
+- Verified single-page web app at `src/App.jsx` implementing the full dual-sided pilot registration flow, Living Civic Dispatch Simulator, Interactive Shift Explorer, 4-Hour Shift & Compensation Ledger, Panipat Coverage Radar, and Strategic Evolution Roadmap.
 - Database schema and RLS policies at `supabase/schema.sql`.
 - Brand analysis and Instagram scrape archive (`@kovera55`, 7 posts) recorded in `KOVERA_STYLE_GUIDE.md`.
+- Comprehensive product and platform vision document at `vision.md`.
 - Logo assets at `logos/Kovera Logo.png` and `logos/Top-Down Futuristic K Workspace.png`.
 - Absent evidence: No formal enterprise customer case studies or verified user testimonial quotes yet (must not be fabricated in marketing copy).
 

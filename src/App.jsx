@@ -4,7 +4,6 @@ import {
   CheckCircle2, 
   ChevronDown, 
   MapPin, 
-  Menu, 
   X, 
   Building2, 
   Users, 
@@ -633,78 +632,120 @@ export default function App() {
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu FAB / Interactive Toggle Button */}
           <button 
+            type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-[#181A32] hover:text-[#302F80] rounded-lg cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none"
-            aria-label="Toggle Navigation Menu"
+            className={`lg:hidden relative w-11 h-11 rounded-2xl flex items-center justify-center cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-90 focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:ring-offset-2 focus-visible:outline-none select-none ${
+              mobileMenuOpen 
+                ? 'bg-[#EEEFFC] text-[#302F80] border border-[#302F80]/25 shadow-xs' 
+                : 'bg-white text-[#181A32] hover:text-[#302F80] border border-[#EEEFFC] shadow-xs hover:border-[#302F80]/30 hover:shadow-sm'
+            }`}
+            aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-nav-drawer"
           >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {/* Morphing Hamburger-to-Close Icon */}
+            <div 
+              className={`relative w-5 h-3.5 flex flex-col justify-between items-center transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                mobileMenuOpen ? 'rotate-90' : 'rotate-0'
+              }`}
+              aria-hidden="true"
+            >
+              {/* Top Bar */}
+              <span 
+                className={`block h-0.5 w-5 rounded-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] origin-center ${
+                  mobileMenuOpen 
+                    ? 'translate-y-[6px] rotate-45 bg-[#302F80]' 
+                    : 'translate-y-0 rotate-0 bg-current'
+                }`} 
+              />
+              {/* Middle Bar */}
+              <span 
+                className={`block h-0.5 w-5 rounded-full transition-all duration-200 ease-out ${
+                  mobileMenuOpen 
+                    ? 'opacity-0 scale-x-0 bg-[#302F80]' 
+                    : 'opacity-100 scale-x-100 bg-current'
+                }`} 
+              />
+              {/* Bottom Bar */}
+              <span 
+                className={`block h-0.5 w-5 rounded-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] origin-center ${
+                  mobileMenuOpen 
+                    ? '-translate-y-[6px] -rotate-45 bg-[#302F80]' 
+                    : 'translate-y-0 rotate-0 bg-current'
+                }`} 
+              />
+            </div>
           </button>
         </div>
 
-        {/* Mobile Navigation Backdrop Overlay */}
-        {mobileMenuOpen && (
-          <div 
-            className="fixed inset-0 top-20 bg-black/40 backdrop-blur-xs z-30 lg:hidden transition-opacity duration-200"
-            onClick={() => setMobileMenuOpen(false)}
-            aria-hidden="true"
-          />
-        )}
+        {/* Mobile Navigation Backdrop Overlay (Smooth, Interruptible Enter/Exit) */}
+        <div 
+          className={`fixed inset-0 top-20 bg-black/40 backdrop-blur-xs z-30 lg:hidden transition-opacity duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            mobileMenuOpen 
+              ? 'opacity-100 pointer-events-auto' 
+              : 'opacity-0 pointer-events-none'
+          }`}
+          onClick={() => setMobileMenuOpen(false)}
+          aria-hidden={!mobileMenuOpen}
+        />
 
-        {/* Mobile Navigation Drawer */}
-        {mobileMenuOpen && (
-          <div 
-            id="mobile-nav-drawer" 
-            className="relative z-40 lg:hidden bg-white border-b border-[#EEEFFC] px-6 pt-3 pb-6 space-y-1.5 shadow-2xl animate-slide-down"
+        {/* Mobile Navigation Drawer (Smooth, Interruptible Enter/Exit) */}
+        <div 
+          id="mobile-nav-drawer" 
+          inert={!mobileMenuOpen ? '' : undefined}
+          className={`relative z-40 lg:hidden bg-white border-b border-[#EEEFFC] px-6 space-y-1.5 shadow-2xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            mobileMenuOpen 
+              ? 'opacity-100 translate-y-0 max-h-[520px] pt-3 pb-6 pointer-events-auto' 
+              : 'opacity-0 -translate-y-3 max-h-0 pt-0 pb-0 overflow-hidden pointer-events-none border-transparent'
+          }`}
+          aria-hidden={!mobileMenuOpen}
+        >
+          <button 
+            onClick={() => scrollToSection('shift-explorer')} 
+            className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl flex items-center justify-between transition-colors cursor-pointer"
           >
-            <button 
-              onClick={() => scrollToSection('shift-explorer')} 
-              className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl flex items-center justify-between"
-            >
-              <span>Shifts</span>
-              <span className="text-xs font-bold uppercase tracking-wider bg-[#E4F7F3] text-[#0E6E63] px-2 py-0.5 rounded-full">Explore</span>
-            </button>
-            <button 
-              onClick={() => scrollToSection('shift-calculator')} 
-              className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
-            >
-              Rates
-            </button>
-            <button 
-              onClick={() => scrollToSection('coverage-zones')} 
-              className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
-            >
-              Zones
-            </button>
-            <button 
-              onClick={() => scrollToSection('how-it-works')} 
-              className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
-            >
-              How it works
-            </button>
-            <button 
-              onClick={() => scrollToSection('roadmap')} 
-              className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
-            >
-              Roadmap
-            </button>
-            <button 
-              onClick={() => scrollToSection('trust')} 
-              className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
-            >
-              Approach
-            </button>
-            <button 
-              onClick={() => goToWaitlist('business')}
-              className="w-full mt-3 py-3.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-sm rounded-xl text-center shadow-md transition cursor-pointer active:scale-[0.98]"
-            >
-              Join the waitlist
-            </button>
-          </div>
-        )}
+            <span>Shifts</span>
+            <span className="text-xs font-bold uppercase tracking-wider bg-[#E4F7F3] text-[#0E6E63] px-2 py-0.5 rounded-full">Explore</span>
+          </button>
+          <button 
+            onClick={() => scrollToSection('shift-calculator')} 
+            className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl transition-colors cursor-pointer"
+          >
+            Rates
+          </button>
+          <button 
+            onClick={() => scrollToSection('coverage-zones')} 
+            className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl transition-colors cursor-pointer"
+          >
+            Zones
+          </button>
+          <button 
+            onClick={() => scrollToSection('how-it-works')} 
+            className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl transition-colors cursor-pointer"
+          >
+            How it works
+          </button>
+          <button 
+            onClick={() => scrollToSection('roadmap')} 
+            className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl transition-colors cursor-pointer"
+          >
+            Roadmap
+          </button>
+          <button 
+            onClick={() => scrollToSection('trust')} 
+            className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl transition-colors cursor-pointer"
+          >
+            Approach
+          </button>
+          <button 
+            onClick={() => goToWaitlist('business')}
+            className="w-full mt-3 py-3.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-sm rounded-xl text-center shadow-md hover:shadow-lg transition cursor-pointer active:scale-[0.98]"
+          >
+            Join the waitlist
+          </button>
+        </div>
       </header>
 
       <main>

@@ -519,7 +519,7 @@ export default function App() {
                 type="button"
                 onClick={() => setToastMessage(null)}
                 aria-label="Close notification"
-                className="text-[#62677D] hover:text-[#181A32] p-1.5 rounded-lg hover:bg-[#F7F8FC] transition cursor-pointer"
+                className="text-[#62677D] hover:text-[#181A32] p-1.5 rounded-lg hover:bg-[#F7F8FC] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -536,7 +536,7 @@ export default function App() {
               type="button"
               autoFocus
               onClick={() => setToastMessage(null)}
-              className="w-full py-3.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold rounded-xl transition shadow-md cursor-pointer active:scale-[0.98]"
+              className="w-full py-3.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold rounded-xl transition shadow-md cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:ring-offset-2 focus-visible:outline-none"
             >
               Done
             </button>
@@ -555,7 +555,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
           {/* Logo with official Kovera Emblem */}
-          <a href="#" className="flex items-center gap-2.5 group">
+          <a href="#" className="flex items-center gap-2.5 group rounded-xl focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none p-1">
             <div className="w-10 h-10 rounded-xl bg-white border border-[#EEEFFC] p-1 shadow-xs group-hover:border-[#302F80]/30 transition flex items-center justify-center overflow-hidden">
               <img 
                 src={koveraLogo} 
@@ -573,23 +573,23 @@ export default function App() {
 
           {/* Desktop Nav Links */}
           <nav className="hidden lg:flex items-center gap-6 text-sm font-semibold text-[#181A32]">
-            <button onClick={() => scrollToSection('shift-explorer')} className="hover:text-[#18A999] transition flex items-center gap-1.5 cursor-pointer">
+            <button onClick={() => scrollToSection('shift-explorer')} className="hover:text-[#18A999] transition flex items-center gap-1.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2 py-1">
               <span>Shift Explorer</span>
               <span className="text-xs font-bold uppercase tracking-wider bg-[#E4F7F3] text-[#18A999] px-1.5 py-0.5 rounded-full">New</span>
             </button>
-            <button onClick={() => scrollToSection('shift-calculator')} className="hover:text-[#18A999] transition cursor-pointer">
+            <button onClick={() => scrollToSection('shift-calculator')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2 py-1">
               Rates &amp; Ledger
             </button>
-            <button onClick={() => scrollToSection('coverage-zones')} className="hover:text-[#18A999] transition cursor-pointer">
+            <button onClick={() => scrollToSection('coverage-zones')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2 py-1">
               Pilot Zones
             </button>
-            <button onClick={() => scrollToSection('how-it-works')} className="hover:text-[#18A999] transition cursor-pointer">
+            <button onClick={() => scrollToSection('how-it-works')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2 py-1">
               How it works
             </button>
-            <button onClick={() => scrollToSection('roadmap')} className="hover:text-[#18A999] transition cursor-pointer">
+            <button onClick={() => scrollToSection('roadmap')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2 py-1">
               Roadmap
             </button>
-            <button onClick={() => scrollToSection('trust')} className="hover:text-[#18A999] transition cursor-pointer">
+            <button onClick={() => scrollToSection('trust')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2 py-1">
               Our approach
             </button>
           </nav>
@@ -602,7 +602,7 @@ export default function App() {
             </div>
             <button 
               onClick={() => goToWaitlist('business')}
-              className="px-5 py-2.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-sm rounded-xl transition shadow-md hover:shadow-lg flex items-center gap-1.5 cursor-pointer active:scale-[0.98]"
+              className="px-5 py-2.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-sm rounded-xl transition shadow-md hover:shadow-lg flex items-center gap-1.5 cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:ring-offset-2 focus-visible:outline-none"
             >
               <span>Join waitlist</span>
               <ArrowRight className="w-4 h-4" />
@@ -612,8 +612,10 @@ export default function App() {
           {/* Mobile Menu Button */}
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-[#181A32] hover:text-[#302F80] rounded-lg cursor-pointer"
+            className="lg:hidden p-2 text-[#181A32] hover:text-[#302F80] rounded-lg cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none"
             aria-label="Toggle Navigation Menu"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-nav-drawer"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -621,7 +623,7 @@ export default function App() {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-b border-[#EEEFFC] px-5 pt-3 pb-6 space-y-2 shadow-xl animate-slide-down">
+          <div id="mobile-nav-drawer" className="lg:hidden bg-white border-b border-[#EEEFFC] px-5 pt-3 pb-6 space-y-2 shadow-xl animate-slide-down">
             <button 
               onClick={() => scrollToSection('shift-explorer')} 
               className="block w-full text-left px-3 py-2.5 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl flex items-center justify-between"
@@ -715,7 +717,7 @@ export default function App() {
                 <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-8">
                   <button
                     onClick={() => goToWaitlist('business')}
-                    className="w-full sm:w-auto px-8 py-4 bg-[#302F80] hover:bg-[#201F53] text-white font-bold rounded-2xl transition shadow-lg hover:shadow-xl flex items-center justify-center gap-2.5 group cursor-pointer"
+                    className="w-full sm:w-auto px-8 py-4 bg-[#302F80] hover:bg-[#201F53] text-white font-bold rounded-2xl transition shadow-lg hover:shadow-xl flex items-center justify-center gap-2.5 group cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:ring-offset-2 focus-visible:outline-none"
                   >
                     <span>I need workers</span>
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -723,7 +725,7 @@ export default function App() {
                   
                   <button
                     onClick={() => goToWaitlist('worker')}
-                    className="w-full sm:w-auto px-8 py-4 bg-white hover:bg-[#F7F8FC] text-[#302F80] font-bold border-2 border-[#EEEFFC] hover:border-[#18A999]/50 rounded-2xl transition shadow-sm hover:shadow flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full sm:w-auto px-8 py-4 bg-white hover:bg-[#F7F8FC] text-[#302F80] font-bold border-2 border-[#EEEFFC] hover:border-[#18A999]/50 rounded-2xl transition shadow-sm hover:shadow flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:ring-offset-2 focus-visible:outline-none"
                   >
                     <span>I’m looking for work</span>
                     <ArrowRight className="w-5 h-5 text-[#18A999]" />
@@ -1026,13 +1028,15 @@ export default function App() {
                 
                 {/* Left Detail */}
                 <div className="md:col-span-7">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-2xl bg-[#EEEFFC] text-[#302F80] flex items-center justify-center">
+                  <div className="flex items-center gap-3.5 mb-4">
+                    <div className="w-12 h-12 rounded-2xl bg-[#EEEFFC] text-[#302F80] flex items-center justify-center shrink-0 shadow-2xs">
                       <CurrentRoleIcon className="w-6 h-6" />
                     </div>
-                    <div>
-                      <span className="text-xs font-black text-[#18A999] uppercase tracking-wider">Panipat Pilot Role</span>
+                    <div className="flex items-center gap-2.5 flex-wrap">
                       <h3 className="text-2xl font-bold text-[#181A32]">{roleTemplates[selectedRole].title}</h3>
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#E4F7F3] text-[#18A999] text-xs font-bold">
+                        Panipat Pilot
+                      </span>
                     </div>
                   </div>
 
@@ -1547,9 +1551,12 @@ export default function App() {
               {/* Business Card (Indigo Theme) */}
               <div className="bg-[#EEEFFC] rounded-3xl p-8 sm:p-10 border border-[#302F80]/15 flex flex-col justify-between hover:shadow-xl transition">
                 <div>
-                  <span className="inline-block px-3.5 py-1.5 bg-white text-[#302F80] text-xs font-extrabold rounded-full mb-6 shadow-2xs">
-                    FOR BUSINESSES
-                  </span>
+                  <div className="flex items-center justify-between mb-6">
+                    <span className="px-3.5 py-1.5 bg-white text-[#302F80] text-xs font-extrabold rounded-full shadow-2xs">
+                      FOR BUSINESSES
+                    </span>
+                    <Building2 className="w-5 h-5 text-[#302F80]" />
+                  </div>
                   <h3 className="text-2xl sm:text-3xl font-bold text-[#181A32] mb-4 leading-snug">
                     When work piles up, get help finding the fit.
                   </h3>
@@ -1569,8 +1576,9 @@ export default function App() {
                   </div>
                 </div>
                 <button
+                  type="button"
                   onClick={() => goToWaitlist('business')}
-                  className="inline-flex items-center gap-2 text-[#302F80] font-extrabold hover:gap-3 transition-all text-base cursor-pointer"
+                  className="inline-flex items-center gap-2 text-[#302F80] font-extrabold hover:gap-3 transition-all text-base cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg p-1"
                 >
                   <span>Tell us what your business needs</span>
                   <ArrowRight className="w-5 h-5" />
@@ -1580,9 +1588,12 @@ export default function App() {
               {/* Worker Card (Teal Theme) */}
               <div className="bg-[#E4F7F3] rounded-3xl p-8 sm:p-10 border border-[#18A999]/25 flex flex-col justify-between hover:shadow-xl transition">
                 <div>
-                  <span className="inline-block px-3.5 py-1.5 bg-white text-[#18A999] text-xs font-extrabold rounded-full mb-6 shadow-2xs">
-                    FOR WORKERS
-                  </span>
+                  <div className="flex items-center justify-between mb-6">
+                    <span className="px-3.5 py-1.5 bg-white text-[#18A999] text-xs font-extrabold rounded-full shadow-2xs">
+                      FOR WORKERS
+                    </span>
+                    <Users className="w-5 h-5 text-[#18A999]" />
+                  </div>
                   <h3 className="text-2xl sm:text-3xl font-bold text-[#181A32] mb-4 leading-snug">
                     Your skills deserve the right opportunity.
                   </h3>
@@ -1602,8 +1613,9 @@ export default function App() {
                   </div>
                 </div>
                 <button
+                  type="button"
                   onClick={() => goToWaitlist('worker')}
-                  className="inline-flex items-center gap-2 text-[#302F80] font-extrabold hover:gap-3 transition-all text-base cursor-pointer"
+                  className="inline-flex items-center gap-2 text-[#302F80] font-extrabold hover:gap-3 transition-all text-base cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg p-1"
                 >
                   <span>Join the worker waitlist</span>
                   <ArrowRight className="w-5 h-5 text-[#18A999]" />
@@ -1862,8 +1874,9 @@ export default function App() {
 
             <div className="mt-8 text-center">
               <button
+                type="button"
                 onClick={() => goToWaitlist('business')}
-                className="inline-flex items-center gap-2.5 px-8 py-4 bg-white hover:bg-[#F7F8FC] text-[#302F80] font-bold rounded-2xl transition shadow-lg hover:shadow-xl cursor-pointer group"
+                className="inline-flex items-center gap-2.5 px-8 py-4 bg-white hover:bg-[#F7F8FC] text-[#302F80] font-bold rounded-2xl transition shadow-lg hover:shadow-xl cursor-pointer group active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#201F53] focus-visible:outline-none"
               >
                 <span>Register your interest</span>
                 <ArrowRight className="w-5 h-5 text-[#18A999] group-hover:translate-x-1 transition-transform" />
@@ -1881,15 +1894,15 @@ export default function App() {
                   <MessageCircle className="w-7 h-7" />
                 </div>
                 <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-black uppercase tracking-wider text-[#302F80]">
-                      DIRECT DISPATCH HOTLINE
+                  <div className="flex items-center gap-2.5 mb-1 flex-wrap">
+                    <h3 className="text-xl sm:text-2xl font-bold text-[#181A32]">
+                      Need urgent shift coverage in Panipat today?
+                    </h3>
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#E4F7F3] text-[#302F80] text-xs font-bold border border-[#18A999]/30">
+                      <span className="w-2 h-2 rounded-full bg-[#18A999] animate-pulse" />
+                      Hotline Desk
                     </span>
-                    <span className="w-2 h-2 rounded-full bg-[#18A999] animate-pulse" />
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-[#181A32]">
-                    Need urgent shift coverage in Panipat today?
-                  </h3>
                   <p className="text-sm text-[#62677D] mt-1">
                     Connect directly with our local coordinator desk via WhatsApp or phone for immediate assistance.
                   </p>
@@ -1901,7 +1914,7 @@ export default function App() {
                   href="https://wa.me/919876543210?text=Hello%20Kovera%20Panipat%20Team%2C%20I%20need%20shift%20support%20today."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full sm:w-auto px-6 py-3.5 bg-[#18A999] hover:bg-[#128679] text-white font-bold text-sm rounded-xl transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]"
+                  className="w-full sm:w-auto px-6 py-3.5 bg-[#18A999] hover:bg-[#128679] text-white font-bold text-sm rounded-xl transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:ring-offset-2 focus-visible:outline-none"
                 >
                   <MessageCircle className="w-4 h-4" />
                   <span>WhatsApp Coordinator</span>
@@ -1909,7 +1922,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => goToWaitlist('business')}
-                  className="w-full sm:w-auto px-6 py-3.5 bg-white hover:bg-[#F7F8FC] text-[#302F80] border border-[#EEEFFC] font-bold text-sm rounded-xl transition shadow-2xs flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer"
+                  className="w-full sm:w-auto px-6 py-3.5 bg-white hover:bg-[#F7F8FC] text-[#302F80] border border-[#EEEFFC] font-bold text-sm rounded-xl transition shadow-2xs flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:ring-offset-2 focus-visible:outline-none"
                 >
                   <span>Open Intake Form</span>
                   <ArrowRight className="w-4 h-4" />
@@ -1999,7 +2012,7 @@ export default function App() {
                         onChange={(e) => handleBusinessChange('businessName', e.target.value)}
                         aria-invalid={businessErrors.businessName ? "true" : undefined}
                         aria-describedby={businessErrors.businessName ? "biz-name-error" : undefined}
-                        className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${businessErrors.businessName ? 'border border-red-400 focus:border-red-500 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:border-[#302F80]'}`}
+                        className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${businessErrors.businessName ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20'}`}
                       />
                       {businessErrors.businessName && (
                         <p id="biz-name-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
@@ -2018,7 +2031,7 @@ export default function App() {
                         onChange={(e) => handleBusinessChange('contactName', e.target.value)}
                         aria-invalid={businessErrors.contactName ? "true" : undefined}
                         aria-describedby={businessErrors.contactName ? "biz-contact-error" : undefined}
-                        className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${businessErrors.contactName ? 'border border-red-400 focus:border-red-500 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:border-[#302F80]'}`}
+                        className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${businessErrors.contactName ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20'}`}
                       />
                       {businessErrors.contactName && (
                         <p id="biz-contact-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
@@ -2029,7 +2042,7 @@ export default function App() {
 
                     <div>
                       <label htmlFor="biz-phone" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">Phone number</label>
-                      <div className={`flex rounded-xl transition overflow-hidden ${businessErrors.phone ? 'border border-red-400 focus-within:border-red-500 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus-within:border-[#302F80]'}`}>
+                      <div className={`flex rounded-xl transition overflow-hidden ${businessErrors.phone ? 'border border-red-400 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus-within:bg-white focus-within:border-[#302F80] focus-within:ring-2 focus-within:ring-[#302F80]/20'}`}>
                         <span className={`inline-flex items-center px-3.5 text-sm font-bold select-none border-r transition ${businessErrors.phone ? 'bg-red-100/50 text-red-700 border-red-300' : 'bg-[#EEEFFC] text-[#302F80] border-[#EEEFFC]'}`}>
                           +91
                         </span>
@@ -2062,7 +2075,7 @@ export default function App() {
                         placeholder="e.g. Model Town, Panipat"
                         value={businessForm.workLocation}
                         onChange={(e) => handleBusinessChange('workLocation', e.target.value)}
-                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#EEEFFC] focus:border-[#302F80] rounded-xl text-sm outline-none transition"
+                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20 rounded-xl text-sm outline-none transition"
                       />
                     </div>
 
@@ -2074,7 +2087,7 @@ export default function App() {
                         placeholder="Describe the task or shift timing"
                         value={businessForm.supportNeed}
                         onChange={(e) => handleBusinessChange('supportNeed', e.target.value)}
-                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#EEEFFC] focus:border-[#302F80] rounded-xl text-sm outline-none transition resize-none"
+                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20 rounded-xl text-sm outline-none transition resize-none"
                       />
                     </div>
 
@@ -2088,7 +2101,7 @@ export default function App() {
                     <button
                       type="submit"
                       disabled={isSubmittingBusiness}
-                      className="w-full py-4 bg-[#302F80] hover:bg-[#201F53] disabled:bg-[#302F80]/70 disabled:cursor-not-allowed text-white font-bold rounded-xl transition shadow-md mt-4 flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full py-4 bg-[#302F80] hover:bg-[#201F53] disabled:bg-[#302F80]/70 disabled:cursor-not-allowed text-white font-bold rounded-xl transition shadow-md mt-4 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:ring-offset-2 focus-visible:outline-none"
                     >
                       {isSubmittingBusiness ? (
                         <>
@@ -2131,7 +2144,7 @@ export default function App() {
                         onChange={(e) => handleWorkerChange('fullName', e.target.value)}
                         aria-invalid={workerErrors.fullName ? "true" : undefined}
                         aria-describedby={workerErrors.fullName ? "worker-name-error" : undefined}
-                        className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${workerErrors.fullName ? 'border border-red-400 focus:border-red-500 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:border-[#18A999]'}`}
+                        className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${workerErrors.fullName ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20'}`}
                       />
                       {workerErrors.fullName && (
                         <p id="worker-name-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
@@ -2142,7 +2155,7 @@ export default function App() {
 
                     <div>
                       <label htmlFor="worker-phone" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">Phone number</label>
-                      <div className={`flex rounded-xl transition overflow-hidden ${workerErrors.phone ? 'border border-red-400 focus-within:border-red-500 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus-within:border-[#18A999]'}`}>
+                      <div className={`flex rounded-xl transition overflow-hidden ${workerErrors.phone ? 'border border-red-400 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus-within:bg-white focus-within:border-[#18A999] focus-within:ring-2 focus-within:ring-[#18A999]/20'}`}>
                         <span className={`inline-flex items-center px-3.5 text-sm font-bold select-none border-r transition ${workerErrors.phone ? 'bg-red-100/50 text-red-700 border-red-300' : 'bg-[#E4F7F3] text-[#18A999] border-[#EEEFFC]'}`}>
                           +91
                         </span>
@@ -2177,7 +2190,7 @@ export default function App() {
                         onChange={(e) => handleWorkerChange('locality', e.target.value)}
                         aria-invalid={workerErrors.locality ? "true" : undefined}
                         aria-describedby={workerErrors.locality ? "worker-locality-error" : undefined}
-                        className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${workerErrors.locality ? 'border border-red-400 focus:border-red-500 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:border-[#18A999]'}`}
+                        className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${workerErrors.locality ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20'}`}
                       />
                       {workerErrors.locality && (
                         <p id="worker-locality-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
@@ -2194,7 +2207,7 @@ export default function App() {
                         placeholder="e.g. Student, retail greeting, cashier, shop help"
                         value={workerForm.experience}
                         onChange={(e) => handleWorkerChange('experience', e.target.value)}
-                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#EEEFFC] focus:border-[#18A999] rounded-xl text-sm outline-none transition"
+                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20 rounded-xl text-sm outline-none transition"
                       />
                     </div>
 
@@ -2206,7 +2219,7 @@ export default function App() {
                         placeholder="e.g. Weekday afternoons, weekends 4-8pm"
                         value={workerForm.availability}
                         onChange={(e) => handleWorkerChange('availability', e.target.value)}
-                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#EEEFFC] focus:border-[#18A999] rounded-xl text-sm outline-none transition"
+                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20 rounded-xl text-sm outline-none transition"
                       />
                     </div>
 
@@ -2220,7 +2233,7 @@ export default function App() {
                     <button
                       type="submit"
                       disabled={isSubmittingWorker}
-                      className="w-full py-4 bg-[#18A999] hover:bg-[#128679] disabled:bg-[#18A999]/70 disabled:cursor-not-allowed text-white font-bold rounded-xl transition shadow-md mt-4 flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full py-4 bg-[#18A999] hover:bg-[#128679] disabled:bg-[#18A999]/70 disabled:cursor-not-allowed text-white font-bold rounded-xl transition shadow-md mt-4 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:ring-offset-2 focus-visible:outline-none"
                     >
                       {isSubmittingWorker ? (
                         <>
@@ -2283,8 +2296,12 @@ export default function App() {
                   className="bg-[#F7F8FC] rounded-2xl border border-[#EEEFFC] overflow-hidden transition"
                 >
                   <button
+                    type="button"
+                    id={`faq-trigger-${idx}`}
+                    aria-expanded={expandedFaq === idx}
+                    aria-controls={`faq-panel-${idx}`}
                     onClick={() => toggleFaq(idx)}
-                    className="w-full p-6 text-left flex items-center justify-between gap-4 font-bold text-lg text-[#181A32] hover:text-[#302F80]"
+                    className="w-full p-6 text-left flex items-center justify-between gap-4 font-bold text-lg text-[#181A32] hover:text-[#302F80] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-2xl"
                   >
                     <span>{faq.q}</span>
                     {expandedFaq === idx ? (
@@ -2295,7 +2312,12 @@ export default function App() {
                   </button>
 
                   {expandedFaq === idx && (
-                    <div className="px-6 pb-6 text-base text-[#62677D] leading-relaxed border-t border-[#EEEFFC] pt-4">
+                    <div 
+                      id={`faq-panel-${idx}`}
+                      role="region"
+                      aria-labelledby={`faq-trigger-${idx}`}
+                      className="px-6 pb-6 text-base text-[#62677D] leading-relaxed border-t border-[#EEEFFC] pt-4"
+                    >
                       {faq.a}
                     </div>
                   )}
@@ -2338,13 +2360,13 @@ export default function App() {
             </div>
 
             <div className="flex flex-wrap items-center gap-6 text-sm text-[#D9DDF1]">
-              <button onClick={() => scrollToSection('shift-explorer')} className="hover:text-white transition cursor-pointer">Shift explorer</button>
-              <button onClick={() => scrollToSection('shift-calculator')} className="hover:text-white transition cursor-pointer">Rates &amp; ledger</button>
-              <button onClick={() => scrollToSection('coverage-zones')} className="hover:text-white transition cursor-pointer">Pilot zones</button>
-              <button onClick={() => scrollToSection('how-it-works')} className="hover:text-white transition cursor-pointer">How it works</button>
-              <button onClick={() => scrollToSection('roadmap')} className="hover:text-white transition cursor-pointer">Roadmap</button>
-              <button onClick={() => scrollToSection('trust')} className="hover:text-white transition cursor-pointer">Our approach</button>
-              <button onClick={() => goToWaitlist('business')} className="text-white font-bold hover:text-[#18A999] transition cursor-pointer flex items-center gap-1.5 active:scale-[0.98]">
+              <button onClick={() => scrollToSection('shift-explorer')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Shift explorer</button>
+              <button onClick={() => scrollToSection('shift-calculator')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Rates &amp; ledger</button>
+              <button onClick={() => scrollToSection('coverage-zones')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Pilot zones</button>
+              <button onClick={() => scrollToSection('how-it-works')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">How it works</button>
+              <button onClick={() => scrollToSection('roadmap')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Roadmap</button>
+              <button onClick={() => scrollToSection('trust')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Our approach</button>
+              <button onClick={() => goToWaitlist('business')} className="text-white font-bold hover:text-[#18A999] transition cursor-pointer flex items-center gap-1.5 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none rounded-lg px-2 py-1">
                 <span>Register interest</span>
                 <ArrowRight className="w-3.5 h-3.5 text-[#18A999]" />
               </button>

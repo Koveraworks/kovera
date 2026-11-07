@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   ArrowRight, 
   CheckCircle2, 
@@ -28,6 +28,7 @@ import koveraLogo from './assets/kovera-logo.webp';
 
 export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const headerRef = useRef(null);
   const [activeFormTab, setActiveFormTab] = useState('business'); // 'business', 'worker', 'both'
   const [expandedFaq, setExpandedFaq] = useState(null);
 
@@ -489,6 +490,27 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close mobile navigation drawer on outside click/tap or Escape key
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const handleClickOutside = (e) => {
+      if (headerRef.current && !headerRef.current.contains(e.target)) {
+        setMobileMenuOpen(false);
+      }
+    };
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setMobileMenuOpen(false);
+      }
+    };
+    document.addEventListener('pointerdown', handleClickOutside);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', handleClickOutside);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [mobileMenuOpen]);
+
   const toggleFaq = (index) => {
     setExpandedFaq(expandedFaq === index ? null : index);
   };
@@ -544,17 +566,21 @@ export default function App() {
       )}
 
       {/* 01 — Navigation Header */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#EEEFFC]/80 shadow-xs relative">
+      <header ref={headerRef} className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#EEEFFC]/80 shadow-xs relative">
         {/* Scroll Progress Indicator */}
         <div 
           className="absolute bottom-0 left-0 h-[2.5px] bg-gradient-to-r from-[#302F80] via-[#18A999] to-[#F4B86A] transition-all duration-75"
           style={{ width: `${scrollProgress}%` }}
           aria-hidden="true"
         />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12 xl:px-16 h-20 flex items-center justify-between">
           
           {/* Logo with official Kovera Emblem */}
-          <a href="#" className="flex items-center gap-2.5 group rounded-xl focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none p-1">
+          <a 
+            href="#" 
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-2.5 group rounded-xl focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none p-1"
+          >
             <div className="w-10 h-10 rounded-xl bg-white border border-[#EEEFFC] p-1 shadow-xs group-hover:border-[#302F80]/30 transition flex items-center justify-center overflow-hidden">
               <img 
                 src={koveraLogo} 
@@ -571,25 +597,24 @@ export default function App() {
           </a>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden lg:flex items-center gap-6 text-sm font-semibold text-[#181A32]">
-            <button onClick={() => scrollToSection('shift-explorer')} className="hover:text-[#18A999] transition flex items-center gap-1.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2 py-1">
-              <span>Shift Explorer</span>
-              <span className="text-xs font-bold uppercase tracking-wider bg-[#E4F7F3] text-[#0E6E63] px-1.5 py-0.5 rounded-full">New</span>
+          <nav className="hidden lg:flex items-center gap-7 xl:gap-9 text-sm font-semibold text-[#181A32]">
+            <button onClick={() => scrollToSection('shift-explorer')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
+              Shifts
             </button>
-            <button onClick={() => scrollToSection('shift-calculator')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2 py-1">
-              Rates &amp; Ledger
+            <button onClick={() => scrollToSection('shift-calculator')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
+              Rates
             </button>
-            <button onClick={() => scrollToSection('coverage-zones')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2 py-1">
-              Pilot Zones
+            <button onClick={() => scrollToSection('coverage-zones')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
+              Zones
             </button>
-            <button onClick={() => scrollToSection('how-it-works')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2 py-1">
+            <button onClick={() => scrollToSection('how-it-works')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
               How it works
             </button>
-            <button onClick={() => scrollToSection('roadmap')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2 py-1">
+            <button onClick={() => scrollToSection('roadmap')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
               Roadmap
             </button>
-            <button onClick={() => scrollToSection('trust')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2 py-1">
-              Our approach
+            <button onClick={() => scrollToSection('trust')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
+              Approach
             </button>
           </nav>
 
@@ -620,51 +645,57 @@ export default function App() {
           </button>
         </div>
 
+        {/* Mobile Navigation Backdrop Overlay */}
+        {mobileMenuOpen && (
+          <div 
+            className="fixed inset-0 top-20 bg-black/40 backdrop-blur-xs z-30 lg:hidden transition-opacity duration-200"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
+          />
+        )}
+
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div id="mobile-nav-drawer" className="lg:hidden bg-white border-b border-[#EEEFFC] px-5 pt-3 pb-6 space-y-2 shadow-xl animate-slide-down">
+          <div 
+            id="mobile-nav-drawer" 
+            className="relative z-40 lg:hidden bg-white border-b border-[#EEEFFC] px-6 pt-3 pb-6 space-y-1.5 shadow-2xl animate-slide-down"
+          >
             <button 
               onClick={() => scrollToSection('shift-explorer')} 
-              className="block w-full text-left px-3 py-2.5 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl flex items-center justify-between"
+              className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl flex items-center justify-between"
             >
-              <span>Shift Explorer</span>
-              <span className="text-xs font-bold uppercase tracking-wider bg-[#E4F7F3] text-[#0E6E63] px-1.5 py-0.5 rounded-full">New</span>
+              <span>Shifts</span>
+              <span className="text-xs font-bold uppercase tracking-wider bg-[#E4F7F3] text-[#0E6E63] px-2 py-0.5 rounded-full">Explore</span>
             </button>
             <button 
               onClick={() => scrollToSection('shift-calculator')} 
-              className="block w-full text-left px-3 py-2.5 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
+              className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
             >
-              Rates &amp; Ledger
+              Rates
             </button>
             <button 
               onClick={() => scrollToSection('coverage-zones')} 
-              className="block w-full text-left px-3 py-2.5 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
+              className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
             >
-              Pilot Zones (Panipat)
-            </button>
-            <button 
-              onClick={() => scrollToSection('marketplace')} 
-              className="block w-full text-left px-3 py-2.5 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
-            >
-              For businesses &amp; workers
+              Zones
             </button>
             <button 
               onClick={() => scrollToSection('how-it-works')} 
-              className="block w-full text-left px-3 py-2.5 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
+              className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
             >
               How it works
             </button>
             <button 
               onClick={() => scrollToSection('roadmap')} 
-              className="block w-full text-left px-3 py-2.5 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
+              className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
             >
-              Roadmap (Pilot to Grid)
+              Roadmap
             </button>
             <button 
               onClick={() => scrollToSection('trust')} 
-              className="block w-full text-left px-3 py-2.5 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
+              className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] rounded-xl"
             >
-              Our approach
+              Approach
             </button>
             <button 
               onClick={() => goToWaitlist('business')}
@@ -2362,12 +2393,12 @@ export default function App() {
             </div>
 
             <div className="flex flex-wrap items-center gap-6 text-sm text-[#D9DDF1]">
-              <button onClick={() => scrollToSection('shift-explorer')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Shift explorer</button>
-              <button onClick={() => scrollToSection('shift-calculator')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Rates &amp; ledger</button>
-              <button onClick={() => scrollToSection('coverage-zones')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Pilot zones</button>
+              <button onClick={() => scrollToSection('shift-explorer')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Shifts</button>
+              <button onClick={() => scrollToSection('shift-calculator')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Rates</button>
+              <button onClick={() => scrollToSection('coverage-zones')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Zones</button>
               <button onClick={() => scrollToSection('how-it-works')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">How it works</button>
               <button onClick={() => scrollToSection('roadmap')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Roadmap</button>
-              <button onClick={() => scrollToSection('trust')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Our approach</button>
+              <button onClick={() => scrollToSection('trust')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Approach</button>
               <button onClick={() => goToWaitlist('business')} className="text-white font-bold hover:text-[#18A999] transition cursor-pointer flex items-center gap-1.5 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none rounded-lg px-2 py-1">
                 <span>Register interest</span>
                 <ArrowRight className="w-3.5 h-3.5 text-[#18A999]" />

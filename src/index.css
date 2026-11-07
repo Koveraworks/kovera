@@ -67,15 +67,25 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Custom keyframes & micro-interactions */
+/* Authoritative Motion System */
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.97); }
+  from { opacity: 0; transform: scale(0.985); }
   to { opacity: 1; transform: scale(1); }
 }
 
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
+  from { opacity: 0; transform: translateY(-8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dispatchArrival {
+  from { opacity: 0; transform: translateY(6px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes valuePop {
+  0% { opacity: 0.75; transform: scale(0.97); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
 @keyframes floatGentle {
@@ -88,22 +98,82 @@ html {
   50% { opacity: 0.8; transform: scale(1.04); }
 }
 
+@keyframes beaconPulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.15); opacity: 0.5; }
+}
+
 .animate-fade-in {
-  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-slide-down {
   animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.animate-dispatch-arrival {
+  animation: dispatchArrival 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-value-pop {
+  animation: valuePop 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 .animate-float {
-  animation: floatGentle 5s ease-in-out infinite;
+  animation: floatGentle 6s ease-in-out infinite;
 }
 
 .animate-float-delayed {
-  animation: floatGentle 5.5s ease-in-out 1.5s infinite;
+  animation: floatGentle 6.5s ease-in-out 2s infinite;
 }
 
 .animate-pulse-glow {
   animation: pulseGlow 4s ease-in-out infinite;
+}
+
+.animate-beacon {
+  animation: beaconPulse 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+/* Accordion Smooth Grid Transition */
+.accordion-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.accordion-panel[data-expanded="true"] {
+  grid-template-rows: 1fr;
+}
+
+.accordion-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Accessibility: Full reduced-motion safeguard */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .animate-pulse,
+  .animate-ping,
+  .animate-float,
+  .animate-float-delayed,
+  .animate-pulse-glow,
+  .animate-beacon,
+  .animate-dispatch-arrival,
+  .animate-value-pop,
+  .animate-fade-in,
+  .animate-slide-down {
+    animation: none !important;
+  }
+
+  .accordion-panel {
+    transition: none !important;
+  }
 }

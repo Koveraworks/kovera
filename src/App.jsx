@@ -3,7 +3,6 @@ import {
   ArrowRight, 
   CheckCircle2, 
   ChevronDown, 
-  ChevronUp, 
   MapPin, 
   Menu, 
   X, 
@@ -682,8 +681,8 @@ export default function App() {
         <section className="relative pt-16 pb-24 md:pt-20 md:pb-32 overflow-hidden bg-gradient-to-b from-[#F7F8FC] via-white to-[#F7F8FC]">
           
           {/* Subtle Ambient Background Gradients */}
-          <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-[#E4F7F3]/50 rounded-full blur-3xl -z-10 pointer-events-none" />
-          <div className="absolute top-40 right-10 w-[500px] h-[500px] bg-[#EEEFFC]/70 rounded-full blur-3xl -z-10 pointer-events-none" />
+          <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-[#E4F7F3]/50 rounded-full blur-3xl -z-10 pointer-events-none animate-float" />
+          <div className="absolute top-40 right-10 w-[500px] h-[500px] bg-[#EEEFFC]/70 rounded-full blur-3xl -z-10 pointer-events-none animate-float-delayed" />
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
@@ -793,7 +792,7 @@ export default function App() {
                   </div>
 
                   {/* The Match Anatomy (Dual-Sided Symmetry with smooth keyframe) */}
-                  <div key={activeDispatchScenario} className="mt-3 space-y-3 animate-fade-in">
+                  <div key={activeDispatchScenario} className="mt-3 space-y-3 animate-dispatch-arrival">
                     
                     {/* Merchant Side (Civic Indigo) */}
                     <div className="bg-[#EEEFFC] rounded-2xl p-4 border border-[#302F80]/15">
@@ -1027,7 +1026,7 @@ export default function App() {
               <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
                 
                 {/* Left Detail */}
-                <div className="md:col-span-7">
+                <div key={selectedRole} className="md:col-span-7 animate-dispatch-arrival">
                   <div className="flex items-center gap-3.5 mb-4">
                     <div className="w-12 h-12 rounded-2xl bg-[#EEEFFC] text-[#302F80] flex items-center justify-center shrink-0 shadow-2xs">
                       <CurrentRoleIcon className="w-6 h-6" />
@@ -1313,7 +1312,7 @@ export default function App() {
                       <>
                         <div className="mb-4">
                           <span className="text-xs text-[#62677D] block mb-1">Worker Direct Compensation ({calcDuration} Hours)</span>
-                          <p className="text-3xl font-black text-[#181A32] tabular-nums">
+                          <p key={`biz-total-${calcRole}-${calcDuration}`} className="text-3xl font-black text-[#181A32] tabular-nums animate-value-pop">
                             ₹{calculatorRates[calcRole].minPay * calcDuration} – ₹{calculatorRates[calcRole].maxPay * calcDuration}
                           </p>
                           <span className="text-xs text-[#62677D] mt-1 block">
@@ -1351,7 +1350,7 @@ export default function App() {
                           <span className="text-xs text-[#62677D] block mb-1">
                             Estimated Monthly Supplementary Income
                           </span>
-                          <p className="text-3xl font-black text-[#18A999] tabular-nums">
+                          <p key={`worker-total-${calcRole}-${calcWeeklyShifts}`} className="text-3xl font-black text-[#18A999] tabular-nums animate-value-pop">
                             ₹{calculatorRates[calcRole].minPay * 4 * calcWeeklyShifts * 4} – ₹{calculatorRates[calcRole].maxPay * 4 * calcWeeklyShifts * 4}
                           </p>
                           <span className="text-xs text-[#62677D] mt-1 block">
@@ -1362,13 +1361,13 @@ export default function App() {
                         <div className="space-y-2.5 py-4 border-y border-[#EEEFFC] text-xs">
                           <div className="flex items-center justify-between">
                             <span className="text-[#62677D]">Per-Shift Take Home:</span>
-                            <span className="font-bold text-[#181A32] tabular-nums">
+                            <span key={`takehome-${calcRole}`} className="font-bold text-[#181A32] tabular-nums animate-value-pop">
                               ₹{calculatorRates[calcRole].minPay * 4} – ₹{calculatorRates[calcRole].maxPay * 4}
                             </span>
                           </div>
                           <div className="flex items-center justify-between">
                             <span className="text-[#62677D]">Weekly Payout:</span>
-                            <span className="font-extrabold text-[#18A999] tabular-nums">
+                            <span key={`weekly-${calcRole}-${calcWeeklyShifts}`} className="font-extrabold text-[#18A999] tabular-nums animate-value-pop">
                               ₹{calculatorRates[calcRole].minPay * 4 * calcWeeklyShifts} – ₹{calculatorRates[calcRole].maxPay * 4 * calcWeeklyShifts}
                             </span>
                           </div>
@@ -1448,7 +1447,7 @@ export default function App() {
               const activeZoneData = pilotZones.find(z => z.id === selectedZone) || pilotZones[0];
               const ActiveIcon = activeZoneData.icon;
               return (
-                <div className="max-w-4xl mx-auto bg-white rounded-3xl p-6 sm:p-10 border border-[#EEEFFC] shadow-xl animate-fade-in">
+                <div key={selectedZone} className="max-w-4xl mx-auto bg-white rounded-3xl p-6 sm:p-10 border border-[#EEEFFC] shadow-xl animate-dispatch-arrival">
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                     <div className="md:col-span-7">
                       <div className="flex items-center gap-2 mb-3">
@@ -1990,7 +1989,7 @@ export default function App() {
               
               {/* Business Form */}
               {(activeFormTab === 'both' || activeFormTab === 'business') && (
-                <div className="bg-white rounded-3xl p-6 sm:p-8 md:p-10 border border-[#EEEFFC] shadow-lg animate-fade-in">
+                <div className="bg-white rounded-3xl p-6 sm:p-8 md:p-10 border border-[#EEEFFC] shadow-lg animate-dispatch-arrival">
                   <div className="flex items-center justify-between mb-6">
                     <span className="px-3 py-1 bg-[#EEEFFC] text-[#302F80] text-xs font-bold rounded-full">
                       BUSINESS WAITLIST
@@ -2122,7 +2121,7 @@ export default function App() {
 
               {/* Worker Form */}
               {(activeFormTab === 'both' || activeFormTab === 'worker') && (
-                <div className="bg-white rounded-3xl p-6 sm:p-8 md:p-10 border border-[#EEEFFC] shadow-lg animate-fade-in">
+                <div className="bg-white rounded-3xl p-6 sm:p-8 md:p-10 border border-[#EEEFFC] shadow-lg animate-dispatch-arrival">
                   <div className="flex items-center justify-between mb-6">
                     <span className="px-3 py-1 bg-[#E4F7F3] text-[#18A999] text-xs font-bold rounded-full">
                       WORKER WAITLIST
@@ -2304,23 +2303,26 @@ export default function App() {
                     className="w-full p-6 text-left flex items-center justify-between gap-4 font-bold text-lg text-[#181A32] hover:text-[#302F80] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-2xl"
                   >
                     <span>{faq.q}</span>
-                    {expandedFaq === idx ? (
-                      <ChevronUp className="w-5 h-5 text-[#18A999] shrink-0" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5 text-[#62677D] shrink-0" />
-                    )}
+                    <ChevronDown 
+                      className={`w-5 h-5 shrink-0 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                        expandedFaq === idx ? 'rotate-180 text-[#18A999]' : 'rotate-0 text-[#62677D]'
+                      }`} 
+                    />
                   </button>
 
-                  {expandedFaq === idx && (
-                    <div 
-                      id={`faq-panel-${idx}`}
-                      role="region"
-                      aria-labelledby={`faq-trigger-${idx}`}
-                      className="px-6 pb-6 text-base text-[#62677D] leading-relaxed border-t border-[#EEEFFC] pt-4"
-                    >
-                      {faq.a}
+                  <div 
+                    id={`faq-panel-${idx}`}
+                    role="region"
+                    aria-labelledby={`faq-trigger-${idx}`}
+                    data-expanded={expandedFaq === idx}
+                    className="accordion-panel"
+                  >
+                    <div className="accordion-inner">
+                      <div className="px-6 pb-6 text-base text-[#62677D] leading-relaxed border-t border-[#EEEFFC] pt-4">
+                        {faq.a}
+                      </div>
                     </div>
-                  )}
+                  </div>
                 </div>
               ))}
             </div>

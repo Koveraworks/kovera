@@ -23,6 +23,20 @@ const REQUIRED = {
 // them filled in whenever the visitor knows them.
 const UNLABELLED = ['state', 'locality'];
 
+// The database refuses longer text (supabase/schema.sql, section 6). Its caps
+// are higher than these, because what is saved also carries the picked
+// category in front and joins area, city and state into one field.
+const MAX_LENGTH = {
+  businessName: 100,
+  contactName: 60,
+  fullName: 60,
+  city: 60,
+  state: 60,
+  locality: 100,
+  supportNeed: 800,
+  experience: 300,
+};
+
 const AVAILABILITY_KEYS = ['weekdayMornings', 'weekdayAfternoons', 'weekends'];
 
 // What is saved is always English, whichever language the visitor reads in,
@@ -201,6 +215,7 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
       id,
       value: form[field],
       placeholder: s.fields[field].placeholder,
+      maxLength: MAX_LENGTH[field],
       onChange: field === 'phone' ? handlePhoneChange : (e) => setField(field, e.target.value),
       onBlur: required ? () => checkOnBlur(field) : undefined,
       'aria-required': required ? 'true' : undefined,

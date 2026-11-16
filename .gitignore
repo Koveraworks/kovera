@@ -19,6 +19,8 @@ dist-ssr
 *.env
 *.pem
 *.key
+# Local notes holding Supabase keys (includes a secret key)
+supabase.txt
 
 # Editor directories and files
 .vscode/*

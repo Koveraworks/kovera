@@ -67,7 +67,7 @@ export default function ShiftsRates({ onJoin }) {
         ]}
       />
 
-      <Card className="mx-auto max-w-5xl">
+      <Card className="mx-auto max-w-6xl">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8 lg:gap-12">
           {/* Choices */}
           <div className="min-w-0 space-y-6">

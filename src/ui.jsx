@@ -87,7 +87,7 @@ const BUTTON_VARIANTS = {
 
 const BUTTON_SIZES = {
   md: 'px-5 py-2.5',
-  lg: 'px-8 py-4',
+  lg: 'px-7 py-3.5 lg:px-8 lg:py-4',
 };
 
 /**

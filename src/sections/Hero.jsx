@@ -48,11 +48,11 @@ export default function Hero({ onJoin }) {
 
         <div className="mt-6 grid grid-cols-1 gap-10 items-start lg:mt-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
           <div className="min-w-0">
-            <p className="max-w-2xl text-base sm:text-lg leading-relaxed text-body break-words">
+            <p className="max-w-2xl text-base sm:text-lg lg:text-xl leading-relaxed lg:leading-relaxed text-body break-words">
               {s.intro}
             </p>
 
-            <div className="mt-7 flex flex-col sm:flex-row sm:flex-wrap gap-3">
+            <div className="mt-7 flex flex-col sm:flex-row sm:flex-wrap gap-3 lg:mt-10 lg:gap-4">
               <Button variant="biz" size="lg" className="w-full sm:w-auto" onClick={() => onJoin('business')}>
                 {c.cta.needWorkers}
                 <ArrowRight className="w-5 h-5 shrink-0" aria-hidden="true" />
@@ -63,17 +63,24 @@ export default function Hero({ onJoin }) {
               </Button>
             </div>
 
-            <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-body">
-              <li className="flex items-start gap-1.5 min-w-0">
-                <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5 text-biz" aria-hidden="true" />
+            {/* A wrapping row on phones and tablets; a stacked list with icon tiles on desktop. */}
+            <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-body lg:mt-12 lg:flex-col lg:gap-4 lg:border-t lg:border-line lg:pt-8 lg:text-base lg:text-ink">
+              <li className="flex items-start gap-1.5 min-w-0 lg:items-center lg:gap-3">
+                <span className="shrink-0 mt-0.5 text-biz lg:mt-0 lg:flex lg:h-10 lg:w-10 lg:items-center lg:justify-center lg:rounded-xl lg:bg-biz-pale">
+                  <ShieldCheck className="w-4 h-4 lg:w-5 lg:h-5" aria-hidden="true" />
+                </span>
                 <span className="break-words">{s.trust.adults}</span>
               </li>
-              <li className="flex items-start gap-1.5 min-w-0">
-                <BadgeIndianRupee className="w-4 h-4 shrink-0 mt-0.5 text-worker-bright" aria-hidden="true" />
+              <li className="flex items-start gap-1.5 min-w-0 lg:items-center lg:gap-3">
+                <span className="shrink-0 mt-0.5 text-worker-bright lg:mt-0 lg:flex lg:h-10 lg:w-10 lg:items-center lg:justify-center lg:rounded-xl lg:bg-worker-pale lg:text-worker">
+                  <BadgeIndianRupee className="w-4 h-4 lg:w-5 lg:h-5" aria-hidden="true" />
+                </span>
                 <span className="break-words">{s.trust.zeroFee}</span>
               </li>
-              <li className="flex items-start gap-1.5 min-w-0">
-                <Sun className="w-4 h-4 shrink-0 mt-0.5 text-biz" aria-hidden="true" />
+              <li className="flex items-start gap-1.5 min-w-0 lg:items-center lg:gap-3">
+                <span className="shrink-0 mt-0.5 text-biz lg:mt-0 lg:flex lg:h-10 lg:w-10 lg:items-center lg:justify-center lg:rounded-xl lg:bg-biz-pale">
+                  <Sun className="w-4 h-4 lg:w-5 lg:h-5" aria-hidden="true" />
+                </span>
                 <span className="break-words">{s.trust.daytime}</span>
               </li>
             </ul>

@@ -25,7 +25,7 @@ export default function ContactBand() {
           </div>
 
           <div className="flex min-w-0 max-w-full flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <Button href={whatsappUrl(c.whatsappMessage)} target="_blank" rel="noopener noreferrer">
+            <Button href={whatsappUrl(c.whatsapp.urgent)} target="_blank" rel="noopener noreferrer">
               <WhatsAppIcon className="h-5 w-5" />
               {s.whatsapp}
             </Button>

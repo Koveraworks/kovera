@@ -120,13 +120,18 @@ export default function ShiftsRates({ onJoin }) {
 
           {/* Result */}
           <div className="min-w-0 border-t border-line pt-6 md:border-t-0 md:pt-0 md:border-l md:border-line md:pl-8">
+            {/* The block below is replaced on every choice; this line stays mounted so
+                screen readers hear the new figure instead of just "pressed". */}
+            <p className="sr-only" aria-live="polite">
+              {c.categories[category]}. {isBusiness ? fmt(s.bizEstimateLabel, { n: hours }) : s.workerEstimateLabel}: {estimate}
+            </p>
             <div key={resultKey} className="animate-swap space-y-5">
               <div>
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <h3 className="min-w-0 break-words text-xl font-bold text-ink">{c.categories[category]}</h3>
                   <Pill tone={tone}>{c.zeroFee}</Pill>
                 </div>
-                <p className="mt-2 text-base text-body">{s.work[category]}</p>
+                <p className="mt-2 text-base text-body">{s.work[category]} {s.limits[category]}</p>
                 <dl className="mt-2">
                   <Fact label={s.typicalHoursLabel}>{s.typicalHours[category]}</Fact>
                 </dl>
@@ -163,7 +168,7 @@ export default function ShiftsRates({ onJoin }) {
               <div>
                 <p className="mb-2 text-sm font-semibold text-ink">{s.safetyLabel}</p>
                 <ul className="space-y-2.5 text-ink">
-                  {s.safety[category].map((point) => (
+                  {s.safety.map((point) => (
                     <CheckItem key={point} tone={tone}>{point}</CheckItem>
                   ))}
                 </ul>
@@ -181,7 +186,7 @@ export default function ShiftsRates({ onJoin }) {
                     <ArrowRight className="w-5 h-5 shrink-0" aria-hidden="true" />
                   </Button>
                 )}
-                <p className="mt-3 text-xs text-body">{c.exampleRateNote}</p>
+                <p className="mt-3 text-sm text-body">{c.exampleRateNote}</p>
               </div>
             </div>
           </div>

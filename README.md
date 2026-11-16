@@ -1,6 +1,6 @@
 # Kovera Web App
 
-Landing page & lead network for Kovera — connecting local businesses looking for short-term support with ready-to-work individuals in Panipat, Haryana.
+Landing page & lead network for Kovera — connecting local businesses looking for short-term support with ready-to-work individuals, starting in Panipat, Haryana. The site is in English (India) and Hindi.
 
 Built with **React 19**, **Vite**, and **Tailwind CSS**, integrated with **Supabase** for PostgreSQL backend/waitlist data, and deployed for **100% free** on **Cloudflare Pages** (or **GitHub Pages**).
 
@@ -31,7 +31,7 @@ Built with **React 19**, **Vite**, and **Tailwind CSS**, integrated with **Supab
    ```bash
    cp .env.example .env
    ```
-   Fill in your Supabase credentials. *(If omitted, the app will run in fallback mock mode without throwing errors).*
+   Fill in your Supabase credentials. *(If omitted, local development runs in fallback mock mode. In a production build, with no database configured the forms show an error instead of pretending to save).*
 
 3. **Start local development server**:
    ```bash
@@ -43,6 +43,44 @@ Built with **React 19**, **Vite**, and **Tailwind CSS**, integrated with **Supab
    npm run lint
    npm run build
    ```
+
+5. **Check the translations** (English and Hindi strings must have the same shape):
+   ```bash
+   node scripts/check-i18n.mjs
+   ```
+
+---
+
+## Project Structure
+
+```
+src/
+  App.jsx            Page order and the floating WhatsApp button
+  index.css          Design tokens (@theme), global focus, Hindi type rules, motion
+  ui.jsx             Shared primitives: Section, Card, Button, Pill, Choice, Segmented, ...
+  sections/*.jsx     One file per page section (Header, Hero, ContactBand, Waitlist,
+                     Problem, ShiftsRates, Areas, TwoSides, HowItWorks, Trust, Faq, Footer)
+  i18n/              Language provider and hook; strings/<section>.js hold the text
+  lib/               Helpers (phone.js normalises phone numbers, supabase.js, contact.js)
+  components/        Logo and WhatsApp icon
+scripts/check-i18n.mjs   Checks that en and hi strings have identical shapes
+supabase/schema.sql      Database schema and RLS policies
+```
+
+Page order: header, hero (with the example match card), WhatsApp/call band, waitlist form, "a 4-hour problem", shifts & rates, areas, for businesses / for workers, how it works, approach, questions, footer.
+
+Styling uses the colour tokens in `src/index.css` (`bg-biz`, `text-worker`, `border-line`, ...) rather than hex values. Indigo is the business side, cyan the worker side. See `DESIGN.md`.
+
+---
+
+## Languages and Text
+
+The site is in English (India) and Hindi. Visitors switch from the header; the choice is remembered in `localStorage` (`kovera-lang`), and Hindi is the default when the browser language is Hindi.
+
+- All text lives in `src/i18n/strings/<section>.js`, each file exporting `{ en, hi }` with identical shapes.
+- To change text, edit both `en` and `hi` in the matching file. To add text, add the same key to both, then read it in the section with `useStrings('<section>')`.
+- Run `node scripts/check-i18n.mjs` to check the shapes match. A missing Hindi value falls back to English at runtime.
+- What the forms save to the database stays in English whichever language is shown.
 
 ---
 

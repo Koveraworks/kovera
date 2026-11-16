@@ -19,19 +19,24 @@ import Footer from './sections/Footer.jsx';
 
 function Site() {
   const c = useStrings('common');
-  const h = useStrings('header');
 
   // Which form is open (null = the visitor has not chosen yet) and what they
   // picked further down the page, as ids: { side, category, hours, shiftsPerWeek }.
   const [side, setSide] = useState(null);
   const [context, setContext] = useState(null);
+  const [joinCount, setJoinCount] = useState(0);
   const waitlistHeadingRef = useRef(null);
 
   /** Every "join" button on the page lands here. */
   const onJoin = useCallback((nextSide, nextContext) => {
-    if (nextSide) setSide(nextSide);
-    if (nextSide && nextContext) setContext({ ...nextContext, side: nextSide });
-    document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
+    if (nextSide) {
+      setSide(nextSide);
+      // A plain "join" clears any earlier pick, so nothing stale is saved with the form.
+      setContext(nextContext ? { ...nextContext, side: nextSide } : null);
+    }
+    setJoinCount((n) => n + 1);
+    // Smooth or instant is decided by CSS, which respects reduced motion.
+    document.getElementById('waitlist')?.scrollIntoView();
     // Keyboard and screen-reader users are taken there too.
     waitlistHeadingRef.current?.focus({ preventScroll: true });
   }, []);
@@ -45,8 +50,9 @@ function Site() {
   useEffect(() => {
     const region = topRegionRef.current;
     if (!region || typeof IntersectionObserver === 'undefined') return undefined;
-    const observer = new IntersectionObserver(([entry]) => {
-      setFabVisible(!entry.isIntersecting);
+    const observer = new IntersectionObserver((entries) => {
+      // Several entries can arrive at once; the last one is the current state.
+      setFabVisible(!entries[entries.length - 1].isIntersecting);
     });
     observer.observe(region);
     return () => observer.disconnect();
@@ -66,6 +72,7 @@ function Site() {
             context={context}
             onClearContext={() => setContext(null)}
             headingRef={waitlistHeadingRef}
+            joinCount={joinCount}
           />
         </div>
         <Problem />
@@ -80,10 +87,10 @@ function Site() {
       <Footer onJoin={onJoin} />
 
       <a
-        href={whatsappUrl(c.whatsappMessage)}
+        href={whatsappUrl(c.whatsapp.question)}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label={h.fab}
+        aria-label={c.cta.whatsapp}
         inert={!fabVisible}
         className={cx(
           'fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-30 inline-flex h-14 min-w-14 items-center justify-center gap-2 rounded-full bg-biz px-4 text-base font-semibold text-white shadow-lg transition-opacity duration-200 hover:bg-biz-dark sm:px-5',

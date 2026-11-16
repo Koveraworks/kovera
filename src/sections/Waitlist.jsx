@@ -5,7 +5,7 @@ import { Button, Card, Choice, Segmented } from '../ui.jsx';
 import { fmt, getStrings, useStrings } from '../i18n/index.js';
 import { whatsappUrl } from '../lib/contact.js';
 import { cx } from '../lib/cx.js';
-import { formatPhone, isValidIndianMobile } from '../lib/phone.js';
+import { caretAfterDigits, digitsBefore, formatPhone, isValidIndianMobile } from '../lib/phone.js';
 import { submitBusinessRegistration, submitWorkerRegistration } from '../lib/supabase.js';
 
 const EMPTY = {
@@ -62,21 +62,35 @@ function Field({ id, label, optionalText, hint, error, children }) {
   );
 }
 
-export default function Waitlist({ side, onSideChange, context, onClearContext, headingRef }) {
+export default function Waitlist({ side, onSideChange, context, onClearContext, headingRef, joinCount }) {
   const s = useStrings('waitlist');
   const c = useStrings('common');
 
   const [values, setValues] = useState(EMPTY);
   const [errors, setErrors] = useState({ business: {}, worker: {} });
-  const [submitting, setSubmitting] = useState(false);
-  const [failed, setFailed] = useState(false);
+  // Which side is sending / failed to send, so one form's state never shows on the other.
+  const [submittingSide, setSubmittingSide] = useState(null);
+  const [failedSide, setFailedSide] = useState(null);
   const [done, setDone] = useState(null);
   const doneRef = useRef(null);
+  const formHeadingRef = useRef(null);
+  const returnToForm = useRef(false);
 
   // After a successful submit, move focus to the confirmation so it is announced.
   useEffect(() => {
     if (done) doneRef.current?.focus();
   }, [done]);
+
+  // "Add another response" removes the button that had focus: hand focus to the form.
+  useEffect(() => {
+    if (!done && returnToForm.current) {
+      returnToForm.current = false;
+      formHeadingRef.current?.focus();
+    }
+  }, [done]);
+
+  const submitting = submittingSide === side;
+  const failed = failedSide === side;
 
   const form = side ? values[side] : null;
   const formErrors = side ? errors[side] : {};
@@ -86,7 +100,7 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
     if (formErrors[field]) {
       setErrors((prev) => ({ ...prev, [side]: { ...prev[side], [field]: false } }));
     }
-    if (failed) setFailed(false);
+    if (failed) setFailedSide(null);
   };
 
   // Check a required field as soon as the visitor leaves it with something typed.
@@ -114,8 +128,9 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
       return;
     }
 
-    setSubmitting(true);
-    setFailed(false);
+    const sentSide = side;
+    setSubmittingSide(sentSide);
+    setFailedSide(null);
     try {
       const place = joinParts([form.locality, form.city, form.state], ', ');
       const phone = formatPhone(form.phone);
@@ -140,22 +155,37 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
           phone,
           locality: place,
           experience: joinParts([savedContext('worker', context), form.experience], ' '),
-          availability: joinParts([...form.availability.map((key) => SAVED_WAITLIST.availabilityOptions[key]), shifts], ', '),
+          // Listed in a fixed order, not click order, so identical answers save identically.
+          availability: joinParts([...AVAILABILITY_KEYS.filter((key) => form.availability.includes(key)).map((key) => SAVED_WAITLIST.availabilityOptions[key]), shifts], ', '),
         });
       }
       // Without a database nothing was saved. Only a local preview may pretend otherwise.
       if (result?.mock && !import.meta.env.DEV) {
         throw new Error('Supabase is not configured, so the registration was not saved.');
       }
-      setDone({ side, name, business: side === 'business' ? form.businessName.trim() : null, place, phone, mock: Boolean(result?.mock) });
-      setValues((prev) => ({ ...prev, [side]: EMPTY[side] }));
-      onClearContext();
+      setDone({ side: sentSide, joinCount, name, business: sentSide === 'business' ? form.businessName.trim() : null, place, phone, mock: Boolean(result?.mock) });
+      setValues((prev) => ({ ...prev, [sentSide]: EMPTY[sentSide] }));
+      if (context?.side === sentSide) onClearContext();
     } catch (err) {
       console.error(err);
-      setFailed(true);
+      setFailedSide(sentSide);
     } finally {
-      setSubmitting(false);
+      setSubmittingSide(null);
     }
+  };
+
+  // Re-formatting the number would otherwise throw the caret to the end,
+  // which makes fixing one digit in the middle error-prone.
+  const handlePhoneChange = (e) => {
+    const el = e.target;
+    const before = digitsBefore(el.value, el.selectionStart ?? el.value.length);
+    const formatted = formatPhone(el.value);
+    setField('phone', formatted);
+    requestAnimationFrame(() => {
+      if (document.activeElement !== el) return;
+      const caret = caretAfterDigits(formatted, before);
+      el.setSelectionRange(caret, caret);
+    });
   };
 
   const inputProps = (field, extra = {}) => {
@@ -167,7 +197,7 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
       id,
       value: form[field],
       placeholder: s.fields[field].placeholder,
-      onChange: (e) => setField(field, field === 'phone' ? formatPhone(e.target.value) : e.target.value),
+      onChange: field === 'phone' ? handlePhoneChange : (e) => setField(field, e.target.value),
       onBlur: required ? () => checkOnBlur(field) : undefined,
       'aria-required': required ? 'true' : undefined,
       'aria-invalid': hasError ? 'true' : undefined,
@@ -197,7 +227,8 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
           : null,
       ].filter(Boolean).join(' · ')
     : null;
-  const showDone = done && done.side === side;
+  // A join button pressed elsewhere on the page since then opens a fresh form, not the old confirmation.
+  const showDone = done && done.side === side && done.joinCount === joinCount;
 
   return (
     <section id="waitlist" className="bg-page pb-16 pt-10 md:pb-20 md:pt-14">
@@ -244,11 +275,17 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
               <p className="mt-4 rounded-xl border border-gold/40 bg-gold-pale p-3 text-sm text-gold-ink">{s.success.demo}</p>
             )}
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Button variant="outline" href={whatsappUrl(c.whatsappMessage)} target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" href={whatsappUrl(done.side === 'worker' ? c.whatsapp.joinedWorker : c.whatsapp.joinedBusiness)} target="_blank" rel="noopener noreferrer">
                 <WhatsAppIcon className="h-5 w-5" />
                 {s.success.whatsapp}
               </Button>
-              <Button variant={tone === 'worker' ? 'link-worker' : 'link-biz'} onClick={() => setDone(null)}>
+              <Button
+                variant={tone === 'worker' ? 'link-worker' : 'link-biz'}
+                onClick={() => {
+                  returnToForm.current = true;
+                  setDone(null);
+                }}
+              >
                 {s.success.again}
               </Button>
             </div>
@@ -257,7 +294,7 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
 
         {side && !showDone && (
           <Card key={side} className="animate-swap">
-            <h3 className="text-xl font-bold text-ink">{copy.heading}</h3>
+            <h3 ref={formHeadingRef} tabIndex={-1} className="text-xl font-bold text-ink">{copy.heading}</h3>
             <p className="mt-1 text-base text-body">{copy.sub}</p>
 
             {showContext && (

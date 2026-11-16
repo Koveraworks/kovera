@@ -14,7 +14,6 @@ export default {
     // The switch is labelled in the language it switches to.
     switchTo: 'हिंदी',
     switchLabel: 'हिंदी में देखें',
-    fab: 'WhatsApp the Kovera team',
   },
   hi: {
     home: 'Kovera होम',
@@ -30,6 +29,5 @@ export default {
     closeMenu: 'मेन्यू बंद करें',
     switchTo: 'English',
     switchLabel: 'View in English',
-    fab: 'Kovera टीम को WhatsApp करें',
   },
 };

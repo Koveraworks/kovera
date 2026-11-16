@@ -41,12 +41,18 @@ export default {
     zeroFee: '₹0 platform fee',
     perHour: 'per hour',
     hours: '{n} hours',
-    whatsappMessage: 'Hello Kovera team, I need shift support today.',
+    // Prefilled WhatsApp messages, by where the button sits.
+    whatsapp: {
+      urgent: 'Hello Kovera team, I need shift support today.',
+      question: 'Hello Kovera team, I have a question.',
+      joinedBusiness: 'Hello Kovera team, I just joined the waitlist as a business.',
+      joinedWorker: 'Hello Kovera team, I just joined the waitlist as a worker.',
+    },
   },
   hi: {
     meta: {
       title: 'Kovera · आपके इलाक़े का काम, बेहतर तरीक़े से',
-      description: 'Kovera आस-पास की दुकानों को कुछ घंटों की शिफ्ट के लिए भरोसेमंद मदद से जोड़ता है। पायलट की शुरुआत पानीपत, हरियाणा से।',
+      description: 'Kovera आस-पास की दुकानों को कुछ घंटों की शिफ्ट के लिए भरोसेमंद वर्कर से जोड़ता है। पायलट की शुरुआत पानीपत, हरियाणा से।',
     },
     tagline: 'ज़रूरत पड़ने पर, आपके इलाक़े की बैकअप टीम।',
     cta: {
@@ -72,10 +78,15 @@ export default {
       'gt-road': 'जीटी रोड',
     },
     example: 'उदाहरण',
-    exampleRateNote: '*ये उदाहरण के रेट हैं। असली भुगतान हर शिफ्ट से पहले दोनों पक्षों से तय होता है।',
+    exampleRateNote: '*ये उदाहरण के रेट हैं। असली भुगतान हर शिफ्ट से पहले बिज़नेस और वर्कर, दोनों से बात करके तय होता है।',
     zeroFee: '₹0 प्लेटफ़ॉर्म फ़ीस',
     perHour: 'प्रति घंटा',
     hours: '{n} घंटे',
-    whatsappMessage: 'नमस्ते Kovera टीम, मुझे आज शिफ्ट के लिए मदद चाहिए।',
+    whatsapp: {
+      urgent: 'नमस्ते Kovera टीम, मुझे आज शिफ्ट के लिए मदद चाहिए।',
+      question: 'नमस्ते Kovera टीम, मुझे कुछ पूछना है।',
+      joinedBusiness: 'नमस्ते Kovera टीम, मैंने अभी बिज़नेस के तौर पर वेटलिस्ट में नाम जोड़ा है।',
+      joinedWorker: 'नमस्ते Kovera टीम, मैंने अभी वर्कर के तौर पर वेटलिस्ट में नाम जोड़ा है।',
+    },
   },
 };

@@ -61,7 +61,7 @@ export default function Faq() {
         {s.more}{' '}
         <Button
           variant="link-biz"
-          href={whatsappUrl(c.whatsappMessage)}
+          href={whatsappUrl(c.whatsapp.question)}
           target="_blank"
           rel="noopener noreferrer"
         >

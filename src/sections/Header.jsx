@@ -48,7 +48,14 @@ export default function Header({ onJoin }) {
   };
 
   return (
-    <header ref={headerRef} className="site-header sticky top-0 z-40 border-b border-line bg-white">
+    <header
+      ref={headerRef}
+      // Tabbing out of an open menu closes it, so it never sits over the content being read.
+      onBlur={(e) => {
+        if (menuOpen && e.relatedTarget && !headerRef.current?.contains(e.relatedTarget)) setMenuOpen(false);
+      }}
+      className="site-header sticky top-0 z-40 border-b border-line bg-white"
+    >
       {/* The row wraps instead of overflowing when text is enlarged. */}
       <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center justify-between gap-x-2 gap-y-2 px-4 py-2 sm:px-6 lg:px-8">
         <a href="#top" aria-label={s.home} onClick={() => setMenuOpen(false)} className="rounded-xl p-1">

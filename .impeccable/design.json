@@ -4,67 +4,79 @@
   "title": "Design System: Kovera",
   "extensions": {
     "colorMeta": {
-      "primary": {
+      "biz": {
         "role": "primary",
         "displayName": "Deep Civic Indigo",
         "canonical": "#302F80",
         "tonalRamp": ["#14133A", "#1D1C52", "#272669", "#302F80", "#48479E", "#6E6DBC", "#9F9ED9", "#EEEFFC"]
       },
-      "primary-dark": {
+      "biz-dark": {
         "role": "primary",
         "displayName": "Midnight Indigo",
         "canonical": "#201F53",
         "tonalRamp": ["#0E0E25", "#141335", "#1B1944", "#201F53", "#35347B", "#5250A4", "#7F7DCB", "#DAD9F4"]
       },
-      "secondary": {
+      "worker": {
         "role": "secondary",
-        "displayName": "Kinetic Worker Teal",
-        "canonical": "#18A999",
-        "tonalRamp": ["#09443D", "#0E6359", "#138578", "#18A999", "#2EC2B2", "#5ED3C6", "#9CE5DC", "#E4F7F3"]
+        "displayName": "Worker Cyan",
+        "canonical": "#0E7490",
+        "tonalRamp": ["#042F3B", "#08505F", "#0B6379", "#0E7490", "#2A93AD", "#5FB5CA", "#A3D8E4", "#E0F7FA"]
       },
-      "secondary-hover": {
+      "worker-dark": {
         "role": "secondary",
-        "displayName": "Deep Worker Teal",
-        "canonical": "#128679",
-        "tonalRamp": ["#073530", "#0B4E47", "#0F6A60", "#128679", "#1DB2A1", "#42CABA", "#80DFD4", "#DCF5F1"]
+        "displayName": "Deep Worker Cyan",
+        "canonical": "#155E75",
+        "tonalRamp": ["#052731", "#0B3F50", "#10526A", "#155E75", "#2F7F98", "#6AA9BC", "#AED3DF", "#DDF1F6"]
       },
-      "primary-light": {
+      "worker-bright": {
+        "role": "secondary",
+        "displayName": "Bright Worker Cyan",
+        "canonical": "#0891B2",
+        "tonalRamp": ["#033D4C", "#066079", "#077C9A", "#0891B2", "#2FADC9", "#67C8DC", "#A5E0EC", "#DCF4F9"]
+      },
+      "worker-glow": {
+        "role": "secondary",
+        "displayName": "Worker Glow",
+        "canonical": "#67E8F9",
+        "tonalRamp": ["#0B5560", "#12808F", "#2AB0C3", "#67E8F9", "#8AEEFB", "#ADF3FC", "#D0F9FD", "#EBFCFE"]
+      },
+      "biz-pale": {
         "role": "neutral",
         "displayName": "Pale Indigo",
         "canonical": "#EEEFFC",
         "tonalRamp": ["#25274D", "#3B3E7A", "#5B60BD", "#8B8FE0", "#B8BAEF", "#D6D8F7", "#EEEFFC", "#F8F8FE"]
       },
-      "secondary-light": {
+      "worker-pale": {
         "role": "neutral",
-        "displayName": "Pale Teal",
-        "canonical": "#E4F7F3",
-        "tonalRamp": ["#144740", "#216F64", "#34A697", "#5FD0C2", "#97E4D9", "#C5F0E9", "#E4F7F3", "#F4FDFB"]
+        "displayName": "Pale Cyan",
+        "canonical": "#E0F7FA",
+        "tonalRamp": ["#10444D", "#1C6B78", "#2F9AAB", "#5FC4D3", "#97DDE8", "#C2EDF3", "#E0F7FA", "#F3FCFD"]
       },
-      "accent": {
+      "gold": {
         "role": "tertiary",
         "displayName": "Sunrise Gold",
         "canonical": "#F4B86A",
         "tonalRamp": ["#68410F", "#9A631E", "#C78531", "#F4B86A", "#F7CB8E", "#FADDB4", "#FDEED9", "#FFF9F1"]
       },
-      "accent-light": {
+      "gold-pale": {
         "role": "tertiary",
         "displayName": "Pale Gold",
         "canonical": "#FFF2E1",
         "tonalRamp": ["#6B4B22", "#9C7037", "#CC9854", "#EDB876", "#F6D29F", "#FBE3C3", "#FFF2E1", "#FFFAF5"]
       },
-      "text-main": {
+      "ink": {
         "role": "neutral",
         "displayName": "Ink Navy",
         "canonical": "#181A32",
         "tonalRamp": ["#080911", "#101121", "#181A32", "#2B2E54", "#43487E", "#666DA8", "#9BA0CD", "#E6E7F3"]
       },
-      "text-body": {
+      "body": {
         "role": "neutral",
         "displayName": "Slate Body",
         "canonical": "#62677D",
         "tonalRamp": ["#23252D", "#373A47", "#4C5061", "#62677D", "#81869B", "#A4A8B9", "#C9CBD6", "#EFF0F4"]
       },
-      "bg-page": {
+      "page": {
         "role": "neutral",
         "displayName": "Canvas Off-White",
         "canonical": "#F7F8FC",
@@ -76,9 +88,9 @@
         "canonical": "#FFFFFF",
         "tonalRamp": ["#2B2B2B", "#4A4A4A", "#6E6E6E", "#969696", "#BFBFBF", "#E0E0E0", "#F5F5F5", "#FFFFFF"]
       },
-      "border-subtle": {
+      "line": {
         "role": "neutral",
-        "displayName": "Subtle Border",
+        "displayName": "Hairline",
         "canonical": "#EEEFFC",
         "tonalRamp": ["#25274D", "#3B3E7A", "#5B60BD", "#8B8FE0", "#B8BAEF", "#D6D8F7", "#EEEFFC", "#F8F8FE"]
       }
@@ -102,41 +114,31 @@
       },
       "label": {
         "displayName": "Label",
-        "purpose": "Uppercase badges, field labels, pills, and navigation links"
+        "purpose": "Sentence-case field labels, pills, and fact labels (14px semibold, no uppercase or letter-spacing)"
       }
     },
     "shadows": [
       {
-        "name": "resting-subtle",
-        "value": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-        "purpose": "Slight surface elevation at rest"
-      },
-      {
-        "name": "hover-lift",
+        "name": "floating-button",
         "value": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)",
-        "purpose": "Interactive hover state for cards and primary buttons"
-      },
-      {
-        "name": "modal-elevation",
-        "value": "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-        "purpose": "Elevated modal dialogs and overlay drawers"
+        "purpose": "Floating WhatsApp button and the open mobile menu only; cards and forms have no shadow"
       }
     ],
     "motion": [
       {
         "name": "ease-swift",
         "value": "cubic-bezier(0.16, 1, 0.3, 1)",
-        "purpose": "Organic deceleration for drawer slides and modal reveals"
+        "purpose": "Short fade when chosen content swaps, and the FAQ accordion; disabled under reduced motion"
       },
       {
-        "name": "duration-fast",
-        "value": "150ms",
-        "purpose": "Button and input state hover transitions"
+        "name": "duration-swap",
+        "value": "240ms",
+        "purpose": "Content swap fade (animate-swap)"
       },
       {
-        "name": "duration-standard",
-        "value": "250ms",
-        "purpose": "Modals, accordion expansions, and drawers"
+        "name": "duration-accordion",
+        "value": "280ms",
+        "purpose": "FAQ accordion expansion"
       }
     ],
     "breakpoints": [
@@ -160,40 +162,40 @@
       "kind": "button",
       "refersTo": "button-primary",
       "description": "Primary action button for business registrations and main landing conversions.",
-      "html": "<button class=\"ds-btn-primary\">Find Shift Support <svg class=\"ds-btn-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\"><path d=\"M5 12h14M12 5l7 7-7 7\"/></svg></button>",
-      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background-color: #302F80; color: #FFFFFF; font-family: Inter, sans-serif; font-size: 15px; font-weight: 600; padding: 16px 32px; border-radius: 16px; border: none; cursor: pointer; transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); } .ds-btn-primary:hover { background-color: #201F53; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.15); } .ds-btn-primary:hover .ds-btn-icon { transform: translateX(3px); } .ds-btn-icon { width: 18px; height: 18px; transition: transform 0.15s ease; }"
+      "html": "<button class=\"ds-btn-primary\">Find shift support</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; background-color: #302F80; color: #FFFFFF; font-family: system-ui, sans-serif; font-size: 16px; font-weight: 600; padding: 10px 20px; border-radius: 16px; border: none; cursor: pointer; transition: background-color 0.15s ease; } .ds-btn-primary:hover { background-color: #201F53; }"
     },
     {
       "name": "Primary Worker CTA",
       "kind": "button",
       "refersTo": "button-worker",
       "description": "Primary action button for worker registrations and shift applications.",
-      "html": "<button class=\"ds-btn-worker\">Join Worker Network</button>",
-      "css": ".ds-btn-worker { display: block; width: 100%; text-align: center; background-color: #18A999; color: #FFFFFF; font-family: Inter, sans-serif; font-size: 15px; font-weight: 700; padding: 16px 24px; border-radius: 12px; border: none; cursor: pointer; transition: background-color 0.15s ease, box-shadow 0.15s ease; box-shadow: 0 4px 6px -1px rgba(24,169,153,0.25); } .ds-btn-worker:hover { background-color: #128679; box-shadow: 0 10px 15px -3px rgba(24,169,153,0.35); }"
+      "html": "<button class=\"ds-btn-worker\">Join as a worker</button>",
+      "css": ".ds-btn-worker { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; background-color: #0E7490; color: #FFFFFF; font-family: system-ui, sans-serif; font-size: 16px; font-weight: 600; padding: 10px 20px; border-radius: 16px; border: none; cursor: pointer; transition: background-color 0.15s ease; } .ds-btn-worker:hover { background-color: #155E75; }"
     },
     {
       "name": "Secondary Outline Button",
       "kind": "button",
       "refersTo": "button-secondary",
       "description": "Secondary action button for exploring details or alternative paths.",
-      "html": "<button class=\"ds-btn-secondary\">How It Works</button>",
-      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; background-color: #FFFFFF; color: #302F80; font-family: Inter, sans-serif; font-size: 15px; font-weight: 600; padding: 16px 32px; border-radius: 16px; border: 2px solid #EEEFFC; cursor: pointer; transition: background-color 0.15s ease, border-color 0.15s ease; } .ds-btn-secondary:hover { background-color: #F7F8FC; border-color: rgba(48,47,128,0.2); }"
+      "html": "<button class=\"ds-btn-secondary\">How it works</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; background-color: #FFFFFF; color: #302F80; font-family: system-ui, sans-serif; font-size: 16px; font-weight: 600; padding: 10px 20px; border-radius: 16px; border: 1px solid #8A8FA8; cursor: pointer; transition: border-color 0.15s ease; } .ds-btn-secondary:hover { border-color: #302F80; }"
     },
     {
       "name": "Location Pill Badge",
       "kind": "chip",
       "refersTo": "chip-pill",
-      "description": "Status badge used in hero section to anchor pilot geography.",
-      "html": "<span class=\"ds-badge-pill\"><span class=\"ds-pill-dot\"></span> PHASE 0 / PANIPAT, HARYANA</span>",
-      "css": ".ds-badge-pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 9999px; background-color: #E4F7F3; border: 1px solid rgba(24,169,153,0.25); color: #302F80; font-family: Inter, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; } .ds-pill-dot { width: 8px; height: 8px; border-radius: 9999px; background-color: #18A999; display: inline-block; }"
+      "description": "Small status label in sentence case; never uppercase or letter-spaced.",
+      "html": "<span class=\"ds-badge-pill\"><span class=\"ds-pill-dot\"></span> Pilot starting in Panipat</span>",
+      "css": ".ds-badge-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 9999px; background-color: #E0F7FA; border: 1px solid rgba(14,116,144,0.25); color: #155E75; font-family: system-ui, sans-serif; font-size: 14px; font-weight: 600; } .ds-pill-dot { width: 8px; height: 8px; border-radius: 9999px; background-color: #0891B2; display: inline-block; }"
     },
     {
       "name": "Form Input Field",
       "kind": "input",
       "refersTo": "input-field",
       "description": "Standard single-line text input for registration forms.",
-      "html": "<div class=\"ds-input-group\"><label class=\"ds-input-label\">YOUR BUSINESS NAME</label><input type=\"text\" class=\"ds-input-control\" placeholder=\"e.g., Sharma Textiles\" /></div>",
-      "css": ".ds-input-group { width: 100%; font-family: Inter, sans-serif; } .ds-input-label { display: block; font-size: 12px; font-weight: 700; color: #181A32; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.04em; } .ds-input-control { width: 100%; box-sizing: border-box; padding: 12px 16px; background-color: #F7F8FC; border: 1px solid #EEEFFC; border-radius: 12px; font-family: Inter, sans-serif; font-size: 14px; color: #181A32; outline: none; transition: border-color 0.15s ease, background-color 0.15s ease; } .ds-input-control:focus { border-color: #302F80; background-color: #FFFFFF; }"
+      "html": "<div class=\"ds-input-group\"><label class=\"ds-input-label\">Your business name</label><input type=\"text\" class=\"ds-input-control\" placeholder=\"e.g., Sharma Textiles\" /></div>",
+      "css": ".ds-input-group { width: 100%; font-family: system-ui, sans-serif; } .ds-input-label { display: block; font-size: 14px; font-weight: 600; color: #181A32; margin-bottom: 6px; } .ds-input-control { width: 100%; box-sizing: border-box; min-height: 44px; padding: 12px 16px; background-color: #FFFFFF; border: 1px solid #8A8FA8; border-radius: 12px; font-family: system-ui, sans-serif; font-size: 16px; color: #181A32; } .ds-input-control:focus-visible { outline: 2px solid #302F80; outline-offset: 2px; }"
     },
     {
       "name": "Standard Content Card",
@@ -201,27 +203,27 @@
       "refersTo": "card-standard",
       "description": "Base card container for feature summaries and steps.",
       "html": "<div class=\"ds-card\"><div class=\"ds-card-number\">01</div><h3 class=\"ds-card-title\">Post the Shift Need</h3><p class=\"ds-card-body\">Tell us the role, hours, and location. We confirm suitability before taking next steps.</p></div>",
-      "css": ".ds-card { background-color: #FFFFFF; border-radius: 24px; padding: 32px; border: 1px solid #EEEFFC; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); font-family: Inter, sans-serif; transition: box-shadow 0.2s ease; } .ds-card:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08); } .ds-card-number { width: 44px; height: 44px; border-radius: 14px; background-color: #EEEFFC; color: #302F80; font-weight: 900; font-size: 18px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; } .ds-card-title { font-size: 20px; font-weight: 700; color: #181A32; margin: 0 0 10px 0; } .ds-card-body { font-size: 15px; color: #62677D; line-height: 1.6; margin: 0; }"
+      "css": ".ds-card { background-color: #FFFFFF; border-radius: 24px; padding: 32px; border: 1px solid #EEEFFC; font-family: system-ui, sans-serif; } .ds-card-number { width: 44px; height: 44px; border-radius: 14px; background-color: #EEEFFC; color: #302F80; font-weight: 800; font-size: 18px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; } .ds-card-title { font-size: 20px; font-weight: 700; color: #181A32; margin: 0 0 10px 0; } .ds-card-body { font-size: 15px; color: #62677D; line-height: 1.6; margin: 0; }"
     }
   ],
   "narrative": {
     "northStar": "The Civic Dispatch",
-    "overview": "The Civic Dispatch embodies reliable, trustworthy, civic-minded utility balancing municipal clarity with modern digital efficiency. Built for Panipat's tier-2 commerce ecosystem, Kovera’s visual world communicates institutional dependability without bureaucratic inertia, and marketplace speed without predatory gig-economy detachment.\n\nThe visual language is grounded in approachable, dependable, and civic optimism. Generous tactile forms (12px inputs, 16px buttons, 24px cards, and full-radius pill tags) convey welcoming neighborhood warmth. Dual-sided architectural balance grants equal visual weight and dignity to local business owners and ready-to-work individuals.\n\nKovera deliberately rejects the cold, sterile data grids of corporate gig apps and the hyperactive visual clutter of promotional classifieds (loud flashing badges, neon starbursts, abrasive discount stickers). Every surface maintains daylight readability, generous breathing room, and tranquil, high-contrast clarity.",
+    "overview": "The Civic Dispatch embodies reliable, trustworthy, civic-minded utility balancing municipal clarity with modern digital efficiency. Built for tier-2 commerce ecosystems like Panipat, where the pilot starts, Kovera’s visual world communicates institutional dependability without bureaucratic inertia, and marketplace speed without predatory gig-economy detachment.\n\nThe visual language is grounded in approachable, dependable, and civic optimism. Generous tactile forms (12px inputs, 16px buttons, 24px cards, and full-radius pill tags) convey welcoming neighborhood warmth. Dual-sided architectural balance grants equal visual weight and dignity to local business owners and ready-to-work individuals.\n\nKovera deliberately rejects the cold, sterile data grids of corporate gig apps and the hyperactive visual clutter of promotional classifieds (loud flashing badges, neon starbursts, abrasive discount stickers). Every surface maintains daylight readability, generous breathing room, and tranquil, high-contrast clarity.",
     "keyCharacteristics": [
-      "Dual-Sided Marketplace Symmetry: Structural pairing of Deep Civic Indigo for business needs and Kinetic Worker Teal for worker opportunities.",
-      "Tonal Layering at Rest: Subtle tinted card surfaces (#EEEFFC and #E4F7F3) with 1px hairline borders; elevation as a response to interaction rather than ambient decoration.",
-      "Playful & Tactile Ergonomics: Pill badges, friendly rounded containers, and gentle spring micro-interactions make participation welcoming and frictionless.",
+      "Dual-Sided Marketplace Symmetry: Structural pairing of Deep Civic Indigo for business needs and Worker Cyan for worker opportunities.",
+      "Flat Tonal Layering: Subtle tinted card surfaces (#EEEFFC and #E0F7FA) with 1px hairline borders; no shadows, gradients or decorative shapes.",
+      "Tactile Ergonomics: Pill badges, friendly rounded containers, and 44px-minimum controls make participation welcoming and frictionless.",
       "High-Integrity Clarity: Strict avoidance of hype, opaque tech terminology, or false urgency."
     ],
     "rules": [
       {
         "name": "The Dual-Sided Symmetry Rule",
-        "body": "Business elements must never use Worker Teal as their primary fill, and worker elements must never use Civic Indigo as their primary fill. Color serves a structural role separating demand from supply, never a purely decorative one.",
+        "body": "Business elements must never use Worker Cyan as their primary fill, and worker elements must never use Civic Indigo as their primary fill. Color serves a structural role separating demand from supply, never a purely decorative one.",
         "section": "colors"
       },
       {
         "name": "The Daylight Safety Rule",
-        "body": "Deep dark-mode backgrounds are restricted exclusively to the institutional trust section (#201F53) and footer. General interactive forms and workflow surfaces must always operate on light canvas tones (#F7F8FC, #FFFFFF) to reinforce daytime safety and open commercial environments.",
+        "body": "Dark backgrounds are restricted to the navy sections (#201F53) and footer. General interactive forms and workflow surfaces must always operate on light canvas tones (#F7F8FC, #FFFFFF) to reinforce daytime safety and open commercial environments.",
         "section": "colors"
       },
       {
@@ -231,20 +233,24 @@
       },
       {
         "name": "The Flat-At-Rest Rule",
-        "body": "All content cards, form containers, and lists must remain flat at rest, distinguished only by surface tint and 1px hairline strokes. Shadows are reserved for state transitions and foreground interruptions.",
+        "body": "All content cards, form containers, and lists remain flat, distinguished only by surface tint and 1px hairline strokes. The only shadows are on the floating WhatsApp button and the open mobile menu. No gradients, blurred background shapes or decorative animation.",
         "section": "elevation"
       }
     ],
     "dos": [
       "Do maintain strict visual symmetry between Business and Worker content blocks across all comparison surfaces.",
-      "Do use exact semantic token references (--color-brand-primary, --color-brand-teal) instead of arbitrary one-off color hexes.",
-      "Do keep cards flat at rest and let elevation express interaction or foreground focus.",
+      "Do use the Tailwind tokens from src/index.css (bg-biz, text-worker, border-line, text-body) instead of one-off color hexes.",
+      "Do keep cards flat at rest, with no shadows.",
+      "Do use one selected style everywhere: solid side colour, white text, check mark.",
+      "Do make every control at least 44px tall and keep informative text at 14px or larger.",
       "Do frame all shifts around daylight hours (8 AM to 8 PM) and public commercial workspaces.",
       "Do write concise, scannable microcopy with explicit ₹0 worker guarantees."
     ],
     "donts": [
       "Don't use flashy discount banners, sticker badges, or countdown timers that evoke spam classifieds.",
-      "Don't mix business indigo and worker teal within the same component button or badge.",
+      "Don't mix business indigo and worker cyan within the same component button or badge.",
+      "Don't use worker-bright for text; it is for icons, the logo dot and accents.",
+      "Don't use gradients, blurred background shapes, backdrop blur, uppercase labels or letter-spaced labels.",
       "Don't use pure black (#000000) for text or backgrounds; always use Ink Navy (#181A32) or Midnight Indigo (#201F53).",
       "Don't introduce dense, enterprise-style data tables without mobile card fallbacks.",
       "Don't hide or obscure the Phase 0 pilot disclaimer; transparency is core to building local trust."

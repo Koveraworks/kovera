@@ -32,9 +32,9 @@ export default function Hero({ onJoin }) {
           <div className="min-w-0">
             <Pill wrap tone="biz" icon={MapPin}>{s.pilot}</Pill>
 
-            <h1 className="mt-5 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] text-balance text-ink">
+            <h1 className="mt-5 text-4xl sm:text-5xl font-extrabold tracking-tight leading-[1.1] text-balance lg:text-wrap text-ink">
               {s.headline.lead}{' '}
-              <span className="text-biz">{s.headline.accent}</span>
+              <span className="text-biz lg:block">{s.headline.accent}</span>
             </h1>
 
             <p className="mt-4 text-xl sm:text-2xl font-semibold text-worker break-words">
@@ -129,7 +129,7 @@ export default function Hero({ onJoin }) {
                 </div>
               </div>
 
-              <p className="mt-4 text-xs text-body">{c.exampleRateNote}</p>
+              <p className="mt-4 text-sm text-body">{c.exampleRateNote}</p>
             </Card>
           </div>
         </div>

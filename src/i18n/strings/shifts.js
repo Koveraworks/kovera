@@ -20,7 +20,7 @@ export default {
       8: 'full day',
     },
     perWeekLabel: 'Shifts per week',
-    perWeekNote: 'Each shift is 4 daytime hours',
+    perWeekNote: 'Estimate uses 4-hour daytime shifts',
     shiftOne: '1 shift',
     shiftMany: '{n} shifts',
 
@@ -54,57 +54,60 @@ export default {
     workerFeeLabel: 'Worker fee',
     workerFeeValue: '₹0, you keep all of it',
 
+    // The same three points for every category, so none reads as optional.
     safetyLabel: 'Every shift',
-    safety: {
-      boutique: ['Daytime, inside a public shop', 'No heavy lifting or machines', 'Pay agreed before the shift starts'],
-      handloom: ['Daytime, inside a public shop', 'Light work only, no heavy loads', 'A Kovera team member reviews each match'],
-      cafe: ['Daytime, in a public café', 'Counter and tables only', 'Pay agreed before the shift starts'],
-      salon: ['Daytime, in a public salon', 'Helper tasks only, no treatments', 'Adults (18+) with an ID check'],
+    safety: ['Daytime, in a public workplace', 'Adults (18+) with an ID check', 'Pay agreed before the shift starts'],
+    // What the work does not include, per category.
+    limits: {
+      boutique: 'No heavy lifting or machines.',
+      handloom: 'Light work only, no heavy loads.',
+      cafe: 'Counter and tables only.',
+      salon: 'Helper tasks only.',
     },
 
-    ctaBusiness: 'Ask for this shift',
-    ctaWorker: 'Sign up for shifts like this',
+    ctaBusiness: 'Join with this shift',
+    ctaWorker: 'Join for shifts like this',
   },
   hi: {
     title: 'शिफ्ट में क्या काम होता है, और कितना भुगतान मिलता है',
-    sub: 'दुकान का प्रकार चुनें। काम, समय और उदाहरण भुगतान, सब पहले ही दिख जाएगा।',
+    sub: 'चुनें कि दुकान किस तरह की है। काम, समय और भुगतान का उदाहरण, सब पहले ही दिख जाएगा।',
     sideLabel: 'किसके लिए देखें',
-    sideBusiness: 'मुझे वर्कर चाहिए: शिफ्ट का ख़र्च',
-    sideWorker: 'मुझे काम चाहिए: कितनी कमाई हो सकती है',
+    sideBusiness: 'वर्कर चाहिए: शिफ्ट का ख़र्च',
+    sideWorker: 'काम चाहिए: कितनी कमाई हो सकती है',
 
-    categoryLabel: 'दुकान का प्रकार',
+    categoryLabel: 'किस तरह की दुकान',
     lengthLabel: 'शिफ्ट कितने घंटे की',
-    lengthNote: 'सिर्फ़ दिन का समय, सुबह 8 से रात 8 बजे तक',
+    lengthNote: 'सिर्फ़ दिन का समय, सुबह 8 से शाम 8 बजे तक',
     lengths: {
       4: 'भीड़ के घंटे',
       6: 'आधा दिन',
       8: 'पूरा दिन',
     },
     perWeekLabel: 'हफ़्ते में कितनी शिफ्ट',
-    perWeekNote: 'हर शिफ्ट दिन में 4 घंटे की',
+    perWeekNote: 'अनुमान दिन की 4 घंटे की शिफ्ट के हिसाब से',
     shiftOne: '1 शिफ्ट',
     shiftMany: '{n} शिफ्ट',
 
     work: {
       boutique: 'ग्राहकों का स्वागत, कपड़े तह करके सजाना, ट्रायल रूम में मदद और दुकान साफ़-सुथरी रखना।',
-      handloom: 'ग्राहकों का स्वागत, माल तह करके लगाना, और त्योहार व वीकेंड की भीड़ की तैयारी में मदद।',
+      handloom: 'ग्राहकों का स्वागत, माल तह करके लगाना, त्योहार और वीकेंड की भीड़ की तैयारी में मदद।',
       cafe: 'भीड़ के समय काउंटर पर मदद, टेकअवे ऑर्डर पैक करना और टेबल साफ़ करना।',
-      salon: 'स्टेशन तैयार करना, तौलिए तह करना, ग्राहकों का स्वागत और जगह साफ़ रखना। बाल या स्किन का कोई ट्रीटमेंट नहीं।',
+      salon: 'कुर्सी और सामान तैयार रखना, तौलिए तह करना, ग्राहकों का स्वागत और जगह साफ़ रखना। बाल या स्किन का कोई ट्रीटमेंट नहीं।',
     },
     typicalHoursLabel: 'आम तौर पर समय',
     typicalHours: {
-      boutique: 'दोपहर 12 से रात 8 बजे के बीच',
+      boutique: 'दोपहर 12 से शाम 8 बजे के बीच',
       handloom: 'सुबह 11 से शाम 7 बजे के बीच',
-      cafe: 'दोपहर 12 से रात 8 बजे के बीच',
+      cafe: 'दोपहर 12 से शाम 8 बजे के बीच',
       salon: 'सुबह 11 से शाम 7 बजे के बीच',
     },
 
     bizEstimateLabel: 'उदाहरण: {n} घंटे की शिफ्ट का भुगतान',
-    pilotFeeLabel: 'Kovera पायलट फ़ीस',
+    pilotFeeLabel: 'Kovera की पायलट फ़ीस',
     pilotFeeValue: '₹0, पायलट मुफ़्त है',
     paymentLabel: 'भुगतान',
-    paymentValue: 'शिफ्ट ख़त्म होते ही सीधे वर्कर को',
-    matchLabel: 'मैच का लक्ष्य समय',
+    paymentValue: 'शिफ्ट ख़त्म होने पर सीधे वर्कर को',
+    matchLabel: 'मैच का लक्ष्य',
     matchValue: '30 मिनट के अंदर',
 
     workerEstimateLabel: 'उदाहरण: हर महीने की एक्स्ट्रा कमाई',
@@ -112,18 +115,19 @@ export default {
     basisMany: 'हफ़्ते में {n} शिफ्ट (हर शिफ्ट 4 घंटे) और महीने में 4 हफ़्ते के हिसाब से',
     perShiftLabel: 'हर शिफ्ट (4 घंटे)',
     perWeekFactLabel: 'हर हफ़्ते',
-    workerFeeLabel: 'वर्कर फ़ीस',
+    workerFeeLabel: 'वर्कर की फ़ीस',
     workerFeeValue: '₹0, पूरा भुगतान आपका',
 
     safetyLabel: 'हर शिफ्ट में',
-    safety: {
-      boutique: ['दिन का समय, सार्वजनिक दुकान के अंदर', 'भारी सामान या मशीन का काम नहीं', 'भुगतान शिफ्ट से पहले तय होता है'],
-      handloom: ['दिन का समय, सार्वजनिक दुकान के अंदर', 'हल्का काम, भारी बोझ नहीं', 'हमारी टीम हर मैच को ख़ुद देखती है'],
-      cafe: ['दिन का समय, सार्वजनिक कैफ़े में', 'सिर्फ़ काउंटर और टेबल का काम', 'भुगतान शिफ्ट से पहले तय होता है'],
-      salon: ['दिन का समय, सार्वजनिक सैलून में', 'सिर्फ़ मदद का काम, कोई ट्रीटमेंट नहीं', '18+ वयस्क, पहचान की जाँच के साथ'],
+    safety: ['दिन का समय, सार्वजनिक जगह पर', '18+ वयस्क, पहचान की जाँच के साथ', 'भुगतान शिफ्ट से पहले तय होता है'],
+    limits: {
+      boutique: 'भारी सामान या मशीन का काम नहीं।',
+      handloom: 'सिर्फ़ हल्का काम, भारी बोझ नहीं।',
+      cafe: 'सिर्फ़ काउंटर और टेबल का काम।',
+      salon: 'सिर्फ़ मदद का काम।',
     },
 
-    ctaBusiness: 'इस शिफ्ट के लिए वर्कर माँगें',
-    ctaWorker: 'ऐसी शिफ्ट के लिए रजिस्टर करें',
+    ctaBusiness: 'इस शिफ्ट के साथ जुड़ें',
+    ctaWorker: 'ऐसी शिफ्ट के लिए जुड़ें',
   },
 };

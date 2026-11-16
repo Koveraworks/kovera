@@ -4,10 +4,10 @@ export default {
     sub: 'Each side knows what to expect before a shift starts.',
     business: {
       title: 'Help when a shift is short',
-      body: 'Share what you need and we look for a suitable person nearby.',
+      body: 'Share what you need and we try to find a suitable person nearby.',
       points: [
         'Help for boutiques, salons, cafés and shops',
-        'Quick to register, no long contracts',
+        'Quick to join, no long contracts',
         'A person reviews each match',
       ],
     },
@@ -15,7 +15,7 @@ export default {
       title: 'Daytime shifts that fit your week',
       body: 'Pick up a few hours of work close to home, at a public workplace.',
       points: [
-        '₹0 to register, ₹0 platform fee',
+        '₹0 to join, ₹0 platform fee',
         'Daytime hours that fit your week',
         'Public workplaces only (shops, cafés, salons)',
       ],
@@ -23,26 +23,26 @@ export default {
     closing: 'No app to download. It starts with a simple conversation.',
   },
   hi: {
-    title: 'ढूँढने की कम मेहनत। बात ज़्यादा साफ़।',
-    sub: 'शिफ्ट शुरू होने से पहले दोनों को पता होता है कि क्या होना है।',
+    title: 'ढूँढने की मेहनत कम। बात ज़्यादा साफ़।',
+    sub: 'शिफ्ट शुरू होने से पहले बिज़नेस और वर्कर, दोनों को पता होता है कि क्या होना है।',
     business: {
-      title: 'शिफ्ट में कमी हो, तब मदद',
-      body: 'बताइए क्या चाहिए, हम आस-पास से सही व्यक्ति ढूँढने की कोशिश करेंगे।',
+      title: 'जब शिफ्ट में कोई कम हो, तब मदद',
+      body: 'बताएँ क्या चाहिए। हम आस-पास सही वर्कर ढूँढने की कोशिश करते हैं।',
       points: [
         'बुटीक, सैलून, कैफ़े और दुकानों के लिए मदद',
-        'रजिस्टर करना आसान, कोई लंबा कॉन्ट्रैक्ट नहीं',
-        'हर मैच को हमारी टीम का व्यक्ति देखता है',
+        'झटपट रजिस्टर करें, कोई लंबा कॉन्ट्रैक्ट नहीं',
+        'हमारी टीम हर मैच ख़ुद देखती है',
       ],
     },
     worker: {
       title: 'दिन की शिफ्ट, आपके हफ़्ते के हिसाब से',
-      body: 'घर के पास, सार्वजनिक जगह पर कुछ घंटे का काम चुनिए।',
+      body: 'घर के पास, सार्वजनिक जगह पर कुछ घंटों का काम चुनें।',
       points: [
-        'रजिस्टर करना ₹0, प्लेटफ़ॉर्म फ़ीस ₹0',
-        'दिन के घंटे, जो आपके हफ़्ते में फ़िट हों',
+        'रजिस्टर करने के ₹0, प्लेटफ़ॉर्म फ़ीस ₹0',
+        'दिन का समय, जो आपके हफ़्ते में फ़िट बैठे',
         'सिर्फ़ सार्वजनिक जगह (दुकान, कैफ़े, सैलून)',
       ],
     },
-    closing: 'कोई ऐप डाउनलोड नहीं करनी। शुरुआत एक सीधी बातचीत से होती है।',
+    closing: 'कोई ऐप डाउनलोड करने की ज़रूरत नहीं। शुरुआत सीधी-सादी बातचीत से होती है।',
   },
 };

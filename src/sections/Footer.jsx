@@ -26,16 +26,18 @@ export default function Footer({ onJoin }) {
             <p className="mt-1 text-sm text-navy-soft">{c.tagline}</p>
           </div>
 
-          <nav aria-label={s.navLabel} className="flex flex-wrap items-center gap-x-5 gap-y-1">
+          {/* Each link carries its own side padding so short words are still 44px wide;
+              the negative margin keeps the text lined up with the column edge. */}
+          <nav aria-label={s.navLabel} className="-mx-2 flex flex-wrap items-center gap-x-1 gap-y-1">
             {LINKS.map((link) => (
-              <a key={link.key} href={link.href} className="inline-flex min-h-11 items-center rounded-lg text-base text-navy-soft hover:text-white">
+              <a key={link.key} href={link.href} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg px-2 text-base text-navy-soft hover:text-white">
                 {h.nav[link.key]}
               </a>
             ))}
             <button
               type="button"
               onClick={() => onJoin(null)}
-              className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-lg text-base font-semibold text-white hover:underline"
+              className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-lg px-2 text-base font-semibold text-white hover:underline"
             >
               {c.cta.join}
               <ArrowRight className="h-4 w-4 text-worker-glow" aria-hidden="true" />

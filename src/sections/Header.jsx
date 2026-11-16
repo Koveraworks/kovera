@@ -91,7 +91,7 @@ export default function Header({ onJoin }) {
       <div className="relative z-40 bg-white">
       {/* The row wraps instead of overflowing when text is enlarged. */}
       <div className="mx-auto flex min-h-16 max-w-[100rem] flex-wrap items-center justify-between gap-x-2 gap-y-2 px-4 py-2 sm:px-8 lg:min-h-20 lg:px-12 xl:px-16">
-        <a href="#top" aria-label={s.home} onClick={() => setMenuOpen(false)} className="group rounded-xl p-1">
+        <a href="#top" aria-label={s.home} onClick={() => setMenuOpen(false)} className="group inline-flex min-h-11 items-center rounded-xl p-1">
           <Logo />
         </a>
 
@@ -101,7 +101,7 @@ export default function Header({ onJoin }) {
               key={item.key}
               href={item.href}
               // The underline grows from the left on hover.
-              className="relative inline-flex min-h-11 items-center rounded-lg px-3 text-base font-medium text-ink transition-colors duration-200 hover:text-biz after:absolute after:inset-x-3 after:bottom-1.5 after:h-0.5 after:origin-left after:scale-x-0 after:rounded-full after:bg-worker-bright after:transition-transform after:duration-200 after:ease-out hover:after:scale-x-100"
+              className="relative inline-flex min-h-11 items-center rounded-lg px-3 text-base font-medium text-ink transition-colors duration-200 hover:text-biz after:absolute after:inset-x-3 after:bottom-1.5 after:h-0.5 after:origin-left after:scale-x-0 after:rounded-full after:bg-biz after:transition-transform after:duration-200 after:ease-out hover:after:scale-x-100"
             >
               {s.nav[item.key]}
             </a>

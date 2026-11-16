@@ -8,8 +8,8 @@ export default {
     title: 'What a shift looks like, and what it pays',
     sub: 'Pick a type of shop to see the work, the hours and example pay, shown up front.',
     sideLabel: 'Show numbers for',
-    sideBusiness: 'I’m hiring: shift cost',
-    sideWorker: 'I’m working: what I could earn',
+    sideBusiness: 'Shift cost',
+    sideWorker: 'What I could earn',
 
     categoryLabel: 'Type of shop',
     lengthLabel: 'Shift length',
@@ -54,9 +54,6 @@ export default {
     workerFeeLabel: 'Worker fee',
     workerFeeValue: '₹0, you keep all of it',
 
-    // The same three points for every category, so none reads as optional.
-    safetyLabel: 'Every shift',
-    safety: ['Daytime, in a public workplace', 'Adults (18+) with an ID check', 'Pay agreed before the shift starts'],
     // What the work does not include, per category.
     limits: {
       boutique: 'No heavy lifting or machines.',
@@ -118,8 +115,6 @@ export default {
     workerFeeLabel: 'वर्कर की फ़ीस',
     workerFeeValue: '₹0, पूरा भुगतान आपका',
 
-    safetyLabel: 'हर शिफ्ट में',
-    safety: ['दिन का समय, सार्वजनिक जगह पर', '18+ वयस्क, पहचान की जाँच के साथ', 'भुगतान शिफ्ट से पहले तय होता है'],
     limits: {
       boutique: 'भारी सामान या मशीन का काम नहीं।',
       handloom: 'सिर्फ़ हल्का काम, भारी बोझ नहीं।',

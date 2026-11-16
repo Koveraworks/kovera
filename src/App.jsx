@@ -60,9 +60,19 @@ function Site() {
 
   return (
     <div id="top" className="min-h-screen bg-page font-sans text-ink antialiased">
+      {/* First tab stop: lets keyboard users jump past the header. Off screen until focused. */}
+      <a
+        href="#main"
+        className="fixed left-4 top-4 z-50 inline-flex min-h-11 -translate-y-24 items-center rounded-2xl bg-white px-5 text-base font-semibold text-biz shadow-lg focus:translate-y-0"
+      >
+        {c.skip}
+      </a>
+
       <Header onJoin={onJoin} />
 
-      <main>
+      {/* No tabIndex: the browser moves the tab starting point to an in-page anchor by itself,
+          and a focusable <main> would steal focus on any click inside it. */}
+      <main id="main">
         <div ref={topRegionRef}>
           <Hero onJoin={onJoin} />
           <ContactBand />
@@ -93,13 +103,15 @@ function Site() {
         aria-label={c.cta.whatsapp}
         inert={!fabVisible}
         // Pops in once the form has scrolled away; lifts on hover, presses in on tap.
+        // A 56px circle until the window is 1600px wide: only then is there room
+        // beside the content column for the label, so it never sits on a button.
         className={cx(
-          'fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-30 inline-flex h-14 min-w-14 items-center justify-center gap-2 rounded-full bg-whatsapp px-4 text-base font-semibold text-white shadow-lg transition-[opacity,transform,background-color,box-shadow] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:bg-whatsapp-dark hover:shadow-xl active:scale-95 sm:px-5',
+          'fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-30 inline-flex h-14 min-w-14 items-center justify-center gap-2 rounded-full bg-whatsapp px-4 text-base font-semibold text-white shadow-lg transition-[opacity,transform,background-color,box-shadow] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:bg-whatsapp-dark hover:shadow-xl active:scale-95 min-[100rem]:px-5',
           fabVisible ? 'translate-y-0 scale-100 opacity-100' : 'pointer-events-none translate-y-3 scale-75 opacity-0',
         )}
       >
         <WhatsAppIcon className="h-6 w-6 shrink-0" />
-        <span className="hidden sm:inline">{c.cta.whatsapp}</span>
+        <span className="hidden min-[100rem]:inline">{c.cta.whatsapp}</span>
       </a>
     </div>
   );

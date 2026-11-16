@@ -1,6 +1,6 @@
 import { useId, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
-import { Section, SectionHeading, Card, Button, Pill, Choice, Segmented, CheckItem, Fact } from '../ui.jsx';
+import { Section, SectionHeading, Card, Button, Pill, Choice, Segmented, Fact } from '../ui.jsx';
 import { useStrings, fmt } from '../i18n/index.js';
 import { CATEGORY_IDS, EXAMPLE_RATES } from '../data/rates.js';
 import { inrRange } from '../lib/format.js';
@@ -77,7 +77,7 @@ export default function ShiftsRates({ onJoin }) {
                 {CATEGORY_IDS.map((id) => (
                   <Choice key={id} tone={tone} selected={category === id} onClick={() => setCategory(id)}>
                     <span className="block text-base font-semibold break-words">{c.categories[id]}</span>
-                    <span className="block text-sm text-body group-aria-pressed:text-white/85">
+                    <span className="block text-sm text-body group-aria-pressed:text-white">
                       {inrRange(EXAMPLE_RATES[id].min, EXAMPLE_RATES[id].max)} {c.perHour}*
                     </span>
                   </Choice>
@@ -92,7 +92,7 @@ export default function ShiftsRates({ onJoin }) {
                   {SHIFT_HOURS.map((h) => (
                     <Choice key={h} compact tone="biz" selected={hours === h} onClick={() => setHours(h)}>
                       <span className="block break-words text-base font-semibold">{fmt(c.hours, { n: h })}</span>
-                      <span className="block break-words text-sm text-body group-aria-pressed:text-white/85">{s.lengths[h]}</span>
+                      <span className="block break-words text-sm text-body group-aria-pressed:text-white">{s.lengths[h]}</span>
                     </Choice>
                   ))}
                 </div>
@@ -164,15 +164,6 @@ export default function ShiftsRates({ onJoin }) {
                   <Fact label={s.workerFeeLabel}>{s.workerFeeValue}</Fact>
                 </dl>
               )}
-
-              <div>
-                <p className="mb-2 text-sm font-semibold text-ink">{s.safetyLabel}</p>
-                <ul className="space-y-2.5 text-ink">
-                  {s.safety.map((point) => (
-                    <CheckItem key={point} tone={tone}>{point}</CheckItem>
-                  ))}
-                </ul>
-              </div>
 
               <div>
                 {isBusiness ? (

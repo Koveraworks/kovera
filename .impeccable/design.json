@@ -179,7 +179,7 @@
       "refersTo": "button-secondary",
       "description": "Secondary action button for exploring details or alternative paths.",
       "html": "<button class=\"ds-btn-secondary\">How it works</button>",
-      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; background-color: #FFFFFF; color: #302F80; font-family: system-ui, sans-serif; font-size: 16px; font-weight: 600; padding: 10px 20px; border-radius: 16px; border: 1px solid #8A8FA8; cursor: pointer; transition: border-color 0.15s ease; } .ds-btn-secondary:hover { border-color: #302F80; }"
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; background-color: #FFFFFF; color: #302F80; font-family: system-ui, sans-serif; font-size: 16px; font-weight: 600; padding: 10px 20px; border-radius: 16px; border: 1px solid #80859F; cursor: pointer; transition: border-color 0.15s ease; } .ds-btn-secondary:hover { border-color: #302F80; }"
     },
     {
       "name": "Location Pill Badge",
@@ -195,7 +195,7 @@
       "refersTo": "input-field",
       "description": "Standard single-line text input for registration forms.",
       "html": "<div class=\"ds-input-group\"><label class=\"ds-input-label\">Your business name</label><input type=\"text\" class=\"ds-input-control\" placeholder=\"e.g., Sharma Textiles\" /></div>",
-      "css": ".ds-input-group { width: 100%; font-family: system-ui, sans-serif; } .ds-input-label { display: block; font-size: 14px; font-weight: 600; color: #181A32; margin-bottom: 6px; } .ds-input-control { width: 100%; box-sizing: border-box; min-height: 44px; padding: 12px 16px; background-color: #FFFFFF; border: 1px solid #8A8FA8; border-radius: 12px; font-family: system-ui, sans-serif; font-size: 16px; color: #181A32; } .ds-input-control:focus-visible { outline: 2px solid #302F80; outline-offset: 2px; }"
+      "css": ".ds-input-group { width: 100%; font-family: system-ui, sans-serif; } .ds-input-label { display: block; font-size: 14px; font-weight: 600; color: #181A32; margin-bottom: 6px; } .ds-input-control { width: 100%; box-sizing: border-box; min-height: 44px; padding: 12px 16px; background-color: #FFFFFF; border: 1px solid #80859F; border-radius: 12px; font-family: system-ui, sans-serif; font-size: 16px; color: #181A32; } .ds-input-control:focus-visible { outline: 2px solid #302F80; outline-offset: 2px; }"
     },
     {
       "name": "Standard Content Card",

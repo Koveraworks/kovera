@@ -238,7 +238,7 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
     <section id="waitlist" className="bg-page pb-16 pt-10 md:pb-28 md:pt-16">
       <div className="mx-auto max-w-2xl px-4 sm:px-6">
         <div className="mb-6 text-center">
-          <h2 ref={headingRef} tabIndex={-1} className="text-3xl font-extrabold leading-tight tracking-tight text-ink sm:text-4xl">
+          <h2 ref={headingRef} tabIndex={-1} className="text-[1.375rem] font-extrabold leading-tight tracking-tight text-ink min-[22.5rem]:text-2xl sm:text-4xl">
             {s.title}
           </h2>
           <p className="mt-3 text-base leading-relaxed text-body sm:text-lg">{s.sub}</p>
@@ -249,8 +249,9 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
           value={side}
           onChange={onSideChange}
           options={[
-            { value: 'business', label: s.chooser.business, tone: 'biz' },
-            { value: 'worker', label: s.chooser.worker, tone: 'worker' },
+            // The same words as the join buttons that lead here.
+            { value: 'business', label: c.cta.needWorkers, tone: 'biz' },
+            { value: 'worker', label: c.cta.wantWork, tone: 'worker' },
           ]}
           className="mb-5"
         />

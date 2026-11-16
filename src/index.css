@@ -7,7 +7,8 @@
  * Two-sided system: indigo = business, cyan = worker.
  * Contrast (WCAG): worker on white 5.36:1, white on worker 5.36:1,
  * worker on worker-pale 4.81:1, worker-bright on white 3.68:1 (icons/rings only),
- * body on page 5.27:1, line-strong on white 3.19:1 (control borders).
+ * body on page 5.27:1. Control borders (line-strong): 3.64:1 on white,
+ * 3.43:1 on page, 3.18:1 on biz-pale, 3.27:1 on worker-pale.
  *
  * WhatsApp has its own green, used only on things that open WhatsApp
  * (white on whatsapp 6.12:1; whatsapp on white 6.12:1).
@@ -17,7 +18,7 @@
   --color-body: #62677D;
   --color-page: #F7F8FC;
   --color-line: #EEEFFC;
-  --color-line-strong: #8A8FA8;
+  --color-line-strong: #80859F;
 
   --color-biz: #302F80;
   --color-biz-dark: #201F53;
@@ -32,7 +33,6 @@
 
   --color-whatsapp: #0E6E63;
   --color-whatsapp-dark: #094841;
-  --color-whatsapp-bright: #18A999;
   --color-whatsapp-pale: #E4F7F3;
 
   --color-gold: #F4B86A;
@@ -176,6 +176,17 @@ body {
 .accordion-inner {
   overflow: hidden;
   min-height: 0;
+}
+
+/*
+ * "Increase contrast" (a system setting): card hairlines take the control
+ * border's colour, and control borders go to ink.
+ */
+@media (prefers-contrast: more) {
+  :root {
+    --color-line: #80859F;
+    --color-line-strong: #181A32;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

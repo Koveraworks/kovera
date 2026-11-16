@@ -15,7 +15,7 @@ export default function ContactBand() {
         {/* From md the buttons sit beside the text, and drop below it as a group when they do not fit. */}
         <Card className="flex flex-col gap-5 md:flex-row md:flex-wrap md:items-center md:justify-between">
           <div className="flex min-w-0 flex-col items-start gap-4 sm:flex-row md:flex-1 md:basis-80">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-whatsapp-pale text-whatsapp-bright">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-whatsapp-pale text-whatsapp">
               <WhatsAppIcon className="h-6 w-6" />
             </span>
             <div className="min-w-0 wrap-anywhere">

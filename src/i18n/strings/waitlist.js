@@ -1,12 +1,9 @@
 export default {
   en: {
     title: 'Join the Kovera waitlist',
-    sub: 'Say whether you run a business or want work. It takes about a minute.',
+    sub: 'Say whether you need workers or want work. It takes about a minute.',
+    // The two options use the join-button labels in common.js (cta.needWorkers, cta.wantWork).
     chooserLabel: 'Joining as',
-    chooser: {
-      business: 'I run a business',
-      worker: 'I want work',
-    },
     pickPrompt: 'Choose one above to see the form.',
     optional: 'optional',
     context: {
@@ -65,12 +62,8 @@ export default {
   },
   hi: {
     title: 'Kovera की वेटलिस्ट में जुड़ें',
-    sub: 'बताएँ कि आपका बिज़नेस है या आपको काम चाहिए। इसमें क़रीब एक मिनट लगेगा।',
+    sub: 'बताएँ कि आपको वर्कर चाहिए या काम चाहिए। इसमें क़रीब एक मिनट लगेगा।',
     chooserLabel: 'किस तरह जुड़ना है',
-    chooser: {
-      business: 'मेरा बिज़नेस है',
-      worker: 'मुझे काम चाहिए',
-    },
     pickPrompt: 'फ़ॉर्म देखने के लिए ऊपर से एक चुनें।',
     optional: 'ज़रूरी नहीं',
     context: {

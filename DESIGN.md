@@ -6,7 +6,7 @@ colors:
   body: "#62677D"
   page: "#F7F8FC"
   line: "#EEEFFC"
-  line-strong: "#8A8FA8"
+  line-strong: "#80859F"
   biz: "#302F80"
   biz-dark: "#201F53"
   biz-pale: "#EEEFFC"
@@ -18,7 +18,6 @@ colors:
   worker-glow: "#67E8F9"
   whatsapp: "#0E6E63"
   whatsapp-dark: "#094841"
-  whatsapp-bright: "#18A999"
   whatsapp-pale: "#E4F7F3"
   gold: "#F4B86A"
   gold-pale: "#FFF2E1"
@@ -34,7 +33,7 @@ typography:
     letterSpacing: "-0.025em"
   headline:
     fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', 'Noto Sans Devanagari', 'Nirmala UI', sans-serif"
-    fontSize: "clamp(1.875rem, 4vw, 2.25rem)"
+    fontSize: "clamp(1.375rem, 4vw, 2.25rem)"
     fontWeight: 800
     lineHeight: 1.25
     letterSpacing: "-0.02em"
@@ -153,8 +152,7 @@ JSX uses Tailwind token utilities defined in `@theme` in `src/index.css` (`bg-bi
 Used only on things that open WhatsApp: the contact band's button and icon tile, the floating button, the button on the form's confirmation, and the WhatsApp link under the questions. It is not a side colour and never marks worker content.
 - **WhatsApp Green** (`whatsapp`, `#0E6E63`): Fills and link text. White on it is 6.12:1, and it is 6.12:1 on white.
 - **Deep WhatsApp Green** (`whatsapp-dark`, `#094841`): Hover.
-- **Bright WhatsApp Green** (`whatsapp-bright`, `#18A999`): The icon in the contact band's tile only.
-- **Pale WhatsApp Green** (`whatsapp-pale`, `#E4F7F3`): The icon tile, and the hover fill of the outlined variant.
+- **Pale WhatsApp Green** (`whatsapp-pale`, `#E4F7F3`): The icon tile, and the hover fill of the outlined variant. The icon on it is `whatsapp` (5.51:1).
 
 ### Tertiary
 - **Sunrise Gold** (`gold`, `#F4B86A`): Warm accent tone for small highlights.
@@ -166,7 +164,8 @@ Used only on things that open WhatsApp: the contact band's button and icon tile,
 - **Slate Body** (`body`, `#62677D`): Body copy, helper text and placeholders (5.27:1 on the page background).
 - **Off-White Canvas** (`page`, `#F7F8FC`): Global page background, a cool, glare-free backdrop.
 - **Hairline** (`line`, `#EEEFFC`): Default 1px card borders.
-- **Control Border** (`line-strong`, `#8A8FA8`): Borders of buttons, inputs and unselected options (3.19:1 on white).
+- **Control Border** (`line-strong`, `#80859F`): Borders of buttons, inputs and unselected options (3.64:1 on white, 3.43:1 on the page, 3.18:1 on pale indigo, 3.27:1 on pale cyan).
+- **Increased contrast:** when the visitor's system asks for more contrast (`prefers-contrast: more`), card hairlines take the control border's colour and control borders go to `ink`.
 - **Navy Soft** (`navy-soft`, `#D9DDF1`): Supporting text on the navy sections.
 - **Danger** (`danger`, `#B91C1C`): Error messages.
 - **White** (`#FFFFFF`): Card surfaces and form fields.
@@ -174,6 +173,8 @@ Used only on things that open WhatsApp: the contact band's button and icon tile,
 The logo image file (`src/assets/kovera-logo.*`) still contains the old teal. This is a known mismatch with the cyan palette and has not been changed.
 
 ### Named Rules
+**Side colours are never decoration.** As a side marker (text, fills, icon tiles, card tints), cyan appears only on worker content. Content that speaks to both sides (the tagline, the how-it-works step numbers, the desktop link underline) uses indigo, which is also the brand colour. Four small brand accents are cyan without marking a side: the logo dot, the middle of the scroll progress bar, the `worker-glow` arrow and cross marks on navy, and the text-selection tint. A promise keeps one colour wherever it appears: "daytime, public workplaces" is a worker commitment, so it is cyan in the hero and in the approach band.
+
 **The Dual-Sided Symmetry Rule.** Business elements must never use Worker Cyan as their primary fill, and worker elements must never use Civic Indigo as their primary fill. Color serves a structural role separating demand from supply, never a purely decorative one.
 
 **The Daylight Safety Rule.** Dark backgrounds are restricted to the navy sections (`biz-dark`, `#201F53`) and the footer. General interactive forms and workflow surfaces operate on light canvas tones (`page`, white) to reinforce daytime safety and open commercial environments.
@@ -187,8 +188,8 @@ No web font is loaded. Earlier versions named Inter but never loaded it, so visi
 **Character:** A plain, robust system type setup engineered for instant legibility and fast loading on low-end phones. Weights range from extra-bold for headlines to regular for effortless mobile reading.
 
 ### Hierarchy
-- **Display** (Extrabold 800, `clamp(2.25rem, 5vw, 3.75rem)` / 36–60px, line-height 1.15, letter-spacing -0.025em): Hero value proposition.
-- **Headline** (Extrabold 800, `text-3xl sm:text-4xl` / 30–36px): Section headers (`h2`).
+- **Display** (Extrabold 800, 24px to 56px in steps, line-height 1.15, letter-spacing -0.025em): Hero value proposition. Sizes per width are listed under Hero below.
+- **Headline** (Extrabold 800, 22px, 24px from 360px wide, 36px from 640px): Section headers (`h2`). Always smaller than the hero headline at the same width.
 - **Title** (Bold 700, `1.25rem`–`1.5rem` / 20–24px, line-height 1.4): Card titles (`h3`).
 - **Body** (Regular 400, `text-base` / 16px, up to 18px for section subheads, line-height 1.625): Core explanatory text. Max line length constrained to 65–75 characters.
 - **Label** (Semibold 600, `text-sm` / 14px, sentence case): Field labels, pills, table and fact labels. No uppercase and no letter-spacing.
@@ -217,17 +218,16 @@ The spatial model relies on a responsive single-column mobile foundation that ex
 
 ## Elevation & Depth
 
-Depth comes from tonal surface layering and hairline borders. Cards, forms and lists are flat at rest. Elevation is a response: informational cards and filled buttons lift slightly and gain a shadow on hover.
+Depth comes from tonal surface layering and hairline borders. Cards, forms and lists are flat, and they do not react to hover because they cannot be clicked. Elevation is a response from things that can: filled buttons lift slightly and gain a shadow on hover.
 
 ### Shadow Vocabulary
-- **Cards, forms, lists at rest:** None. 1px border (`border-line`) and surface tint only.
-- **Informational cards on hover** (`Card lift`, or the `CARD_LIFT` classes): rise 4px with `shadow-lg`. Forms and the calculator card do not lift.
+- **Cards, forms, lists:** None, at rest or on hover. 1px border (`border-line`) and surface tint only.
 - **Filled buttons on hover:** rise 2px with `shadow-md`.
-- **Floating WhatsApp button:** `shadow-lg`, `shadow-xl` on hover. It appears only after the hero, contact band and form have scrolled out of view.
+- **Floating WhatsApp button:** `shadow-lg`, `shadow-xl` on hover. It appears only after the hero, contact band and form have scrolled out of view. It is a 56px circle (icon only) until the window is 1600px wide, where the label fits beside the content column instead of on top of it.
 - **Open mobile menu:** `shadow-xl`, since it overlays the page.
 
 ### Named Rules
-**The Flat-At-Rest Rule.** All content cards, form containers, and lists are flat at rest, distinguished only by surface tint and 1px hairline strokes. Shadows are reserved for hover responses and for the two things that float: the WhatsApp button and the open mobile menu. No blurred background shapes. The one gradient is the scroll progress bar in the header.
+**The Flat-At-Rest Rule.** All content cards, form containers, and lists are flat at rest, distinguished only by surface tint and 1px hairline strokes. Shadows are reserved for hovered buttons and for the two things that float: the WhatsApp button and the open mobile menu. No blurred background shapes. The one gradient is the scroll progress bar in the header.
 
 ## Shapes
 
@@ -258,7 +258,7 @@ All shared pieces live in `src/ui.jsx`: `Section`, `SectionHeading`, `Card`, `Bu
 - **Segmented control:** Two or three options in one strip (white, `line-strong` border). The selected segment is solid `biz` or `worker` with white text.
 
 ### Selected state
-One style everywhere (`Choice`, `Segmented`): solid side colour, white text and a check mark. `Choice` is a toggle button with `aria-pressed`; the compact variant puts the check as a corner badge.
+One style everywhere (`Choice`, `Segmented`): solid side colour and white text. A `Choice` also shows a check mark (it is a toggle button with `aria-pressed`; the compact variant puts the check as a corner badge). A `Segmented` strip shows the selection by its fill alone, since the strip itself says only one can be chosen. Secondary text inside a selected option is full white, not a tint (white at 85% on worker cyan is 4.35:1).
 
 ### Cards & Containers
 - **Standard Card:** White, 1px `line` border, radius 24px, padding 24px–32px.
@@ -273,7 +273,8 @@ One style everywhere (`Choice`, `Segmented`): solid side colour, white text and 
 ### Navigation
 - **Header:** Solid white sticky bar with a bottom hairline. No backdrop blur. It wraps instead of overflowing at large text sizes, and stops sticking on very narrow screens with very large text. Holds the Hindi/English switch.
 - **Scroll progress bar:** A 3px bar along the header's bottom edge that fills as the page scrolls, in a `biz` → `worker-bright` → `gold` gradient.
-- **Desktop links:** `ink`, turning `biz` on hover with a `worker-bright` underline that grows from the left.
+- **Skip link:** The first tab stop is "Skip to content", off screen until it has keyboard focus.
+- **Desktop links:** `ink`, turning `biz` on hover with a `biz` underline that grows from the left.
 - **Logo:** Lowercase bold wordmark `kovera` in `biz` followed by a `worker-bright` dot. On hover the emblem and the dot grow slightly.
 - **Menu button (below 1280px):** Three bars that fold into a cross; pale indigo while open.
 - **Mobile menu:** Solid white, slides down from under the header and fades in, with a shadow while open. The page behind dims, and a tap on it closes the menu. The header itself stays clear.
@@ -282,13 +283,13 @@ One style everywhere (`Choice`, `Segmented`): solid side colour, white text and 
 - **Success:** Shown inline in the form card, not in a modal.
 
 ### Hero
-- **Headline:** Runs the full width above the two columns so it fits on one line from 640px up; its size steps down with the space (26px to 56px). On phones it takes two lines (lead, then accent), because one line would need about 18px. Sizes are in rem and nothing is `nowrap`, so enlarged text wraps instead of overflowing.
+- **Headline:** Runs the full width above the two columns. It fits on one line from 1024px up (44px, then 56px from 1280px). Below that it takes two lines (lead, then accent) so it stays larger than the section headings: 24px to 30px on phones, 40px from 640px, 44px from 768px. Sizes are in rem and nothing is `nowrap`, so enlarged text wraps instead of overflowing.
 - **Tagline:** One line from 320px up.
 
 ### Motion
 Every animation is feedback for something the visitor did, lasts 150 to 300ms, and is switched off under `prefers-reduced-motion`:
 - **Scroll:** the header's progress bar.
-- **Hover:** buttons, cards, desktop links and the logo, as described above (pointer devices only).
+- **Hover:** buttons, desktop links and the logo, as described above (pointer devices only). Cards do not react: they are not clickable.
 - **Menu:** the button folds into a cross, the menu slides down and the page dims.
 - **Floating WhatsApp button:** pops in once the form has scrolled away; lifts on hover, presses in on tap.
 - **Choices:** a short fade (`animate-swap`) when chosen content swaps, plus the FAQ accordion.
@@ -300,7 +301,8 @@ Nothing animates on its own: no looping, floating or pulsing elements.
 ### Do:
 - **Do** maintain strict visual symmetry between Business and Worker content blocks across all comparison surfaces.
 - **Do** use the Tailwind tokens from `src/index.css` (`bg-biz`, `text-worker`, `border-line`, `text-body`) instead of one-off hexes.
-- **Do** keep cards flat at rest; a shadow is a response to hover, never decoration.
+- **Do** keep cards flat; only things that can be clicked react to hover.
+- **Do** use one name for each side everywhere: "I need workers" and "I want work" on the join buttons and in the form's chooser.
 - **Do** use one selected style everywhere: solid side colour, white text, check mark.
 - **Do** make every control at least 44px tall.
 - **Do** keep informative text at 14px or larger; footnotes included.

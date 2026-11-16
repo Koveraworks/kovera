@@ -11,7 +11,7 @@ export default function TwoSides({ onJoin }) {
       <SectionHeading title={s.title} sub={s.sub} />
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
-        <Card lift tone="biz" className="flex flex-col">
+        <Card tone="biz" className="flex flex-col">
           <div>
             <Pill tone="white">{c.side.business}</Pill>
           </div>
@@ -30,7 +30,7 @@ export default function TwoSides({ onJoin }) {
           </div>
         </Card>
 
-        <Card lift tone="worker" className="flex flex-col">
+        <Card tone="worker" className="flex flex-col">
           <div>
             <Pill tone="worker">{c.side.worker}</Pill>
           </div>

@@ -57,7 +57,8 @@ export default function Faq() {
         })}
       </div>
 
-      <p className="mt-10 text-center text-sm text-body">
+      {/* 16px, the same size as the link inside it. */}
+      <p className="mt-10 text-center text-base text-body">
         {s.more}{' '}
         <Button
           variant="link-whatsapp"

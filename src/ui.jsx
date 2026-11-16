@@ -3,9 +3,11 @@
  * selected states and the two side colours stay consistent.
  *
  * Rules these encode:
- * - Cards are flat at rest (border + tint, no shadow); a shadow appears only
- *   as a response to hover, or on things that float (menu, WhatsApp button).
- * - One selected style: solid side colour, white text, check mark.
+ * - Cards are flat (border + tint, no shadow) and do not react to hover: only
+ *   things that can be clicked do. A shadow appears on a hovered filled button
+ *   and on things that float (menu, WhatsApp button).
+ * - One selected style: solid side colour and white text. A Choice also gets
+ *   a check mark; a Segmented strip shows the selection by its fill alone.
  * - Every control is at least 44px tall (min-h-11).
  * - Text that carries information is 14px (text-sm) or larger.
  * - Tones: "biz" = indigo (business side), "worker" = cyan (worker side).
@@ -34,7 +36,8 @@ export function Section({ id, tone = 'page', narrow = false, className, children
 export function SectionHeading({ title, sub, align = 'center', onDark = false, className }) {
   return (
     <div className={cx('max-w-3xl mb-10 md:mb-14', align === 'center' && 'mx-auto text-center', className)}>
-      <h2 className={cx('text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight text-balance', onDark ? 'text-white' : 'text-ink')}>
+      {/* Smaller than the hero headline at every width: 22px, 24px from 360px, 36px from 640px. */}
+      <h2 className={cx('text-[1.375rem] min-[22.5rem]:text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight text-balance', onDark ? 'text-white' : 'text-ink')}>
         {title}
       </h2>
       {sub && (
@@ -53,13 +56,10 @@ const CARD_TONES = {
   worker: 'bg-worker-pale border-worker/25',
 };
 
-/** Hover response for cards: a small lift and shadow. Also usable on hand-built cards. */
-export const CARD_LIFT = 'transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-1 hover:shadow-lg';
-
-/** Flat container. `as` changes the element (default div). `lift` adds the hover response. */
-export function Card({ tone = 'white', as: Tag = 'div', lift = false, className, children, ...rest }) {
+/** Flat container. `as` changes the element (default div). Cards are not clickable, so they do not react to hover. */
+export function Card({ tone = 'white', as: Tag = 'div', className, children, ...rest }) {
   return (
-    <Tag className={cx('min-w-0 rounded-3xl border p-6 sm:p-8 lg:p-10', CARD_TONES[tone], lift && CARD_LIFT, className)} {...rest}>
+    <Tag className={cx('min-w-0 rounded-3xl border p-6 sm:p-8 lg:p-10', CARD_TONES[tone], className)} {...rest}>
       {children}
     </Tag>
   );
@@ -145,7 +145,8 @@ const CHOICE_SELECTED = {
  * One option in a set of choices (a toggle button with aria-pressed).
  * Selected = solid tone + check mark. The button has the `group` class, so
  * secondary text inside can restyle itself when selected, for example:
- *   <span className="text-body group-aria-pressed:text-white/85">…</span>
+ *   <span className="text-body group-aria-pressed:text-white">…</span>
+ * Use full white there: white at 85% on worker cyan is 4.35:1, below 4.5:1.
  *
  * `compact` is for short options that sit three or four across (a number, a
  * word): centred text, tighter padding, and the check mark as a corner badge
@@ -176,7 +177,8 @@ export function Choice({ selected, tone = 'biz', compact = false, className, chi
 }
 
 /**
- * Two or three mutually exclusive options in one strip.
+ * Two or three mutually exclusive options in one strip. The selected one is
+ * filled (no check mark: the strip itself shows that only one can be chosen).
  * options: [{ value, label, tone?: 'biz' | 'worker' }]
  */
 export function Segmented({ options, value, onChange, ariaLabel, className }) {

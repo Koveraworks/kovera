@@ -31,18 +31,18 @@ export default function Hero({ onJoin }) {
         <Pill wrap tone="biz" icon={MapPin}>{s.pilot}</Pill>
 
         {/*
-          The headline runs the full width above both columns so it fits on one
-          line from tablet width up; the size steps down with the space. On
-          phones one line would need about 17px, so it takes two: lead, then accent.
+          The headline runs the full width above both columns. From desktop
+          width (lg) it fits on one line. Below that it takes two lines (lead,
+          then accent), so it can stay larger than the section headings.
           Sizes are in rem and nothing is nowrap, so enlarged text wraps instead of overflowing.
         */}
-        <h1 className="mt-5 text-[1.5rem] min-[22.5rem]:text-[1.75rem] min-[25rem]:text-[1.875rem] sm:text-[1.625rem] md:text-[2rem] lg:text-[2.75rem] xl:text-[3.5rem] font-extrabold tracking-tight leading-[1.15] text-ink">
-          <span className="block sm:inline">{s.headline.lead}</span>{' '}
-          <span className="block text-biz sm:inline">{s.headline.accent}</span>
+        <h1 className="mt-5 text-[1.5rem] min-[22.5rem]:text-[1.75rem] min-[25rem]:text-[1.875rem] sm:text-[2.5rem] md:text-[2.75rem] xl:text-[3.5rem] font-extrabold tracking-tight leading-[1.15] text-ink">
+          <span className="block lg:inline">{s.headline.lead}</span>{' '}
+          <span className="block text-biz lg:inline">{s.headline.accent}</span>
         </h1>
 
         {/* One line on phones too: sized to fit from 320px wide. */}
-        <p className="mt-3 text-sm min-[22.5rem]:text-base min-[25rem]:text-[1.0625rem] sm:text-xl lg:text-2xl font-semibold tracking-tight text-worker">
+        <p className="mt-3 text-sm min-[22.5rem]:text-base min-[25rem]:text-[1.0625rem] sm:text-xl lg:text-2xl font-semibold tracking-tight text-biz">
           {c.tagline}
         </p>
 
@@ -57,7 +57,8 @@ export default function Hero({ onJoin }) {
                 {c.cta.needWorkers}
                 <ArrowRight className="w-5 h-5 shrink-0" aria-hidden="true" />
               </Button>
-              <Button variant="outline-worker" size="lg" className="w-full sm:w-auto" onClick={() => onJoin('worker')}>
+              {/* Both filled: the two sides get equal weight, each in its own colour. */}
+              <Button variant="worker" size="lg" className="w-full sm:w-auto" onClick={() => onJoin('worker')}>
                 {c.cta.wantWork}
                 <ArrowRight className="w-5 h-5 shrink-0" aria-hidden="true" />
               </Button>
@@ -78,7 +79,7 @@ export default function Hero({ onJoin }) {
                 <span className="break-words">{s.trust.zeroFee}</span>
               </li>
               <li className="flex items-start gap-1.5 min-w-0 lg:items-center lg:gap-3">
-                <span className="shrink-0 mt-0.5 text-biz lg:mt-0 lg:flex lg:h-10 lg:w-10 lg:items-center lg:justify-center lg:rounded-xl lg:bg-biz-pale">
+                <span className="shrink-0 mt-0.5 text-worker-bright lg:mt-0 lg:flex lg:h-10 lg:w-10 lg:items-center lg:justify-center lg:rounded-xl lg:bg-worker-pale lg:text-worker">
                   <Sun className="w-4 h-4 lg:w-5 lg:h-5" aria-hidden="true" />
                 </span>
                 <span className="break-words">{s.trust.daytime}</span>

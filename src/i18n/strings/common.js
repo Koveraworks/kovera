@@ -12,10 +12,13 @@ export default {
       description: 'Kovera connects local shops with dependable short-term help for the shifts that keep business moving. Pilot starting in Panipat, Haryana.',
     },
     tagline: 'Your local backup workforce, on demand.',
+    skip: 'Skip to content',
     cta: {
       join: 'Join the waitlist',
       needWorkers: 'I need workers',
-      wantWork: 'I’m looking for work',
+      // Short on purpose: it is also a segment in the waitlist chooser, which
+      // must fit beside "I need workers" on a 320px screen.
+      wantWork: 'I want work',
       whatsapp: 'WhatsApp us',
     },
     side: {
@@ -55,6 +58,7 @@ export default {
       description: 'Kovera आस-पास की दुकानों को कुछ घंटों की शिफ्ट के लिए भरोसेमंद वर्कर से जोड़ता है। पायलट की शुरुआत पानीपत, हरियाणा से।',
     },
     tagline: 'ज़रूरत पड़ने पर, आपके इलाक़े की बैकअप टीम।',
+    skip: 'सीधे मुख्य हिस्से पर जाएँ',
     cta: {
       join: 'वेटलिस्ट में जुड़ें',
       needWorkers: 'मुझे वर्कर चाहिए',

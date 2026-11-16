@@ -31,7 +31,7 @@ export async function submitBusinessRegistration(data) {
         business_name: data.businessName,
         contact_name: data.contactName,
         phone_number: data.phone || data.phoneNumber || null,
-        work_location: data.workLocation || 'Panipat',
+        work_location: data.workLocation || null,
         support_need: data.supportNeed || null,
       },
     ]);

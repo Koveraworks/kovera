@@ -1,37 +1,63 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens. Use these utility names (bg-biz, text-worker, border-line…)
+ * instead of hex literals in JSX.
+ *
+ * Two-sided system: indigo = business, cyan = worker.
+ * Contrast (WCAG): worker on white 5.36:1, white on worker 5.36:1,
+ * worker on worker-pale 4.81:1, worker-bright on white 3.68:1 (icons/rings only),
+ * body on page 5.27:1, line-strong on white 3.19:1 (control borders).
+ */
 @theme {
-  --color-brand-primary: #302F80;
-  --color-brand-dark: #201F53;
-  --color-brand-teal: #18A999;
-  --color-pale-teal: #E4F7F3;
-  --color-pale-indigo: #EEEFFC;
-  --color-accent-gold: #F4B86A;
-  --color-text-main: #181A32;
-  --color-text-body: #62677D;
-  --color-bg-page: #F7F8FC;
-  
-  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --color-ink: #181A32;
+  --color-body: #62677D;
+  --color-page: #F7F8FC;
+  --color-line: #EEEFFC;
+  --color-line-strong: #8A8FA8;
+
+  --color-biz: #302F80;
+  --color-biz-dark: #201F53;
+  --color-biz-pale: #EEEFFC;
+  --color-biz-body: #3B3A6F;
+
+  --color-worker: #0E7490;
+  --color-worker-dark: #155E75;
+  --color-worker-bright: #0891B2;
+  --color-worker-pale: #E0F7FA;
+  --color-worker-glow: #67E8F9;
+
+  --color-gold: #F4B86A;
+  --color-gold-pale: #FFF2E1;
+  --color-gold-ink: #8F5B10;
+
+  --color-navy-soft: #D9DDF1;
+  --color-danger: #B91C1C;
+
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', 'Noto Sans Devanagari', 'Nirmala UI', sans-serif;
 }
 
-/* Browser Surfaces Theming (Craft Floor Mandate) */
 ::selection {
-  background-color: #E4F7F3;
-  color: #302F80;
+  background-color: var(--color-worker-pale);
+  color: var(--color-biz);
 }
 
+/* One focus style everywhere; do not add per-element ring classes. */
 :focus-visible {
-  outline: 2px solid #302F80;
+  outline: 2px solid var(--color-biz);
   outline-offset: 2px;
 }
 
-input, textarea {
-  caret-color: #302F80;
+.on-dark :focus-visible {
+  outline-color: #ffffff;
 }
 
-/* Placeholder text at 5.27:1 on the field fill (was ~2.4:1) */
+input, textarea {
+  caret-color: var(--color-biz);
+}
+
 ::placeholder {
-  color: #62677D;
+  color: var(--color-body);
   opacity: 1;
 }
 
@@ -39,14 +65,13 @@ a, button.underline {
   text-underline-offset: 3px;
 }
 
-/* Custom subtle branded scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F7F8FC;
+  background: var(--color-page);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -58,90 +83,54 @@ a, button.underline {
   background: #B4B9D2;
 }
 
-body {
-  font-family: var(--font-sans);
-  background-color: #F7F8FC;
-  color: #181A32;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 html {
   scroll-behavior: smooth;
+  /* Anchored sections clear the sticky header. */
+  scroll-padding-top: 6rem;
 }
 
-/* Authoritative Motion System */
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.985); }
-  to { opacity: 1; transform: scale(1); }
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-page);
+  color: var(--color-ink);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Last resort: a word wider than its box breaks instead of pushing the page sideways. */
+  overflow-wrap: break-word;
 }
 
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-8px); }
+/*
+ * Hindi (Devanagari): no letter-spacing tricks, and taller lines so
+ * matras above and below the headline are not clipped.
+ */
+:lang(hi) {
+  letter-spacing: normal !important;
+}
+
+:lang(hi) :is(h1, h2, h3) {
+  line-height: 1.4 !important;
+}
+
+/* With very large text on a narrow screen the header stops sticking so it cannot eat the viewport. */
+@media (max-width: 19rem) {
+  .site-header {
+    position: static;
+  }
+}
+
+/* Motion: content swaps and the menu only. */
+@keyframes swapIn {
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes dispatchArrival {
-  from { opacity: 0; transform: translateY(6px) scale(0.99); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+.animate-swap {
+  animation: swapIn 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-@keyframes valuePop {
-  0% { opacity: 0.75; transform: scale(0.97); }
-  100% { opacity: 1; transform: scale(1); }
-}
-
-@keyframes floatGentle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-
-@keyframes pulseGlow {
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.04); }
-}
-
-@keyframes beaconPulse {
-  0%, 100% { transform: scale(1); opacity: 0.9; }
-  50% { transform: scale(1.15); opacity: 0.5; }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-slide-down {
-  animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-dispatch-arrival {
-  animation: dispatchArrival 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-value-pop {
-  animation: valuePop 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-float {
-  animation: floatGentle 6s ease-in-out infinite;
-}
-
-.animate-float-delayed {
-  animation: floatGentle 6.5s ease-in-out 2s infinite;
-}
-
-.animate-pulse-glow {
-  animation: pulseGlow 4s ease-in-out infinite;
-}
-
-.animate-beacon {
-  animation: beaconPulse 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-}
-
-/* Accordion Smooth Grid Transition */
+/* Accordion */
 .accordion-panel {
   display: grid;
   grid-template-rows: 0fr;
@@ -157,7 +146,6 @@ html {
   min-height: 0;
 }
 
-/* Accessibility: Full reduced-motion safeguard */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
     animation-duration: 0.01ms !important;
@@ -165,17 +153,9 @@ html {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  
-  .animate-pulse,
-  .animate-ping,
-  .animate-float,
-  .animate-float-delayed,
-  .animate-pulse-glow,
-  .animate-beacon,
-  .animate-dispatch-arrival,
-  .animate-value-pop,
-  .animate-fade-in,
-  .animate-slide-down {
+
+  .animate-swap,
+  .animate-spin {
     animation: none !important;
   }
 

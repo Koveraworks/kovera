@@ -28,7 +28,8 @@ import koveraLogo from './assets/kovera-logo.webp';
 export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const headerRef = useRef(null);
-  const [activeFormTab, setActiveFormTab] = useState('business'); // 'business', 'worker', 'both'
+  const scrollIndicatorRef = useRef(null);
+  const [activeFormTab, setActiveFormTab] = useState('business'); // 'business', 'worker'
   const [expandedFaq, setExpandedFaq] = useState(null);
 
   // Interactive Shift Explorer State
@@ -37,7 +38,6 @@ export default function App() {
 
   // Living Civic Dispatch State
   const [activeDispatchScenario, setActiveDispatchScenario] = useState(0);
-  const [scrollProgress, setScrollProgress] = useState(0);
 
   // 4-Hour Shift & Compensation Ledger State
   const [calcSide, setCalcSide] = useState('business'); // 'business' or 'worker'
@@ -101,6 +101,9 @@ export default function App() {
     businessName: '',
     contactName: '',
     phone: '',
+    city: 'Panipat',
+    state: 'Haryana',
+    locality: '',
     workLocation: '',
     supportNeed: ''
   });
@@ -108,6 +111,8 @@ export default function App() {
   const [workerForm, setWorkerForm] = useState({
     fullName: '',
     phone: '',
+    city: 'Panipat',
+    state: 'Haryana',
     locality: '',
     experience: '',
     availability: ''
@@ -173,20 +178,20 @@ export default function App() {
 
   const handleApplyPresetToBusiness = (roleKey, durationKey) => {
     const role = roleTemplates[roleKey];
-    const durationLabel = durationKey === '4hours' ? '4-Hour Rush Shift' : durationKey === 'weekend' ? 'Weekend Peak Rush' : 'Full-Day Support';
+    const durationLabel = durationKey === '4hours' ? '4-Hour Rush' : durationKey === 'weekend' ? 'Weekend Rush' : 'Full-Day Support';
     setBusinessForm(prev => ({
       ...prev,
-      supportNeed: `${role.title} (${durationLabel}) - ${role.description}`
+      supportNeed: `${role.title} (${durationLabel})`
     }));
     goToWaitlist('business');
   };
 
   const handleApplyPresetToWorker = (roleKey, durationKey) => {
     const role = roleTemplates[roleKey];
-    const durationLabel = durationKey === '4hours' ? '4-Hour Daytime Shift' : durationKey === 'weekend' ? 'Weekend Peak Shifts' : 'Full Daytime Shifts';
+    const durationLabel = durationKey === '4hours' ? '4-Hour Shift' : durationKey === 'weekend' ? 'Weekend Shifts' : 'Daytime Shifts';
     setWorkerForm(prev => ({
       ...prev,
-      experience: `Available for ${role.title} (${durationLabel})`
+      experience: `${role.title} (${durationLabel})`
     }));
     goToWaitlist('worker');
   };
@@ -283,23 +288,19 @@ export default function App() {
 
   const handleApplyCalcToBusiness = () => {
     const roleInfo = calculatorRates[calcRole];
-    const totalEstMin = roleInfo.minPay * calcDuration;
-    const totalEstMax = roleInfo.maxPay * calcDuration;
     setBusinessForm(prev => ({
       ...prev,
-      supportNeed: `${roleInfo.title} (${calcDuration} Hours Daytime Shift · ₹${totalEstMin}–₹${totalEstMax} est.) - ${roleInfo.tasks}`
+      supportNeed: `${roleInfo.title} (${calcDuration} Hours Shift)`
     }));
     goToWaitlist('business');
   };
 
   const handleApplyCalcToWorker = () => {
     const roleInfo = calculatorRates[calcRole];
-    const weeklyMin = roleInfo.minPay * 4 * calcWeeklyShifts;
-    const weeklyMax = roleInfo.maxPay * 4 * calcWeeklyShifts;
     setWorkerForm(prev => ({
       ...prev,
-      experience: `Available for ${roleInfo.title}`,
-      availability: `${calcWeeklyShifts} daytime shifts/week (Prefers 4-hr slots · est. ₹${weeklyMin}–₹${weeklyMax}/wk)`
+      experience: roleInfo.title,
+      availability: `${calcWeeklyShifts} daytime shifts per week`
     }));
     goToWaitlist('worker');
   };
@@ -307,6 +308,9 @@ export default function App() {
   const handleApplyZoneToBusiness = (zone) => {
     setBusinessForm(prev => ({
       ...prev,
+      city: 'Panipat',
+      state: 'Haryana',
+      locality: zone.name,
       workLocation: `${zone.name}, Panipat`
     }));
     goToWaitlist('business');
@@ -315,7 +319,9 @@ export default function App() {
   const handleApplyZoneToWorker = (zone) => {
     setWorkerForm(prev => ({
       ...prev,
-      locality: `${zone.name}, Panipat`
+      city: 'Panipat',
+      state: 'Haryana',
+      locality: zone.name
     }));
     goToWaitlist('worker');
   };
@@ -374,6 +380,12 @@ export default function App() {
     if (!isValidIndianMobile(businessForm.phone)) {
       errors.phone = 'Please enter a valid 10-digit mobile number.';
     }
+    if (!businessForm.city?.trim()) {
+      errors.city = 'Please enter your city.';
+    }
+    if (!businessForm.state?.trim()) {
+      errors.state = 'Please enter your state.';
+    }
     return errors;
   };
 
@@ -385,8 +397,11 @@ export default function App() {
     if (!isValidIndianMobile(workerForm.phone)) {
       errors.phone = 'Please enter a valid 10-digit mobile number.';
     }
-    if (!workerForm.locality.trim()) {
-      errors.locality = 'Please specify your locality in Panipat.';
+    if (!workerForm.city?.trim()) {
+      errors.city = 'Please enter your city.';
+    }
+    if (!workerForm.state?.trim()) {
+      errors.state = 'Please enter your state.';
     }
     return errors;
   };
@@ -403,15 +418,22 @@ export default function App() {
 
     setIsSubmittingBusiness(true);
     try {
-      const res = await submitBusinessRegistration(businessForm);
+      const fullLocation = [businessForm.locality, businessForm.city, businessForm.state].filter(Boolean).join(', ') || 'Panipat, Haryana';
+      const res = await submitBusinessRegistration({
+        businessName: businessForm.businessName.trim(),
+        contactName: businessForm.contactName.trim(),
+        phone: businessForm.phone.trim(),
+        workLocation: fullLocation,
+        supportNeed: businessForm.supportNeed?.trim() || null
+      });
       setToastMessage({
         show: true,
         type: 'business',
         title: 'Business Interest Registered!',
-        detail: `Thank you ${businessForm.contactName}. We have received your details for ${businessForm.businessName} in ${businessForm.workLocation || 'Panipat'}.`,
+        detail: `Thank you ${businessForm.contactName}. We have received your details for ${businessForm.businessName} in ${fullLocation}.`,
         isMock: res?.mock
       });
-      setBusinessForm({ businessName: '', contactName: '', phone: '', workLocation: '', supportNeed: '' });
+      setBusinessForm({ businessName: '', contactName: '', phone: '', city: 'Panipat', state: 'Haryana', locality: '', workLocation: '', supportNeed: '' });
       setBusinessErrors({});
       setBusinessFormError(null);
     } catch (err) {
@@ -434,15 +456,22 @@ export default function App() {
 
     setIsSubmittingWorker(true);
     try {
-      const res = await submitWorkerRegistration(workerForm);
+      const fullLocality = [workerForm.locality, workerForm.city, workerForm.state].filter(Boolean).join(', ') || 'Panipat, Haryana';
+      const res = await submitWorkerRegistration({
+        fullName: workerForm.fullName.trim(),
+        phone: workerForm.phone.trim(),
+        locality: fullLocality,
+        experience: workerForm.experience?.trim() || null,
+        availability: workerForm.availability?.trim() || null
+      });
       setToastMessage({
         show: true,
         type: 'worker',
         title: 'Worker Interest Registered!',
-        detail: `Thank you ${workerForm.fullName}. We have added your profile to our Panipat worker pilot network.`,
+        detail: `Thank you ${workerForm.fullName}. We have added your profile to our worker pilot network for ${fullLocality}.`,
         isMock: res?.mock
       });
-      setWorkerForm({ fullName: '', phone: '', locality: '', experience: '', availability: '' });
+      setWorkerForm({ fullName: '', phone: '', city: 'Panipat', state: 'Haryana', locality: '', experience: '', availability: '' });
       setWorkerErrors({});
       setWorkerFormError(null);
     } catch (err) {
@@ -466,26 +495,28 @@ export default function App() {
     scrollToSection('waitlist');
   };
 
-  // Ensure mobile viewports default cleanly to focused single form view
+  // Track scroll progress for navigation indicator (GPU composited, zero React re-renders)
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 640 && activeFormTab === 'both') {
-        setActiveFormTab('business');
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [activeFormTab]);
-
-  // Track scroll progress for navigation indicator
-  useEffect(() => {
-    const handleScroll = () => {
+    let ticking = false;
+    const updateScrollProgress = () => {
+      if (!scrollIndicatorRef.current) return;
       const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
       if (totalScroll > 0) {
-        setScrollProgress(Math.min(100, Math.max(0, (window.scrollY / totalScroll) * 100)));
+        const progress = Math.min(1, Math.max(0, window.scrollY / totalScroll));
+        scrollIndicatorRef.current.style.transform = `scaleX(${progress})`;
+      }
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateScrollProgress);
+        ticking = true;
       }
     };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
+    updateScrollProgress();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -566,10 +597,11 @@ export default function App() {
 
       {/* 01 — Navigation Header */}
       <header ref={headerRef} className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#EEEFFC]/80 shadow-xs relative">
-        {/* Scroll Progress Indicator */}
+        {/* Scroll Progress Indicator (GPU accelerated scaleX) */}
         <div 
-          className="absolute bottom-0 left-0 h-[2.5px] bg-gradient-to-r from-[#302F80] via-[#18A999] to-[#F4B86A] transition-all duration-75"
-          style={{ width: `${scrollProgress}%` }}
+          ref={scrollIndicatorRef}
+          className="absolute bottom-0 left-0 w-full h-[2.5px] bg-gradient-to-r from-[#302F80] via-[#18A999] to-[#F4B86A] origin-left will-change-transform transform-gpu"
+          style={{ transform: 'scaleX(0)' }}
           aria-hidden="true"
         />
         <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12 xl:px-16 h-20 flex items-center justify-between">
@@ -617,72 +649,68 @@ export default function App() {
             </button>
           </nav>
 
-          {/* Desktop Right CTAs */}
-          <div className="hidden sm:flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F7F8FC] border border-[#EEEFFC] text-xs font-bold text-[#62677D]">
-              <span className="w-2 h-2 rounded-full bg-[#18A999] animate-pulse" />
-              <span>Panipat Pilot Live</span>
-            </div>
+          {/* Right Header CTAs & Toggle */}
+          <div className="flex items-center gap-2.5 sm:gap-3">
             <button 
               onClick={() => goToWaitlist('business')}
-              className="px-5 py-2.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-sm rounded-xl transition shadow-md hover:shadow-lg flex items-center gap-1.5 cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:ring-offset-2 focus-visible:outline-none"
+              className="px-4 py-2 sm:px-5 sm:py-2.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-xs sm:text-sm rounded-xl transition shadow-sm hover:shadow-md flex items-center gap-1.5 cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:ring-offset-2 focus-visible:outline-none"
             >
               <span>Join waitlist</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            </button>
+
+            {/* Mobile Menu FAB / Interactive Toggle Button */}
+            <button 
+              type="button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className={`lg:hidden relative w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center cursor-pointer transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-90 focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:ring-offset-2 focus-visible:outline-none select-none ${
+                mobileMenuOpen 
+                  ? 'bg-[#EEEFFC] text-[#302F80] border border-[#302F80]/25 shadow-xs' 
+                  : 'bg-white text-[#181A32] hover:text-[#302F80] border border-[#EEEFFC] shadow-xs hover:border-[#302F80]/30 hover:shadow-sm'
+              }`}
+              aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-nav-drawer"
+            >
+              {/* Morphing Hamburger-to-Close Icon */}
+              <div 
+                className={`relative w-5 h-3.5 flex flex-col justify-between items-center transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                  mobileMenuOpen ? 'rotate-90' : 'rotate-0'
+                }`}
+                aria-hidden="true"
+              >
+                {/* Top Bar */}
+                <span 
+                  className={`block h-0.5 w-5 rounded-full transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] origin-center ${
+                    mobileMenuOpen 
+                      ? 'translate-y-[6px] rotate-45 bg-[#302F80]' 
+                      : 'translate-y-0 rotate-0 bg-current'
+                  }`} 
+                />
+                {/* Middle Bar */}
+                <span 
+                  className={`block h-0.5 w-5 rounded-full transition-all duration-150 ease-out ${
+                    mobileMenuOpen 
+                      ? 'opacity-0 scale-x-0 bg-[#302F80]' 
+                      : 'opacity-100 scale-x-100 bg-current'
+                  }`} 
+                />
+                {/* Bottom Bar */}
+                <span 
+                  className={`block h-0.5 w-5 rounded-full transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] origin-center ${
+                    mobileMenuOpen 
+                      ? '-translate-y-[6px] -rotate-45 bg-[#302F80]' 
+                      : 'translate-y-0 rotate-0 bg-current'
+                  }`} 
+                />
+              </div>
             </button>
           </div>
-
-          {/* Mobile Menu FAB / Interactive Toggle Button */}
-          <button 
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`lg:hidden relative w-11 h-11 rounded-2xl flex items-center justify-center cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-90 focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:ring-offset-2 focus-visible:outline-none select-none ${
-              mobileMenuOpen 
-                ? 'bg-[#EEEFFC] text-[#302F80] border border-[#302F80]/25 shadow-xs' 
-                : 'bg-white text-[#181A32] hover:text-[#302F80] border border-[#EEEFFC] shadow-xs hover:border-[#302F80]/30 hover:shadow-sm'
-            }`}
-            aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-            aria-expanded={mobileMenuOpen}
-            aria-controls="mobile-nav-drawer"
-          >
-            {/* Morphing Hamburger-to-Close Icon */}
-            <div 
-              className={`relative w-5 h-3.5 flex flex-col justify-between items-center transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                mobileMenuOpen ? 'rotate-90' : 'rotate-0'
-              }`}
-              aria-hidden="true"
-            >
-              {/* Top Bar */}
-              <span 
-                className={`block h-0.5 w-5 rounded-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] origin-center ${
-                  mobileMenuOpen 
-                    ? 'translate-y-[6px] rotate-45 bg-[#302F80]' 
-                    : 'translate-y-0 rotate-0 bg-current'
-                }`} 
-              />
-              {/* Middle Bar */}
-              <span 
-                className={`block h-0.5 w-5 rounded-full transition-all duration-200 ease-out ${
-                  mobileMenuOpen 
-                    ? 'opacity-0 scale-x-0 bg-[#302F80]' 
-                    : 'opacity-100 scale-x-100 bg-current'
-                }`} 
-              />
-              {/* Bottom Bar */}
-              <span 
-                className={`block h-0.5 w-5 rounded-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] origin-center ${
-                  mobileMenuOpen 
-                    ? '-translate-y-[6px] -rotate-45 bg-[#302F80]' 
-                    : 'translate-y-0 rotate-0 bg-current'
-                }`} 
-              />
-            </div>
-          </button>
         </div>
 
         {/* Mobile Navigation Backdrop Overlay (Smooth, Interruptible Enter/Exit) */}
         <div 
-          className={`fixed inset-0 top-20 bg-black/40 backdrop-blur-xs z-30 lg:hidden transition-opacity duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`fixed inset-0 top-20 bg-black/30 z-30 lg:hidden transition-opacity duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu ${
             mobileMenuOpen 
               ? 'opacity-100 pointer-events-auto' 
               : 'opacity-0 pointer-events-none'
@@ -691,14 +719,14 @@ export default function App() {
           aria-hidden={!mobileMenuOpen}
         />
 
-        {/* Mobile Navigation Drawer (Smooth, Interruptible Enter/Exit) */}
+        {/* Mobile Navigation Drawer (Hardware-accelerated, zero-layout-reflow) */}
         <div 
           id="mobile-nav-drawer" 
           inert={!mobileMenuOpen ? '' : undefined}
-          className={`relative z-40 lg:hidden bg-white border-b border-[#EEEFFC] px-6 space-y-1.5 shadow-2xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`absolute top-full left-0 right-0 z-40 lg:hidden bg-white border-b border-[#EEEFFC] px-6 pt-3 pb-6 space-y-1.5 shadow-2xl transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu will-change-transform ${
             mobileMenuOpen 
-              ? 'opacity-100 translate-y-0 max-h-[520px] pt-3 pb-6 pointer-events-auto' 
-              : 'opacity-0 -translate-y-3 max-h-0 pt-0 pb-0 overflow-hidden pointer-events-none border-transparent'
+              ? 'opacity-100 translate-y-0 pointer-events-auto visible' 
+              : 'opacity-0 -translate-y-2 pointer-events-none invisible border-transparent'
           }`}
           aria-hidden={!mobileMenuOpen}
         >
@@ -1045,13 +1073,13 @@ export default function App() {
 
               {/* Local Community Signature */}
               <div className="mt-8 pt-6 border-t border-[#EEEFFC] flex flex-col items-center justify-center text-center">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFF2E1] text-[#8F5B10] text-xs font-bold uppercase tracking-wider mb-2 border border-[#F4B86A]/40 shadow-2xs">
-                  <Sparkles className="w-3.5 h-3.5 text-[#F4B86A]" /> Panipat Local Voice · शाम हो या सवेरा
+                <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#FFF2E1] text-[#8F5B10] text-sm sm:text-base font-bold tracking-normal mb-2.5 border border-[#F4B86A]/40 shadow-2xs">
+                  Panipat Local Voice · शाम हो या सवेरा
                 </span>
-                <p className="text-base sm:text-lg font-bold text-[#302F80] tracking-tight">
+                <p className="text-lg sm:text-xl font-extrabold text-[#302F80] tracking-tight">
                   “Shaam ho ya savera, Panipat ke shops ke liye, Kovera.”
                 </p>
-                <p className="text-xs text-[#62677D] mt-1">
+                <p className="text-xs sm:text-sm text-[#62677D] mt-1.5">
                   Local backup workforce built with and for the retail merchants of Haryana.
                 </p>
               </div>
@@ -2016,22 +2044,11 @@ export default function App() {
               </p>
 
               {/* Tab Switcher */}
-              <div className="mt-8 w-full max-w-sm sm:w-auto mx-auto grid grid-cols-2 sm:flex items-center p-1.5 bg-white rounded-2xl border border-[#EEEFFC] shadow-2xs gap-1 sm:gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => setActiveFormTab('both')}
-                  className={`hidden sm:inline-block px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer text-center ${
-                    activeFormTab === 'both' 
-                      ? 'bg-[#302F80] text-white shadow-2xs' 
-                      : 'text-[#62677D] hover:text-[#181A32]'
-                  }`}
-                >
-                  Show both
-                </button>
+              <div className="mt-8 w-full max-w-xs sm:max-w-sm mx-auto grid grid-cols-2 p-1.5 bg-white rounded-2xl border border-[#EEEFFC] shadow-2xs gap-1.5">
                 <button
                   type="button"
                   onClick={() => setActiveFormTab('business')}
-                  className={`w-full sm:w-auto px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer text-center ${
+                  className={`w-full py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer text-center ${
                     activeFormTab === 'business' 
                       ? 'bg-[#302F80] text-white shadow-2xs' 
                       : 'text-[#62677D] hover:text-[#181A32]'
@@ -2042,7 +2059,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setActiveFormTab('worker')}
-                  className={`w-full sm:w-auto px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer text-center ${
+                  className={`w-full py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer text-center ${
                     activeFormTab === 'worker' 
                       ? 'bg-[#18A999] text-white shadow-2xs' 
                       : 'text-[#62677D] hover:text-[#181A32]'
@@ -2053,14 +2070,10 @@ export default function App() {
               </div>
             </div>
 
-            <div className={
-              activeFormTab === 'both'
-                ? "grid grid-cols-1 lg:grid-cols-2 gap-8 items-start max-w-5xl mx-auto transition-all duration-300"
-                : "max-w-2xl mx-auto w-full transition-all duration-300"
-            }>
+            <div className="max-w-2xl mx-auto w-full transition-all duration-300">
               
               {/* Business Form */}
-              {(activeFormTab === 'both' || activeFormTab === 'business') && (
+              {activeFormTab === 'business' && (
                 <div className="bg-white rounded-3xl p-6 sm:p-8 md:p-10 border border-[#EEEFFC] shadow-lg animate-dispatch-arrival">
                   <div className="flex items-center justify-between mb-6">
                     <span className="px-3 py-1 bg-[#EEEFFC] text-[#302F80] text-xs font-bold rounded-full">
@@ -2122,7 +2135,7 @@ export default function App() {
                           type="tel"
                           inputMode="tel"
                           maxLength={14}
-                          placeholder="98765 43210"
+                          placeholder="98XXXXXXXX"
                           value={businessForm.phone}
                           onChange={(e) => handleBusinessChange('phone', e.target.value)}
                           aria-invalid={businessErrors.phone ? "true" : undefined}
@@ -2138,14 +2151,55 @@ export default function App() {
                       <p className="text-xs text-[#62677D] mt-1.5">We coordinate shift availability via WhatsApp / Phone</p>
                     </div>
 
+                    {/* City & State */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label htmlFor="biz-city" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">City</label>
+                        <input
+                          id="biz-city"
+                          type="text"
+                          placeholder="e.g. Panipat"
+                          value={businessForm.city}
+                          onChange={(e) => handleBusinessChange('city', e.target.value)}
+                          aria-invalid={businessErrors.city ? "true" : undefined}
+                          aria-describedby={businessErrors.city ? "biz-city-error" : undefined}
+                          className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${businessErrors.city ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20'}`}
+                        />
+                        {businessErrors.city && (
+                          <p id="biz-city-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
+                            <AlertCircle className="w-3.5 h-3.5 shrink-0" /> {businessErrors.city}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label htmlFor="biz-state" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">State</label>
+                        <input
+                          id="biz-state"
+                          type="text"
+                          placeholder="e.g. Haryana"
+                          value={businessForm.state}
+                          onChange={(e) => handleBusinessChange('state', e.target.value)}
+                          aria-invalid={businessErrors.state ? "true" : undefined}
+                          aria-describedby={businessErrors.state ? "biz-state-error" : undefined}
+                          className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${businessErrors.state ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20'}`}
+                        />
+                        {businessErrors.state && (
+                          <p id="biz-state-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
+                            <AlertCircle className="w-3.5 h-3.5 shrink-0" /> {businessErrors.state}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
                     <div>
-                      <label htmlFor="biz-location" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">Work location</label>
+                      <label htmlFor="biz-location" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">Locality / Market Area (Optional)</label>
                       <input
                         id="biz-location"
                         type="text"
-                        placeholder="e.g. Model Town, Panipat"
-                        value={businessForm.workLocation}
-                        onChange={(e) => handleBusinessChange('workLocation', e.target.value)}
+                        placeholder="e.g. Model Town Market, Insar Bazaar"
+                        value={businessForm.locality}
+                        onChange={(e) => handleBusinessChange('locality', e.target.value)}
                         className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20 rounded-xl text-sm outline-none transition"
                       />
                     </div>
@@ -2192,7 +2246,7 @@ export default function App() {
               )}
 
               {/* Worker Form */}
-              {(activeFormTab === 'both' || activeFormTab === 'worker') && (
+              {activeFormTab === 'worker' && (
                 <div className="bg-white rounded-3xl p-6 sm:p-8 md:p-10 border border-[#EEEFFC] shadow-lg animate-dispatch-arrival">
                   <div className="flex items-center justify-between mb-6">
                     <span className="px-3 py-1 bg-[#E4F7F3] text-[#0E6E63] text-xs font-bold rounded-full border border-[#18A999]/20">
@@ -2235,7 +2289,7 @@ export default function App() {
                           type="tel"
                           inputMode="tel"
                           maxLength={14}
-                          placeholder="98765 43210"
+                          placeholder="98XXXXXXXX"
                           value={workerForm.phone}
                           onChange={(e) => handleWorkerChange('phone', e.target.value)}
                           aria-invalid={workerErrors.phone ? "true" : undefined}
@@ -2251,23 +2305,57 @@ export default function App() {
                       <p className="text-xs text-[#62677D] mt-1.5">We coordinate shift availability via WhatsApp / Phone</p>
                     </div>
 
+                    {/* City & State (In Locality Section) */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label htmlFor="worker-city" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">City</label>
+                        <input
+                          id="worker-city"
+                          type="text"
+                          placeholder="e.g. Panipat"
+                          value={workerForm.city}
+                          onChange={(e) => handleWorkerChange('city', e.target.value)}
+                          aria-invalid={workerErrors.city ? "true" : undefined}
+                          aria-describedby={workerErrors.city ? "worker-city-error" : undefined}
+                          className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${workerErrors.city ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20'}`}
+                        />
+                        {workerErrors.city && (
+                          <p id="worker-city-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
+                            <AlertCircle className="w-3.5 h-3.5 shrink-0" /> {workerErrors.city}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label htmlFor="worker-state" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">State</label>
+                        <input
+                          id="worker-state"
+                          type="text"
+                          placeholder="e.g. Haryana"
+                          value={workerForm.state}
+                          onChange={(e) => handleWorkerChange('state', e.target.value)}
+                          aria-invalid={workerErrors.state ? "true" : undefined}
+                          aria-describedby={workerErrors.state ? "worker-state-error" : undefined}
+                          className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${workerErrors.state ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20'}`}
+                        />
+                        {workerErrors.state && (
+                          <p id="worker-state-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
+                            <AlertCircle className="w-3.5 h-3.5 shrink-0" /> {workerErrors.state}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
                     <div>
-                      <label htmlFor="worker-locality" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">Locality</label>
+                      <label htmlFor="worker-locality" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">Locality / Area (Optional)</label>
                       <input
                         id="worker-locality"
                         type="text"
-                        placeholder="Where are you based in Panipat?"
+                        placeholder="e.g. Model Town, Insar Bazaar"
                         value={workerForm.locality}
                         onChange={(e) => handleWorkerChange('locality', e.target.value)}
-                        aria-invalid={workerErrors.locality ? "true" : undefined}
-                        aria-describedby={workerErrors.locality ? "worker-locality-error" : undefined}
-                        className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${workerErrors.locality ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20'}`}
+                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20 rounded-xl text-sm outline-none transition"
                       />
-                      {workerErrors.locality && (
-                        <p id="worker-locality-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
-                          <AlertCircle className="w-3.5 h-3.5 shrink-0" /> {workerErrors.locality}
-                        </p>
-                      )}
                     </div>
 
                     <div>

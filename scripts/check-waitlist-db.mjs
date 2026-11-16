@@ -8,9 +8,11 @@
 // Point it at a scratch project, not the live one: it saves a few rows named
 // "TEST delete me", which only you can remove (in Supabase Studio).
 //
-// For --limit=N, first set the limit to N in the SQL Editor:
+// For --limit=N, first run this in the SQL Editor (it sets the limit to N and
+// forgets earlier test inserts, which would otherwise be counted):
 //   update private.intake_config set per_ip_per_hour = N;
-// and put it back to 30 afterwards.
+//   delete from private.intake_log;
+// and put the limit back to 30 afterwards.
 
 try {
   process.loadEnvFile('.env');
@@ -21,7 +23,11 @@ try {
 const url = process.env.VITE_SUPABASE_URL;
 const key = process.env.VITE_SUPABASE_ANON_KEY;
 // A plain PostgREST server has no /rest/v1 prefix; this lets the checks run against one.
+// Nothing in front of it reports a visitor address, so WAITLIST_TEST_IP supplies one.
 const rest = process.env.WAITLIST_REST_URL || (url ? `${url.replace(/\/+$/, '')}/rest/v1` : null);
+const localAddress = process.env.WAITLIST_REST_URL && process.env.WAITLIST_TEST_IP
+  ? { 'X-Forwarded-For': process.env.WAITLIST_TEST_IP }
+  : {};
 const limitArg = process.argv.find((arg) => arg.startsWith('--limit='));
 const limit = limitArg ? Number(limitArg.split('=')[1]) : null;
 
@@ -53,6 +59,7 @@ async function call(path, { method = 'GET', body, headers = {} } = {}) {
     headers: {
       ...(key ? { apikey: key, Authorization: `Bearer ${key}` } : {}),
       ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
+      ...localAddress,
       ...headers,
     },
     body: body === undefined ? undefined : JSON.stringify(body),
@@ -112,7 +119,13 @@ if (limit !== null) {
   let last = { status: 201 };
   while (accepted < limit && last.status === 201) last = await insert('worker_registrations', WORKER);
   const over = await insert('worker_registrations', WORKER);
-  report(accepted === limit && over.status === 429, `the per-IP limit stops insert number ${limit + 1}`, `${accepted} saved, then HTTP ${over.status}`);
+  const tripped = accepted === limit && over.status === 429;
+  report(tripped, `the per-IP limit stops insert number ${limit + 1}`, `${accepted} saved, then HTTP ${over.status}`);
+  if (!tripped) {
+    console.log('      Was the pre-step run (limit set to the same number, intake_log emptied)? If so, look at the');
+    console.log('      ip column of private.intake_log: if it is empty, the database is not told visitor addresses');
+    console.log('      and only the total limit is in effect.');
+  }
 
   // The limit trusts the address the network reports. If a made-up header gets a
   // row through, a script can dodge the per-IP limit and only the total limit holds.
@@ -129,5 +142,5 @@ if (limit !== null) {
 
 console.log('');
 console.log(`${failures} failed, ${warnings} warning${warnings === 1 ? '' : 's'}. ${accepted} "${TEST}" row${accepted === 1 ? '' : 's'} saved: delete them in Supabase Studio.`);
-if (limit !== null) console.log('Put the limit back: update private.intake_config set per_ip_per_hour = 30;');
+if (limit !== null) console.log('Put the limit back: update private.intake_config set per_ip_per_hour = 30;  Then look at the ip column of private.intake_log: it should hold your own address.');
 process.exit(failures ? 1 : 0);

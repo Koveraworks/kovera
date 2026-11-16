@@ -98,7 +98,7 @@ The forms write to the database straight from the visitor's browser, using a key
 
 - Anyone can submit the Business or Worker waitlist form, and nothing else. Visitors **cannot** read, update, or delete any records, and cannot set a row's `id`, `created_at` or `status`.
 - Each submitted row must have a valid Indian mobile number and the required names, and every text field has a length cap. The form's own `maxLength` values (`MAX_LENGTH` in `src/sections/Waitlist.jsx`) sit below those caps.
-- Submissions are rate-limited: 30 an hour per IP address and 300 an hour in total across both forms. Change these in `private.intake_config` (Supabase Studio, schema `private`). When the total is reached, every signup fails for the rest of that hour and the visitor is told to try again or use WhatsApp. The limits slow a script down; they do not replace looking at the table now and then.
+- Submissions are rate-limited: 30 an hour per IP address and 300 an hour in total across both forms. If the database cannot tell which address a row came from, only the total applies to that row. Change these in `private.intake_config` (Supabase Studio, schema `private`). When the total is reached, every signup fails for the rest of that hour and the visitor is told to try again or use WhatsApp. The limits slow a script down; they do not replace looking at the table now and then.
 - Only you as admin can view and export records in your Supabase dashboard. `private.business_latest` and `private.worker_latest` show the latest row per phone number.
 - Rows you add or edit in Supabase Studio are not checked or limited.
 
@@ -114,10 +114,14 @@ node scripts/check-waitlist-db.mjs
 
 # Also test the rate limit. First run in the SQL Editor:
 #   update private.intake_config set per_ip_per_hour = 3;
+#   delete from private.intake_log;
 node scripts/check-waitlist-db.mjs --limit=3
+# Afterwards: update private.intake_config set per_ip_per_hour = 30;
 ```
 
 With `--limit`, the script also sends a made-up `X-Forwarded-For` and `CF-Connecting-IP` header. A `WARN` there means a script can dodge the per-IP limit on your project, and only the total limit protects you.
+
+Then open `private.intake_log` in Studio and look at the `ip` column. It should hold your own public address. If it is empty, the database is not being told visitor addresses, the per-IP limit is skipped, and only the total limit is in effect.
 
 After running `schema.sql` on the live project, submit the live form once per side straight away and confirm both rows in Studio. If a form fails, run the rollback block at the end of `schema.sql`.
 
@@ -148,7 +152,7 @@ Both variables are read at build time. With only one of them set the build fails
 
 Setup: in **Settings** -> **Secrets and variables** -> **Actions**, add the repository secrets `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`, then run the workflow once from the **Actions** tab.
 
-GitHub switches off scheduled workflows in a public repository after 60 days without repository activity. Re-enable it from the **Actions** tab if that happens.
+GitHub can switch off scheduled workflows in a public repository after about 60 days without repository activity. If the runs stop, re-enable the workflow from the **Actions** tab.
 
 ---
 

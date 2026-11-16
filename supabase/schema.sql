@@ -113,7 +113,9 @@ CREATE TABLE IF NOT EXISTS private.intake_config (
 INSERT INTO private.intake_config (id) VALUES (true) ON CONFLICT (id) DO NOTHING;
 
 -- One row per accepted API insert. Rows older than an hour are deleted as new
--- ones arrive, so IP addresses are not kept.
+-- ones arrive, so IP addresses are not kept. If the ip column is always empty
+-- here, the database is not being told visitor addresses and only the total
+-- limit is in effect.
 CREATE TABLE IF NOT EXISTS private.intake_log (
     ip INET,
     request_at TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -201,8 +203,9 @@ BEGIN
      WHERE c.id;
 
     -- cf-connecting-ip is set by the network edge; x-forwarded-for is the
-    -- documented fallback. An address that cannot be read is counted as NULL,
-    -- together with every other unreadable one.
+    -- documented fallback. If neither gives a readable address, the per-IP
+    -- limit is skipped for this row and only the total limit applies, so that
+    -- visitors never end up sharing one small allowance.
     BEGIN
         headers := nullif(current_setting('request.headers', true), '')::jsonb;
         req_ip := btrim(coalesce(
@@ -219,7 +222,7 @@ BEGIN
       FROM private.intake_log l
      WHERE l.request_at >= now() - interval '1 hour';
 
-    IF recent_from_ip >= per_ip_limit OR recent_total >= total_limit THEN
+    IF (req_ip IS NOT NULL AND recent_from_ip >= per_ip_limit) OR recent_total >= total_limit THEN
         PERFORM private.intake_reject(429, 'Too many registrations right now. Try again later.');
     END IF;
 

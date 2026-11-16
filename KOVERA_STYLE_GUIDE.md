@@ -330,7 +330,7 @@ className="px-6 pb-6 text-base text-[#62677D] leading-relaxed border-t border-[#
 | **Linting** | oxlint | 1.81.0 (React rules) |
 | **Icons** | lucide-react | 1.54.0 |
 | **Backend/DB** | Supabase (PostgreSQL) | `@supabase/supabase-js` 2.119.0 |
-| **Deploy Target** | Cloudflare Pages (recommended) / GitHub Pages | `VITE_BASE_PATH` configurable |
+| **Deploy Target** | Cloudflare Workers static assets (live) / GitHub Pages | `VITE_BASE_PATH` configurable |
 
 ### Project Structure
 ```
@@ -405,7 +405,7 @@ Permissions-Policy: camera=(), microphone=(), geolocation=()
 
 6. **RLS-first database** — Public insert only, zero read access for anon. Privacy by default.
 
-7. **Free-tier architecture** — Cloudflare Pages + Supabase free tiers = $0 hosting. Documented in README.
+7. **Free-tier architecture** — Cloudflare Workers + Supabase free tiers = $0 hosting. Documented in README.
 
 8. **Hinglish on Instagram** — Code-switching for local relevance; web stays English for broader accessibility.
 

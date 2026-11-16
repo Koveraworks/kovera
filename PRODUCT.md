@@ -37,7 +37,7 @@ Kovera acts as an on-demand, hyperlocal backup workforce layer connecting local 
 - **No Roadmap Section**: The old roadmap no longer appears on the site.
 - **Commercial Model**: 100% free pilot to build network trust; worker participation is strictly ₹0.
 - **Safety Boundaries**: Confined strictly to daytime shifts (8:00 AM – 8:00 PM, no late-night shifts), public and verified workplaces (shops, cafes, retail counters), and age 18+ adult workers.
-- **Technical Architecture**: Single-page React 19 application (sections in `src/sections/`, shared primitives in `src/ui.jsx`) built with Vite and Tailwind CSS v4, backed by Supabase PostgreSQL with strict Row Level Security (public write-only, anonymous read-restricted), hosted on Cloudflare Pages.
+- **Technical Architecture**: Single-page React 19 application (sections in `src/sections/`, shared primitives in `src/ui.jsx`) built with Vite and Tailwind CSS v4, backed by Supabase PostgreSQL with strict Row Level Security (public write-only, anonymous read-restricted; submitted rows are checked and rate-limited in the database), hosted on Cloudflare Workers as static assets.
 
 ## Brand Commitments
 

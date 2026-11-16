@@ -17,8 +17,8 @@ export default function Footer({ onJoin }) {
 
   return (
     // Extra bottom padding keeps the floating WhatsApp button off the last lines.
-    <footer className="on-dark bg-biz-dark pb-24 pt-14 text-white">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <footer className="on-dark bg-biz-dark pb-24 pt-16 text-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8 border-b border-white/15 pb-10 md:flex-row md:items-center md:justify-between">
           <div>
             <Logo onDark />

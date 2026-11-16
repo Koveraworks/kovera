@@ -90,12 +90,12 @@ export default function Header({ onJoin }) {
       {/* A full-width white strip above the menu's dimmed backdrop, so the header itself never dims. */}
       <div className="relative z-40 bg-white">
       {/* The row wraps instead of overflowing when text is enlarged. */}
-      <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center justify-between gap-x-2 gap-y-2 px-4 py-2 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-16 max-w-[100rem] flex-wrap items-center justify-between gap-x-2 gap-y-2 px-4 py-2 sm:px-8 lg:min-h-20 lg:px-12 xl:px-16">
         <a href="#top" aria-label={s.home} onClick={() => setMenuOpen(false)} className="group rounded-xl p-1">
           <Logo />
         </a>
 
-        <nav aria-label={s.navLabel} className="hidden items-center gap-1 xl:flex">
+        <nav aria-label={s.navLabel} className="hidden items-center gap-1 xl:flex 2xl:gap-4">
           {NAV.map((item) => (
             <a
               key={item.key}
@@ -179,12 +179,12 @@ export default function Header({ onJoin }) {
         id="mobile-nav"
         inert={!menuOpen}
         className={cx(
-          'absolute inset-x-0 top-full z-40 border-b border-line bg-white px-4 pb-5 pt-2 shadow-xl transition-[opacity,transform,visibility] sm:px-6 xl:hidden',
+          'absolute inset-x-0 top-full z-40 border-b border-line bg-white px-4 pb-5 pt-2 shadow-xl transition-[opacity,transform,visibility] sm:px-8 lg:px-12 xl:hidden',
           EASE,
           menuOpen ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-3 opacity-0',
         )}
       >
-        <nav aria-label={s.navLabel} className="mx-auto flex max-w-6xl flex-col">
+        <nav aria-label={s.navLabel} className="mx-auto flex max-w-[100rem] flex-col">
           {NAV.map((item) => (
             <a
               key={item.key}

@@ -30,10 +30,10 @@ export default function Trust({ onJoin }) {
   const c = useStrings('common');
 
   return (
-    <Section id="trust" tone="navy">
+    <Section id="trust" tone="navy" className="lg:py-28">
       <SectionHeading onDark title={s.title} sub={s.sub} />
 
-      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
         {COMMITMENTS.map(({ key, side, icon: Icon }) => {
           const style = SIDE_STYLES[side];
           const item = s.commitments[key];

@@ -204,16 +204,16 @@ No web font is loaded. Earlier versions named Inter but never loaded it, so visi
 
 ## Layout
 
-The spatial model relies on a responsive single-column mobile foundation that expands into a 1152px (`max-w-6xl`) centered grid on desktop (`max-w-4xl` for narrow sections).
+The spatial model relies on a responsive single-column mobile foundation that expands into a 1280px (`max-w-7xl`) centered grid on desktop (`max-w-4xl` for narrow sections). The header is wider still (`max-w-[100rem]`) and 80px tall from lg up.
 
 - **Page structure:** `src/App.jsx` composes `src/sections/*.jsx`, built from the shared primitives in `src/ui.jsx`. Order: header, hero (with the example match card), WhatsApp/call band, waitlist form, "a 4-hour problem", shifts & rates, areas, for businesses / for workers, how it works, approach, questions, footer.
-- **Container Bounds:** `max-w-6xl` centered with responsive horizontal gutters: `px-4` on mobile (16px), `px-6` on tablet (24px), and `px-8` on desktop (32px).
-- **Vertical Rhythm:** `py-16 md:py-20` (64px, 80px from md up) padding for all top-level sections.
+- **Container Bounds:** `max-w-7xl` centered with responsive horizontal gutters: `px-4` on mobile (16px), `px-6` on tablet (24px), and `px-8` on desktop (32px).
+- **Vertical Rhythm:** `py-16 md:py-24` (64px on phones, 96px from md up) for top-level sections; the three emphasis sections (shifts and rates, for businesses / for workers, approach) take `lg:py-28` (112px). The hero is `md:pt-20 md:pb-32`. Section headings sit `md:mb-14` above their content.
 - **Section tones:** `page` (canvas), `white` (white with hairline top and bottom borders) and `navy` (the approach band: white cards, indigo top edge for business commitments, cyan for worker commitments).
 - **Grid Models:**
   - 2-Column Marketplace Split: `grid grid-cols-1 lg:grid-cols-2 gap-8` for symmetric Business vs. Worker comparisons.
   - 3-Column Feature Cards: `grid grid-cols-1 md:grid-cols-3 gap-6` for step-by-step processes and role overviews.
-- **Card and form padding:** `p-6` (24px) on mobile scaling to `p-8` (32px) from sm up.
+- **Card and form padding:** `p-6` (24px) on mobile, `p-8` (32px) from sm, `p-10` (40px) from lg. Card grids use a 32px gap from lg.
 
 ## Elevation & Depth
 
@@ -243,7 +243,7 @@ The geometric vocabulary balances clean structural boundaries with friendly, app
 All shared pieces live in `src/ui.jsx`: `Section`, `SectionHeading`, `Card`, `Button`, `Pill`, `Choice`, `Segmented`, `CheckItem`, `Fact`.
 
 ### Buttons
-- **Shape:** 16px rounding (`rounded-2xl`), `min-h-11` (44px), `text-base font-semibold`, padding `px-5 py-2.5` (md) or `px-7 py-3.5` (lg).
+- **Shape:** 16px rounding (`rounded-2xl`), `min-h-11` (44px), `text-base font-semibold`, padding `px-5 py-2.5` (md) or `px-8 py-4` (lg).
 - **Primary Business CTA (`biz`):** Background `biz`, white text, hover `biz-dark`.
 - **Primary Worker CTA (`worker`):** Background `worker`, white text, hover `worker-dark`.
 - **WhatsApp (`whatsapp`, `outline-whatsapp`, `link-whatsapp`):** WhatsApp green, only on things that open WhatsApp.
@@ -266,7 +266,7 @@ One style everywhere (`Choice`, `Segmented`): solid side colour, white text and 
 - **Worker Card:** `worker-pale`, border `worker/25`.
 
 ### Inputs & Fields
-- **Container:** Border `line-strong`, radius 12px, at least 44px tall. Required fields are plain; optional fields are marked as optional.
+- **Container:** Border `line-strong`, radius 12px, at least 44px tall. Required fields are plain. The free-text fields that can be skipped are marked optional; State and Area or market can also be left empty but are deliberately not labelled optional. Placeholders describe the field ("Your city") and never show a real name, place or number.
 - **Focus State:** One global outline (`2px solid biz`, 2px offset; white on dark sections). No per-element focus rings.
 - **Labels:** Sentence case, `text-sm font-semibold`.
 
@@ -282,7 +282,7 @@ One style everywhere (`Choice`, `Segmented`): solid side colour, white text and 
 - **Success:** Shown inline in the form card, not in a modal.
 
 ### Hero
-- **Headline:** Runs the full width above the two columns so it fits on one line from 640px up; its size steps down with the space (26px to 52px). On phones it takes two lines (lead, then accent), because one line would need about 18px. Sizes are in rem and nothing is `nowrap`, so enlarged text wraps instead of overflowing.
+- **Headline:** Runs the full width above the two columns so it fits on one line from 640px up; its size steps down with the space (26px to 56px). On phones it takes two lines (lead, then accent), because one line would need about 18px. Sizes are in rem and nothing is `nowrap`, so enlarged text wraps instead of overflowing.
 - **Tagline:** One line from 320px up.
 
 ### Motion

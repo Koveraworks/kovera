@@ -26,8 +26,8 @@ export default function Hero({ onJoin }) {
   const options = SCENARIO_IDS.map((id) => ({ value: id, label: c.categories[id] }));
 
   return (
-    <section className="bg-white border-b border-line pt-10 pb-14 md:pt-16 md:pb-20">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="bg-white border-b border-line pt-10 pb-14 md:pt-20 md:pb-32">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Pill wrap tone="biz" icon={MapPin}>{s.pilot}</Pill>
 
         {/*
@@ -36,7 +36,7 @@ export default function Hero({ onJoin }) {
           phones one line would need about 17px, so it takes two: lead, then accent.
           Sizes are in rem and nothing is nowrap, so enlarged text wraps instead of overflowing.
         */}
-        <h1 className="mt-5 text-[1.5rem] min-[22.5rem]:text-[1.75rem] min-[25rem]:text-[1.875rem] sm:text-[1.625rem] md:text-[2rem] lg:text-[2.75rem] xl:text-[3.25rem] font-extrabold tracking-tight leading-[1.15] text-ink">
+        <h1 className="mt-5 text-[1.5rem] min-[22.5rem]:text-[1.75rem] min-[25rem]:text-[1.875rem] sm:text-[1.625rem] md:text-[2rem] lg:text-[2.75rem] xl:text-[3.5rem] font-extrabold tracking-tight leading-[1.15] text-ink">
           <span className="block sm:inline">{s.headline.lead}</span>{' '}
           <span className="block text-biz sm:inline">{s.headline.accent}</span>
         </h1>
@@ -46,7 +46,7 @@ export default function Hero({ onJoin }) {
           {c.tagline}
         </p>
 
-        <div className="mt-6 grid grid-cols-1 gap-10 items-start lg:mt-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
+        <div className="mt-6 grid grid-cols-1 gap-10 items-start lg:mt-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
           <div className="min-w-0">
             <p className="max-w-2xl text-base sm:text-lg leading-relaxed text-body break-words">
               {s.intro}

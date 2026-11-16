@@ -14,7 +14,7 @@ export default function HowItWorks() {
     <Section id="how-it-works" tone="white">
       <SectionHeading title={s.title} sub={s.sub} />
 
-      <ol className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <ol className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:gap-8">
         {s.steps.map((step, i) => (
           <Card lift key={step.title} as="li" tone="page">
             <div className={`w-11 h-11 rounded-2xl flex items-center justify-center text-lg font-bold ${STEP_TILES[i]}`}>

@@ -22,8 +22,8 @@ const SECTION_TONES = {
 /** Page section with the standard vertical rhythm and centred container. */
 export function Section({ id, tone = 'page', narrow = false, className, children }) {
   return (
-    <section id={id} className={cx('py-16 md:py-20', SECTION_TONES[tone], className)}>
-      <div className={cx('mx-auto px-4 sm:px-6 lg:px-8', narrow ? 'max-w-4xl' : 'max-w-6xl')}>
+    <section id={id} className={cx('py-16 md:py-24', SECTION_TONES[tone], className)}>
+      <div className={cx('mx-auto px-4 sm:px-6 lg:px-8', narrow ? 'max-w-4xl' : 'max-w-7xl')}>
         {children}
       </div>
     </section>
@@ -33,7 +33,7 @@ export function Section({ id, tone = 'page', narrow = false, className, children
 /** Section title (h2) with optional supporting line. */
 export function SectionHeading({ title, sub, align = 'center', onDark = false, className }) {
   return (
-    <div className={cx('max-w-2xl mb-10', align === 'center' && 'mx-auto text-center', className)}>
+    <div className={cx('max-w-3xl mb-10 md:mb-14', align === 'center' && 'mx-auto text-center', className)}>
       <h2 className={cx('text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight text-balance', onDark ? 'text-white' : 'text-ink')}>
         {title}
       </h2>
@@ -59,7 +59,7 @@ export const CARD_LIFT = 'transition-[transform,box-shadow] duration-200 ease-ou
 /** Flat container. `as` changes the element (default div). `lift` adds the hover response. */
 export function Card({ tone = 'white', as: Tag = 'div', lift = false, className, children, ...rest }) {
   return (
-    <Tag className={cx('min-w-0 rounded-3xl border p-6 sm:p-8', CARD_TONES[tone], lift && CARD_LIFT, className)} {...rest}>
+    <Tag className={cx('min-w-0 rounded-3xl border p-6 sm:p-8 lg:p-10', CARD_TONES[tone], lift && CARD_LIFT, className)} {...rest}>
       {children}
     </Tag>
   );
@@ -87,7 +87,7 @@ const BUTTON_VARIANTS = {
 
 const BUTTON_SIZES = {
   md: 'px-5 py-2.5',
-  lg: 'px-7 py-3.5',
+  lg: 'px-8 py-4',
 };
 
 /**

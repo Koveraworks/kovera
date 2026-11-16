@@ -53,7 +53,7 @@ export default function ShiftsRates({ onJoin }) {
   const resultKey = isBusiness ? `b-${category}-${hours}` : `w-${category}-${shiftsPerWeek}`;
 
   return (
-    <Section id="shifts" tone="page">
+    <Section id="shifts" tone="page" className="lg:py-28">
       <SectionHeading title={s.title} sub={s.sub} />
 
       <Segmented
@@ -68,7 +68,7 @@ export default function ShiftsRates({ onJoin }) {
       />
 
       <Card className="mx-auto max-w-5xl">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8 lg:gap-12">
           {/* Choices */}
           <div className="min-w-0 space-y-6">
             <div>
@@ -119,7 +119,7 @@ export default function ShiftsRates({ onJoin }) {
           </div>
 
           {/* Result */}
-          <div className="min-w-0 border-t border-line pt-6 md:border-t-0 md:pt-0 md:border-l md:border-line md:pl-8">
+          <div className="min-w-0 border-t border-line pt-6 md:border-t-0 md:pt-0 md:border-l md:border-line md:pl-8 lg:pl-12">
             {/* The block below is replaced on every choice; this line stays mounted so
                 screen readers hear the new figure instead of just "pressed". */}
             <p className="sr-only" aria-live="polite">

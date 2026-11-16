@@ -10,8 +10,8 @@ export default function ContactBand() {
   const c = useStrings('common');
 
   return (
-    <section className="bg-page pt-10 md:pt-14">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <section className="bg-page pt-10 md:pt-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* From md the buttons sit beside the text, and drop below it as a group when they do not fit. */}
         <Card className="flex flex-col gap-5 md:flex-row md:flex-wrap md:items-center md:justify-between">
           <div className="flex min-w-0 flex-col items-start gap-4 sm:flex-row md:flex-1 md:basis-80">

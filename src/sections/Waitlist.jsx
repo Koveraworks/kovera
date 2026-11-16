@@ -19,6 +19,10 @@ const REQUIRED = {
   worker: ['fullName', 'phone', 'city'],
 };
 
+// Not required to submit, but not labelled "optional" either: the team wants
+// them filled in whenever the visitor knows them.
+const UNLABELLED = ['state', 'locality'];
+
 const AVAILABILITY_KEYS = ['weekdayMornings', 'weekdayAfternoons', 'weekends'];
 
 // What is saved is always English, whichever language the visitor reads in,
@@ -210,7 +214,7 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
   const fieldProps = (field) => ({
     id: `${side}-${field}`,
     label: s.fields[field].label,
-    optionalText: REQUIRED[side].includes(field) ? null : s.optional,
+    optionalText: REQUIRED[side].includes(field) || UNLABELLED.includes(field) ? null : s.optional,
     hint: s.fields[field].hint,
     error: formErrors[field] ? s.errors[field] : null,
   });
@@ -231,7 +235,7 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
   const showDone = done && done.side === side && done.joinCount === joinCount;
 
   return (
-    <section id="waitlist" className="bg-page pb-16 pt-10 md:pb-20 md:pt-14">
+    <section id="waitlist" className="bg-page pb-16 pt-10 md:pb-28 md:pt-16">
       <div className="mx-auto max-w-2xl px-4 sm:px-6">
         <div className="mb-6 text-center">
           <h2 ref={headingRef} tabIndex={-1} className="text-3xl font-extrabold leading-tight tracking-tight text-ink sm:text-4xl">

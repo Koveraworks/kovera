@@ -10,7 +10,7 @@ export default function Problem() {
     <Section tone="white">
       <SectionHeading title={s.title} sub={s.sub} />
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
         <Card tone="white">
           <h3 className="text-xl font-bold text-ink">{s.usual.title}</h3>
           <ul className="mt-5 space-y-2.5 text-body">

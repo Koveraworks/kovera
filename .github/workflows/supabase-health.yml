@@ -1,0 +1,43 @@
+name: Supabase health
+
+# Calls public.keepalive() (supabase/schema.sql, section 6e) a few times a day.
+# Two purposes: a failed run tells you the forms' database is unreachable or
+# paused, and the calls count as database activity, which free Supabase
+# projects need to avoid being paused.
+#
+# Needs two repository secrets: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Call keepalive()
+        env:
+          SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_KEY" ]; then
+            echo "::error::Add the repository secrets VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (Settings, Secrets and variables, Actions)."
+            exit 1
+          fi
+          answer=$(curl --silent --show-error --fail-with-body \
+            --max-time 30 --retry 2 --retry-delay 10 \
+            --request POST "${SUPABASE_URL%/}/rest/v1/rpc/keepalive" \
+            --header "apikey: $SUPABASE_KEY" \
+            --header "Authorization: Bearer $SUPABASE_KEY" \
+            --header "Content-Type: application/json" \
+            --data '{}')
+          echo "keepalive() answered: $answer"
+          if [ "$answer" != "true" ]; then
+            echo "::error::Unexpected answer from keepalive(). Is section 6 of supabase/schema.sql applied?"
+            exit 1
+          fi

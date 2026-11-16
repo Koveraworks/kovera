@@ -56,13 +56,13 @@ export default function App() {
       badge: 'Retail Handlooms',
       merchantTitle: 'Boutique Floor Support',
       merchantPlace: 'Sharma Handlooms · Insar Bazaar, Panipat',
-      merchantHours: 'Today · 2:00 PM – 6:00 PM (4 Hours Daytime)',
+      merchantHours: '2:00 PM – 6:00 PM (4 Hours Daytime)',
       merchantTask: 'Customer greeting & weekend festival stock folding.',
       workerName: 'Priya S.',
       workerPlace: 'Model Town, Panipat',
       workerMeta: '18+ Adult ID Verified · 15 mins away',
-      workerComp: '₹750 – ₹900 for 4 hrs',
-      matchTime: 'Matched in 35 Mins'
+      rateKey: 'handloom',
+      matchTime: 'Matched in 30 mins'
     },
     {
       id: 'studio',
@@ -71,13 +71,13 @@ export default function App() {
       badge: 'Designer Boutique',
       merchantTitle: 'Fitting & Display Assistant',
       merchantPlace: 'Aura Designer Studio · Model Town',
-      merchantHours: 'Today · 1:00 PM – 5:00 PM (4 Hours Daytime)',
+      merchantHours: '1:00 PM – 5:00 PM (4 Hours Daytime)',
       merchantTask: 'Trial room queue organization & garment steamer handling.',
       workerName: 'Neha K.',
       workerPlace: 'Sector 11 HUDA, Panipat',
       workerMeta: '18+ Adult ID Verified · 12 mins away',
-      workerComp: '₹800 – ₹950 for 4 hrs',
-      matchTime: 'Matched in 25 Mins'
+      rateKey: 'boutique',
+      matchTime: 'Matched in 25 mins'
     },
     {
       id: 'cafe',
@@ -86,13 +86,13 @@ export default function App() {
       badge: 'Café & Quick Bites',
       merchantTitle: 'Rush Hour Table Turnover',
       merchantPlace: 'Chai & Chaat Bistro · Sector 12 Market',
-      merchantHours: 'Today · 4:00 PM – 8:00 PM (4 Hours Daytime)',
+      merchantHours: '4:00 PM – 8:00 PM (4 Hours Daytime)',
       merchantTask: 'Peak counter assist, order runner, and quick table prep.',
       workerName: 'Aman V.',
       workerPlace: 'Tehsil Camp, Panipat',
       workerMeta: '18+ Adult ID Verified · 18 mins away',
-      workerComp: '₹700 – ₹850 for 4 hrs',
-      matchTime: 'Matched in 40 Mins'
+      rateKey: 'cafe',
+      matchTime: 'Matched in 25 mins'
     }
   ];
 
@@ -162,7 +162,7 @@ export default function App() {
       title: 'Café & Retail Assist',
       icon: Coffee,
       description: 'Rush hour table clearing, counter organization, takeaway packing, and friendly customer support.',
-      typicalHours: '1:00 PM – 5:00 PM or 5:00 PM – 9:00 PM',
+      typicalHours: '12:00 PM – 4:00 PM or 4:00 PM – 8:00 PM',
       hotspots: 'Sector 12 HUDA Market, Model Town',
       checklist: ['Clean public cafe/eatery', 'Front-of-house support', 'Standard hygiene check']
     },
@@ -326,6 +326,8 @@ export default function App() {
     goToWaitlist('worker');
   };
 
+  const inr = (n) => n.toLocaleString('en-IN');
+
   const formatPhoneNumber = (val) => {
     const raw = (val || '').replace(/\D/g, '').slice(0, 10);
     if (raw.length > 5) {
@@ -406,12 +408,22 @@ export default function App() {
     return errors;
   };
 
+  // Field order doubles as focus order when validation fails
+  const BUSINESS_FIELD_IDS = { businessName: 'biz-name', contactName: 'biz-contact', phone: 'biz-phone', city: 'biz-city', state: 'biz-state' };
+  const WORKER_FIELD_IDS = { fullName: 'worker-name', phone: 'worker-phone', city: 'worker-city', state: 'worker-state' };
+
+  const focusFirstInvalid = (errors, fieldIds) => {
+    const firstField = Object.keys(fieldIds).find(field => errors[field]);
+    if (firstField) document.getElementById(fieldIds[firstField])?.focus();
+  };
+
   const handleBusinessSubmit = async (e) => {
     e.preventDefault();
     setBusinessFormError(null);
     const errors = validateBusinessForm();
     if (Object.keys(errors).length > 0) {
       setBusinessErrors(errors);
+      focusFirstInvalid(errors, BUSINESS_FIELD_IDS);
       return;
     }
     setBusinessErrors({});
@@ -450,6 +462,7 @@ export default function App() {
     const errors = validateWorkerForm();
     if (Object.keys(errors).length > 0) {
       setWorkerErrors(errors);
+      focusFirstInvalid(errors, WORKER_FIELD_IDS);
       return;
     }
     setWorkerErrors({});
@@ -604,7 +617,7 @@ export default function App() {
           style={{ transform: 'scaleX(0)' }}
           aria-hidden="true"
         />
-        <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12 xl:px-16 h-20 flex items-center justify-between">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 h-20 flex items-center justify-between">
           
           {/* Logo with official Kovera Emblem */}
           <a 
@@ -629,24 +642,24 @@ export default function App() {
 
           {/* Desktop Nav Links */}
           <nav className="hidden lg:flex items-center gap-7 xl:gap-9 text-sm font-semibold text-[#181A32]">
-            <button onClick={() => scrollToSection('shift-explorer')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
+            <a href="#shift-explorer" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#302F80] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
               Shifts
-            </button>
-            <button onClick={() => scrollToSection('shift-calculator')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
+            </a>
+            <a href="#shift-calculator" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#302F80] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
               Rates
-            </button>
-            <button onClick={() => scrollToSection('coverage-zones')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
+            </a>
+            <a href="#coverage-zones" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#302F80] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
               Zones
-            </button>
-            <button onClick={() => scrollToSection('how-it-works')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
+            </a>
+            <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#302F80] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
               How it works
-            </button>
-            <button onClick={() => scrollToSection('roadmap')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
+            </a>
+            <a href="#roadmap" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#302F80] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
               Roadmap
-            </button>
-            <button onClick={() => scrollToSection('trust')} className="hover:text-[#18A999] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
+            </a>
+            <a href="#trust" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#302F80] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
               Approach
-            </button>
+            </a>
           </nav>
 
           {/* Right Header CTAs & Toggle */}
@@ -663,7 +676,7 @@ export default function App() {
             <button 
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`lg:hidden relative w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center cursor-pointer transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-90 focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:ring-offset-2 focus-visible:outline-none select-none ${
+              className={`lg:hidden relative shrink-0 w-11 h-11 rounded-2xl flex items-center justify-center cursor-pointer transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-90 focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:ring-offset-2 focus-visible:outline-none select-none ${
                 mobileMenuOpen 
                   ? 'bg-[#EEEFFC] text-[#302F80] border border-[#302F80]/25 shadow-xs' 
                   : 'bg-white text-[#181A32] hover:text-[#302F80] border border-[#EEEFFC] shadow-xs hover:border-[#302F80]/30 hover:shadow-sm'
@@ -730,43 +743,25 @@ export default function App() {
           }`}
           aria-hidden={!mobileMenuOpen}
         >
-          <button 
-            onClick={() => scrollToSection('shift-explorer')} 
-            className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl flex items-center justify-between transition-colors cursor-pointer"
-          >
+          <a href="#shift-explorer" onClick={() => setMobileMenuOpen(false)} className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl flex items-center justify-between transition-colors cursor-pointer">
             <span>Shifts</span>
             <span className="text-xs font-bold uppercase tracking-wider bg-[#E4F7F3] text-[#0E6E63] px-2 py-0.5 rounded-full">Explore</span>
-          </button>
-          <button 
-            onClick={() => scrollToSection('shift-calculator')} 
-            className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl transition-colors cursor-pointer"
-          >
+          </a>
+          <a href="#shift-calculator" onClick={() => setMobileMenuOpen(false)} className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl transition-colors cursor-pointer">
             Rates
-          </button>
-          <button 
-            onClick={() => scrollToSection('coverage-zones')} 
-            className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl transition-colors cursor-pointer"
-          >
+          </a>
+          <a href="#coverage-zones" onClick={() => setMobileMenuOpen(false)} className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl transition-colors cursor-pointer">
             Zones
-          </button>
-          <button 
-            onClick={() => scrollToSection('how-it-works')} 
-            className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl transition-colors cursor-pointer"
-          >
+          </a>
+          <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl transition-colors cursor-pointer">
             How it works
-          </button>
-          <button 
-            onClick={() => scrollToSection('roadmap')} 
-            className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl transition-colors cursor-pointer"
-          >
+          </a>
+          <a href="#roadmap" onClick={() => setMobileMenuOpen(false)} className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl transition-colors cursor-pointer">
             Roadmap
-          </button>
-          <button 
-            onClick={() => scrollToSection('trust')} 
-            className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl transition-colors cursor-pointer"
-          >
+          </a>
+          <a href="#trust" onClick={() => setMobileMenuOpen(false)} className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl transition-colors cursor-pointer">
             Approach
-          </button>
+          </a>
           <button 
             onClick={() => goToWaitlist('business')}
             className="w-full mt-3 py-3.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-sm rounded-xl text-center shadow-md hover:shadow-lg transition cursor-pointer active:scale-[0.98]"
@@ -803,7 +798,7 @@ export default function App() {
                 </h1>
 
                 {/* Punchy Subheadline (From Style Guide & Instagram) */}
-                <p className="text-xl sm:text-2xl font-bold text-[#18A999] mb-6 tracking-tight">
+                <p className="text-xl sm:text-2xl font-bold text-[#0E6E63] mb-6 tracking-tight">
                   Your local backup workforce, on demand.
                 </p>
 
@@ -853,11 +848,11 @@ export default function App() {
                   <div className="flex flex-wrap items-center justify-between gap-2.5 pb-3 border-b border-[#EEEFFC]">
                     <div className="flex items-center gap-2">
                       <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#18A999] opacity-75" />
+                        
                         <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#18A999]" />
                       </span>
                       <span className="text-xs font-extrabold uppercase tracking-wider text-[#302F80]">
-                        LIVE DISPATCH SIMULATOR
+                        EXAMPLE DISPATCH
                       </span>
                     </div>
 
@@ -874,15 +869,16 @@ export default function App() {
 
                   {/* Interactive Scenario Switcher Pills */}
                   <div className="pt-3 pb-1">
-                    <div className="flex items-center gap-1.5 p-1 bg-[#F7F8FC] rounded-xl border border-[#EEEFFC] overflow-x-auto scrollbar-none">
+                    <div className="grid grid-cols-3 gap-1.5 p-1 bg-[#F7F8FC] rounded-xl border border-[#EEEFFC]">
                       {dispatchScenarios.map((sc, idx) => (
                         <button
                           key={sc.id}
                           onClick={() => setActiveDispatchScenario(idx)}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex-1 text-center ${
+                          aria-pressed={activeDispatchScenario === idx}
+                          className={`px-2 py-1.5 min-h-11 rounded-lg text-xs font-bold leading-tight border transition-all cursor-pointer text-center ${
                             activeDispatchScenario === idx
-                              ? 'bg-white text-[#302F80] shadow-xs border border-[#EEEFFC]'
-                              : 'text-[#62677D] hover:text-[#181A32]'
+                              ? 'bg-white text-[#302F80] shadow-xs border-[#EEEFFC]'
+                              : 'border-transparent text-[#62677D] hover:text-[#181A32]'
                           }`}
                         >
                           {sc.badge}
@@ -902,7 +898,7 @@ export default function App() {
                           Merchant Shift Need
                         </span>
                         <span className="px-2 py-0.5 rounded-full bg-white text-[#302F80] text-xs font-bold shadow-xs">
-                          Active Request
+                          Example request
                         </span>
                       </div>
                       
@@ -930,7 +926,7 @@ export default function App() {
                       <div className="absolute inset-0 flex items-center" aria-hidden="true">
                         <div className="w-full border-t border-dashed border-[#EEEFFC]" />
                       </div>
-                      <div className="relative flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F7F8FC] border border-[#EEEFFC] text-xs font-bold text-[#18A999] shadow-xs">
+                      <div className="relative flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F7F8FC] border border-[#EEEFFC] text-xs font-bold text-[#0E6E63] shadow-xs">
                         <CheckCircle2 className="w-3.5 h-3.5 text-[#18A999]" />
                         <span className="tabular-nums">{dispatchScenarios[activeDispatchScenario].matchTime}</span>
                       </div>
@@ -939,11 +935,11 @@ export default function App() {
                     {/* Worker Match Side (Kinetic Teal) */}
                     <div className="bg-[#E4F7F3] rounded-2xl p-4 border border-[#18A999]/20">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-bold uppercase tracking-wider text-[#128679] flex items-center gap-1.5">
+                        <span className="text-xs font-bold uppercase tracking-wider text-[#0E6E63] flex items-center gap-1.5">
                           <Users className="w-3.5 h-3.5 text-[#18A999]" />
                           Worker Match Confirmation
                         </span>
-                        <span className="px-2 py-0.5 rounded-full bg-white text-[#18A999] text-xs font-bold shadow-xs">
+                        <span className="px-2 py-0.5 rounded-full bg-white text-[#0E6E63] text-xs font-bold shadow-xs">
                           Confirmed &amp; Ready
                         </span>
                       </div>
@@ -952,36 +948,36 @@ export default function App() {
                         <h3 className="text-base font-extrabold text-[#181A32]">
                           Matched: {dispatchScenarios[activeDispatchScenario].workerName}
                         </h3>
-                        <p className="text-xs font-semibold text-[#128679]">
+                        <p className="text-xs font-semibold text-[#0E6E63]">
                           {dispatchScenarios[activeDispatchScenario].workerPlace}
                         </p>
                       </div>
 
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-[#128679] mb-2.5">
+                      <div className="flex items-center gap-1.5 text-xs font-semibold text-[#0E6E63] mb-2.5">
                         <ShieldCheck className="w-3.5 h-3.5 text-[#18A999]" />
                         <span>{dispatchScenarios[activeDispatchScenario].workerMeta}</span>
                       </div>
 
                       <div className="pt-2.5 mt-2.5 border-t border-[#18A999]/20 flex flex-wrap items-center justify-between gap-2 text-xs">
-                        <span className="font-extrabold text-[#181A32] tabular-nums">{dispatchScenarios[activeDispatchScenario].workerComp}</span>
-                        <span className="font-bold text-[#128679]">₹0 Worker Fee · Direct Pay</span>
+                        <span className="font-extrabold text-[#181A32] tabular-nums">₹{inr(calculatorRates[dispatchScenarios[activeDispatchScenario].rateKey].minPay * 4)} – ₹{inr(calculatorRates[dispatchScenarios[activeDispatchScenario].rateKey].maxPay * 4)} for 4 hrs</span>
+                        <span className="font-bold text-[#0E6E63]">₹0 Worker Fee · Direct Pay</span>
                       </div>
                     </div>
 
                   </div>
 
                   {/* Quick Action Links from Ticket */}
-                  <div className="mt-3.5 pt-3 border-t border-[#EEEFFC] flex items-center justify-between text-xs">
+                  <div className="mt-3.5 pt-1 border-t border-[#EEEFFC] flex flex-wrap items-center justify-between gap-x-3 text-xs">
                     <button 
                       onClick={() => goToWaitlist('business')}
-                      className="font-bold text-[#302F80] hover:text-[#201F53] flex items-center gap-1 cursor-pointer transition active:scale-[0.98]"
+                      className="font-bold text-[#302F80] hover:text-[#201F53] min-h-11 flex items-center gap-1 cursor-pointer transition active:scale-[0.98]"
                     >
                       <span>Need a shift like this?</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                     <button 
                       onClick={() => goToWaitlist('worker')}
-                      className="font-bold text-[#18A999] hover:text-[#128679] flex items-center gap-1 cursor-pointer transition active:scale-[0.98]"
+                      className="font-bold text-[#0E6E63] hover:text-[#094841] min-h-11 flex items-center gap-1 cursor-pointer transition active:scale-[0.98]"
                     >
                       <span>Available to work?</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -1053,13 +1049,13 @@ export default function App() {
 
                 {/* The Kovera Solution */}
                 <div className="bg-[#E4F7F3] rounded-2xl p-6 border border-[#18A999]/30 shadow-2xs">
-                  <div className="flex items-center gap-2 text-[#128679] font-bold text-sm mb-3">
+                  <div className="flex items-center gap-2 text-[#0E6E63] font-bold text-sm mb-3">
                     <CheckCircle2 className="w-4 h-4 text-[#18A999]" />
                     <span>Kovera Local Backup</span>
                   </div>
                   <ul className="space-y-2 text-sm text-[#181A32]">
                     <li className="flex items-start gap-2">
-                      <Check className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" /> Express shift support in Panipat in 60 seconds
+                      <Check className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" /> Share your shift need in about a minute
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" /> 18+ verified local students & part-timers ready to work
@@ -1074,9 +1070,9 @@ export default function App() {
               {/* Local Community Signature */}
               <div className="mt-8 pt-6 border-t border-[#EEEFFC] flex flex-col items-center justify-center text-center">
                 <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#FFF2E1] text-[#8F5B10] text-sm sm:text-base font-bold tracking-normal mb-2.5 border border-[#F4B86A]/40 shadow-2xs">
-                  Panipat Local Voice · शाम हो या सवेरा
+                  Panipat Local Voice · <span lang="hi">शाम हो या सवेरा</span>
                 </span>
-                <p className="text-lg sm:text-xl font-extrabold text-[#302F80] tracking-tight">
+                <p lang="hi-Latn" className="text-lg sm:text-xl font-extrabold text-[#302F80] tracking-tight">
                   “Shaam ho ya savera, Panipat ke shops ke liye, Kovera.”
                 </p>
                 <p className="text-xs sm:text-sm text-[#62677D] mt-1.5">
@@ -1108,6 +1104,7 @@ export default function App() {
                   <button
                     key={key}
                     onClick={() => setSelectedRole(key)}
+                    aria-pressed={isSelected}
                     className={`flex items-center gap-2.5 px-5 py-3 rounded-2xl font-bold text-sm transition shadow-2xs ${
                       isSelected 
                         ? 'bg-[#302F80] text-white shadow-md' 
@@ -1190,6 +1187,7 @@ export default function App() {
                           key={option.id}
                           type="button"
                           onClick={() => setSelectedDuration(option.id)}
+                          aria-pressed={selectedDuration === option.id}
                           className={`w-full text-left p-3.5 rounded-xl border transition flex items-center justify-between cursor-pointer active:scale-[0.98] ${
                             selectedDuration === option.id 
                               ? 'bg-white border-[#302F80] shadow-xs ring-1 ring-[#302F80]/20' 
@@ -1217,17 +1215,17 @@ export default function App() {
                         onClick={() => handleApplyPresetToBusiness(selectedRole, selectedDuration)}
                         className="w-full py-3.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-sm rounded-xl transition shadow-md flex items-center justify-center gap-2 group cursor-pointer active:scale-[0.98]"
                       >
-                        <span>I'm a Business: Request this support</span>
+                        <span>I’m a business: register this need</span>
                         <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                       </button>
 
                       <button
                         type="button"
                         onClick={() => handleApplyPresetToWorker(selectedRole, selectedDuration)}
-                        className="w-full py-3 bg-[#E4F7F3] hover:bg-[#d5f3ec] text-[#18A999] hover:text-[#128679] border border-[#18A999]/30 font-bold text-sm rounded-xl transition shadow-2xs flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+                        className="w-full py-3 bg-[#E4F7F3] hover:bg-[#d5f3ec] text-[#0E6E63] hover:text-[#094841] border border-[#18A999]/30 font-bold text-sm rounded-xl transition shadow-2xs flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
                       >
                         <CheckCircle2 className="w-4 h-4 text-[#18A999]" />
-                        <span>I'm a Worker: Available for this role</span>
+                        <span>I’m a worker: register for this role</span>
                       </button>
                     </div>
 
@@ -1250,7 +1248,7 @@ export default function App() {
                 Transparent shift rates. Zero surprises.
               </h2>
               <p className="text-base sm:text-lg text-[#62677D] max-w-2xl mx-auto leading-relaxed">
-                Whether you’re budgeting backup coverage for a Saturday surge or estimating supplementary student earnings, calculate your exact numbers upfront.
+                Whether you’re budgeting backup coverage for a Saturday surge or estimating supplementary student earnings, see estimated numbers upfront.
               </p>
 
               {/* Side Switcher (Business vs Worker) */}
@@ -1258,7 +1256,8 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setCalcSide('business')}
-                  className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer active:scale-[0.98] ${
+                  aria-pressed={calcSide === 'business'}
+                  className={`px-5 py-2.5 min-h-11 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer active:scale-[0.98] ${
                     calcSide === 'business'
                       ? 'bg-[#302F80] text-white shadow-xs'
                       : 'text-[#62677D] hover:text-[#181A32]'
@@ -1269,9 +1268,10 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setCalcSide('worker')}
-                  className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer active:scale-[0.98] ${
+                  aria-pressed={calcSide === 'worker'}
+                  className={`px-5 py-2.5 min-h-11 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer active:scale-[0.98] ${
                     calcSide === 'worker'
-                      ? 'bg-[#18A999] text-white shadow-xs'
+                      ? 'bg-[#0E6E63] text-white shadow-xs'
                       : 'text-[#62677D] hover:text-[#181A32]'
                   }`}
                 >
@@ -1288,10 +1288,10 @@ export default function App() {
                 <div className="md:col-span-7 space-y-6">
                   {/* Role Selector */}
                   <div>
-                    <label className="block text-xs font-black uppercase tracking-wider text-[#181A32] mb-3">
+                    <span className="block text-xs font-black uppercase tracking-wider text-[#181A32] mb-3">
                       Select Retail Category
-                    </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    </span>
+                    <div role="group" aria-label="Retail category" className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                       {Object.entries(calculatorRates).map(([key, role]) => {
                         const RoleIcon = role.icon;
                         const isSelected = calcRole === key;
@@ -1300,6 +1300,7 @@ export default function App() {
                             key={key}
                             type="button"
                             onClick={() => setCalcRole(key)}
+                            aria-pressed={isSelected}
                             className={`p-3.5 rounded-xl border text-left transition cursor-pointer active:scale-[0.98] ${
                               isSelected
                                 ? 'bg-white border-[#302F80] shadow-xs ring-1 ring-[#302F80]/20'
@@ -1325,12 +1326,12 @@ export default function App() {
                     /* Business Duration Pills */
                     <div>
                       <div className="flex items-center justify-between mb-3">
-                        <label className="block text-xs font-black uppercase tracking-wider text-[#181A32]">
+                        <span className="block text-xs font-black uppercase tracking-wider text-[#181A32]">
                           Shift Duration
-                        </label>
+                        </span>
                         <span className="text-xs font-bold text-[#302F80]">Daytime window (8am–8pm)</span>
                       </div>
-                      <div className="grid grid-cols-3 gap-2.5">
+                      <div role="group" aria-label="Shift duration" className="grid grid-cols-3 gap-2.5">
                         {[
                           { hours: 4, label: '4 Hours', desc: 'Peak Rush' },
                           { hours: 6, label: '6 Hours', desc: 'Half Day' },
@@ -1340,6 +1341,7 @@ export default function App() {
                             key={dur.hours}
                             type="button"
                             onClick={() => setCalcDuration(dur.hours)}
+                            aria-pressed={calcDuration === dur.hours}
                             className={`p-3 rounded-xl text-center border transition cursor-pointer active:scale-[0.98] ${
                               calcDuration === dur.hours
                                 ? 'bg-[#302F80] text-white border-[#302F80] shadow-xs'
@@ -1358,12 +1360,12 @@ export default function App() {
                     /* Worker Weekly Shifts Pills */
                     <div>
                       <div className="flex items-center justify-between mb-3">
-                        <label className="block text-xs font-black uppercase tracking-wider text-[#181A32]">
+                        <span className="block text-xs font-black uppercase tracking-wider text-[#181A32]">
                           Available Shifts Per Week
-                        </label>
+                        </span>
                         <span className="text-xs font-bold text-[#0E6E63]">4-hour daylight slots</span>
                       </div>
-                      <div className="grid grid-cols-4 gap-2">
+                      <div role="group" aria-label="Available shifts per week" className="grid grid-cols-4 gap-2">
                         {[
                           { count: 1, label: '1 Shift' },
                           { count: 2, label: '2 Shifts' },
@@ -1374,9 +1376,10 @@ export default function App() {
                             key={shift.count}
                             type="button"
                             onClick={() => setCalcWeeklyShifts(shift.count)}
+                            aria-pressed={calcWeeklyShifts === shift.count}
                             className={`p-3 rounded-xl text-center border transition cursor-pointer active:scale-[0.98] ${
                               calcWeeklyShifts === shift.count
-                                ? 'bg-[#18A999] text-white border-[#18A999] shadow-xs'
+                                ? 'bg-[#0E6E63] text-white border-[#0E6E63] shadow-xs'
                                 : 'bg-white border-[#EEEFFC] text-[#181A32] hover:border-[#18A999]/40'
                             }`}
                           >
@@ -1413,7 +1416,7 @@ export default function App() {
                         <div className="mb-4">
                           <span className="text-xs text-[#62677D] block mb-1">Worker Direct Compensation ({calcDuration} Hours)</span>
                           <p key={`biz-total-${calcRole}-${calcDuration}`} className="text-3xl font-black text-[#181A32] tabular-nums animate-value-pop">
-                            ₹{calculatorRates[calcRole].minPay * calcDuration} – ₹{calculatorRates[calcRole].maxPay * calcDuration}
+                            ₹{inr(calculatorRates[calcRole].minPay * calcDuration)} – ₹{inr(calculatorRates[calcRole].maxPay * calcDuration)}
                           </p>
                           <span className="text-xs text-[#62677D] mt-1 block">
                             Direct settlement at shift completion.
@@ -1440,7 +1443,7 @@ export default function App() {
                           onClick={handleApplyCalcToBusiness}
                           className="w-full mt-5 py-3.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-sm rounded-xl transition shadow-md flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer"
                         >
-                          <span>Request this {calcDuration}-Hour Shift</span>
+                          <span>Register interest in this {calcDuration}-hour shift</span>
                           <ArrowRight className="w-4 h-4" />
                         </button>
                       </>
@@ -1450,8 +1453,8 @@ export default function App() {
                           <span className="text-xs text-[#62677D] block mb-1">
                             Estimated Monthly Supplementary Income
                           </span>
-                          <p key={`worker-total-${calcRole}-${calcWeeklyShifts}`} className="text-3xl font-black text-[#18A999] tabular-nums animate-value-pop">
-                            ₹{calculatorRates[calcRole].minPay * 4 * calcWeeklyShifts * 4} – ₹{calculatorRates[calcRole].maxPay * 4 * calcWeeklyShifts * 4}
+                          <p key={`worker-total-${calcRole}-${calcWeeklyShifts}`} className="text-3xl font-black text-[#0E6E63] tabular-nums animate-value-pop">
+                            ₹{inr(calculatorRates[calcRole].minPay * 4 * calcWeeklyShifts * 4)} – ₹{inr(calculatorRates[calcRole].maxPay * 4 * calcWeeklyShifts * 4)}
                           </p>
                           <span className="text-xs text-[#62677D] mt-1 block">
                             Based on {calcWeeklyShifts} four-hour shift{calcWeeklyShifts > 1 ? 's' : ''}/week.
@@ -1462,13 +1465,13 @@ export default function App() {
                           <div className="flex items-center justify-between">
                             <span className="text-[#62677D]">Per-Shift Take Home:</span>
                             <span key={`takehome-${calcRole}`} className="font-bold text-[#181A32] tabular-nums animate-value-pop">
-                              ₹{calculatorRates[calcRole].minPay * 4} – ₹{calculatorRates[calcRole].maxPay * 4}
+                              ₹{inr(calculatorRates[calcRole].minPay * 4)} – ₹{inr(calculatorRates[calcRole].maxPay * 4)}
                             </span>
                           </div>
                           <div className="flex items-center justify-between">
                             <span className="text-[#62677D]">Weekly Payout:</span>
                             <span key={`weekly-${calcRole}-${calcWeeklyShifts}`} className="font-extrabold text-[#0E6E63] tabular-nums animate-value-pop">
-                              ₹{calculatorRates[calcRole].minPay * 4 * calcWeeklyShifts} – ₹{calculatorRates[calcRole].maxPay * 4 * calcWeeklyShifts}
+                              ₹{inr(calculatorRates[calcRole].minPay * 4 * calcWeeklyShifts)} – ₹{inr(calculatorRates[calcRole].maxPay * 4 * calcWeeklyShifts)}
                             </span>
                           </div>
                           <div className="flex items-center justify-between">
@@ -1480,10 +1483,10 @@ export default function App() {
                         <button
                           type="button"
                           onClick={handleApplyCalcToWorker}
-                          className="w-full mt-5 py-3.5 bg-[#18A999] hover:bg-[#128679] text-white font-bold text-sm rounded-xl transition shadow-md flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer"
+                          className="w-full mt-5 py-3.5 bg-[#0E6E63] hover:bg-[#094841] text-white font-bold text-sm rounded-xl transition shadow-md flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer"
                         >
                           <CheckCircle2 className="w-4 h-4" />
-                          <span>Claim Shifts for this Schedule</span>
+                          <span>Register for this schedule</span>
                         </button>
                       </>
                     )}
@@ -1507,7 +1510,7 @@ export default function App() {
                 Active shift corridors in Panipat
               </h2>
               <p className="text-base sm:text-lg text-[#62677D] max-w-2xl mx-auto leading-relaxed">
-                We focus on high-density commercial clusters to guarantee reliable 15-to-30 minute match dispatch and daytime workplace safety.
+                We focus on high-density commercial clusters so matches can be coordinated quickly — we aim for 15 to 35 minutes — in safe, public daytime workplaces.
               </p>
             </div>
 
@@ -1521,6 +1524,7 @@ export default function App() {
                     key={zone.id}
                     type="button"
                     onClick={() => setSelectedZone(zone.id)}
+                    aria-pressed={isSelected}
                     className={`p-4 rounded-2xl text-left border transition cursor-pointer active:scale-[0.98] ${
                       isSelected
                         ? 'bg-[#302F80] text-white border-[#302F80] shadow-md'
@@ -1536,7 +1540,7 @@ export default function App() {
                       </span>
                     </div>
                     <p className="font-extrabold text-sm">{zone.name}</p>
-                    <p className={`text-xs mt-0.5 truncate ${isSelected ? 'text-white/80' : 'text-[#62677D]'}`}>{zone.sector}</p>
+                    <p className={`text-xs mt-0.5 ${isSelected ? 'text-white/80' : 'text-[#62677D]'}`}>{zone.sector}</p>
                   </button>
                 );
               })}
@@ -1591,7 +1595,7 @@ export default function App() {
                         <button
                           type="button"
                           onClick={() => handleApplyZoneToBusiness(activeZoneData)}
-                          className="px-5 py-2.5 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-xs rounded-xl transition shadow-sm hover:shadow flex items-center justify-center gap-1.5 active:scale-[0.98] cursor-pointer"
+                          className="px-5 py-2.5 min-h-11 bg-[#302F80] hover:bg-[#201F53] text-white font-bold text-xs rounded-xl transition shadow-sm hover:shadow flex items-center justify-center gap-1.5 active:scale-[0.98] cursor-pointer"
                         >
                           <span>I run a shop in {activeZoneData.name}</span>
                           <ArrowRight className="w-3.5 h-3.5" />
@@ -1599,7 +1603,7 @@ export default function App() {
                         <button
                           type="button"
                           onClick={() => handleApplyZoneToWorker(activeZoneData)}
-                          className="px-5 py-2.5 bg-[#E4F7F3] hover:bg-[#d5f3ec] text-[#0E6E63] hover:text-[#094841] border border-[#18A999]/30 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[0.98] cursor-pointer"
+                          className="px-5 py-2.5 min-h-11 bg-[#E4F7F3] hover:bg-[#d5f3ec] text-[#0E6E63] hover:text-[#094841] border border-[#18A999]/30 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[0.98] cursor-pointer"
                         >
                           <span>I can work in {activeZoneData.name}</span>
                           <ArrowRight className="w-3.5 h-3.5" />
@@ -1620,7 +1624,7 @@ export default function App() {
                       <p className="text-xs text-[#62677D] leading-relaxed mb-4">
                         Coordinated by local Panipat dispatch with direct phone verification.
                       </p>
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-[#EEEFFC] rounded-full text-xs font-bold text-[#18A999]">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-[#EEEFFC] rounded-full text-xs font-bold text-[#0E6E63]">
                         <ShieldCheck className="w-3.5 h-3.5 text-[#18A999]" />
                         <span>Public Commercial Venue Only</span>
                       </div>
@@ -1677,7 +1681,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => goToWaitlist('business')}
-                  className="inline-flex items-center gap-2 text-[#302F80] font-extrabold hover:gap-3 transition-all text-base cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg p-1"
+                  className="inline-flex items-center gap-2 text-[#302F80] font-extrabold hover:gap-3 transition-all text-base min-h-11 cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg p-1"
                 >
                   <span>Tell us what your business needs</span>
                   <ArrowRight className="w-5 h-5" />
@@ -1714,7 +1718,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => goToWaitlist('worker')}
-                  className="inline-flex items-center gap-2 text-[#0E6E63] hover:text-[#094841] font-extrabold hover:gap-3 transition-all text-base cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg p-1"
+                  className="inline-flex items-center gap-2 text-[#0E6E63] hover:text-[#094841] font-extrabold hover:gap-3 transition-all text-base min-h-11 cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg p-1"
                 >
                   <span>Join the worker waitlist</span>
                   <ArrowRight className="w-5 h-5 text-[#18A999]" />
@@ -1757,7 +1761,7 @@ export default function App() {
 
               {/* Step 2 */}
               <div className="bg-white rounded-3xl p-8 border border-[#EEEFFC] shadow-sm hover:shadow-md transition relative z-10">
-                <div className="w-12 h-12 rounded-2xl bg-[#E4F7F3] text-[#18A999] font-black text-xl flex items-center justify-center mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-[#E4F7F3] text-[#0E6E63] font-black text-xl flex items-center justify-center mb-6">
                   02
                 </div>
                 <h3 className="text-xl font-bold text-[#181A32] mb-3">We review the fit</h3>
@@ -1804,7 +1808,7 @@ export default function App() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-4 mt-2">
-                    <span className="text-xs font-extrabold text-[#0E6E63] tracking-wider uppercase">Q1 – Q2 2026</span>
+                    <span className="text-xs font-extrabold text-[#0E6E63] tracking-wider uppercase">Pilot stage</span>
                     <span className="px-2.5 py-1 bg-[#E4F7F3] text-[#0E6E63] text-xs font-bold rounded-lg border border-[#18A999]/20">Panipat Core</span>
                   </div>
                   <h3 className="text-2xl font-bold text-[#181A32] mb-3">Hyperlocal Intake Pilot</h3>
@@ -1842,7 +1846,7 @@ export default function App() {
               <div className="bg-white rounded-3xl p-8 border border-[#EEEFFC] shadow-sm relative flex flex-col justify-between hover:border-[#18A999]/40 transition">
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-extrabold text-[#62677D] tracking-wider uppercase">PHASE 1 · Q3 2026</span>
+                    <span className="text-xs font-extrabold text-[#62677D] tracking-wider uppercase">PHASE 1 · NEXT</span>
                     <span className="px-2.5 py-1 bg-[#E4F7F3] text-[#0E6E63] text-xs font-bold rounded-lg border border-[#18A999]/20">Expansion</span>
                   </div>
                   <h3 className="text-2xl font-bold text-[#181A32] mb-3">Live Dispatch Network</h3>
@@ -1878,7 +1882,7 @@ export default function App() {
               <div className="bg-white rounded-3xl p-8 border border-[#EEEFFC] shadow-sm relative flex flex-col justify-between hover:border-[#18A999]/40 transition">
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-extrabold text-[#62677D] tracking-wider uppercase">PHASE 2 · 2027</span>
+                    <span className="text-xs font-extrabold text-[#62677D] tracking-wider uppercase">PHASE 2 · LATER</span>
                     <span className="px-2.5 py-1 bg-[#FFF8EB] text-[#8F5B10] text-xs font-bold rounded-lg border border-[#F4B86A]/40">Vision</span>
                   </div>
                   <h3 className="text-2xl font-bold text-[#181A32] mb-3">The Regional Grid</h3>
@@ -1934,7 +1938,7 @@ export default function App() {
                   18+
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">Adult worker eligibility</h3>
-                <p className="text-xs text-[#D9DDF1] leading-relaxed">All workers must be verified adults before entering the pilot.</p>
+                <p className="text-sm text-[#D9DDF1] leading-relaxed">All workers must be verified adults before entering the pilot.</p>
               </div>
 
               {/* Trust Item 2 */}
@@ -1943,30 +1947,30 @@ export default function App() {
                   ID
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">Identity & suitability checks</h3>
-                <p className="text-xs text-[#D9DDF1] leading-relaxed">Basic identity checks to protect stores and ensure accountability.</p>
+                <p className="text-sm text-[#D9DDF1] leading-relaxed">Basic identity checks to protect stores and ensure accountability.</p>
               </div>
 
               {/* Trust Item 3 */}
               <div className="bg-[#302F67] rounded-3xl p-6 border border-white/10 flex flex-col items-start hover:border-[#18A999]/50 transition">
-                <div className="w-12 h-12 rounded-2xl bg-[#18A999] text-white font-black text-xs flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-2xl bg-[#0E6E63] text-white font-black text-xs flex items-center justify-center mb-4">
                   DAY
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">Public daytime workplaces</h3>
-                <p className="text-xs text-[#D9DDF1] leading-relaxed">Strictly public retail, boutique & salon premises during business hours.</p>
+                <p className="text-sm text-[#D9DDF1] leading-relaxed">Strictly public retail, boutique & salon premises during business hours.</p>
               </div>
 
               {/* Trust Item 4 */}
               <div className="bg-[#302F67] rounded-3xl p-6 border border-white/10 flex flex-col items-start hover:border-[#18A999]/50 transition">
-                <div className="w-12 h-12 rounded-2xl bg-[#18A999] text-white font-black text-base flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-2xl bg-[#0E6E63] text-white font-black text-base flex items-center justify-center mb-4">
                   ₹0
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">Workers never pay fees</h3>
-                <p className="text-xs text-[#D9DDF1] leading-relaxed">Workers keep 100% of their earnings with zero platform deductions.</p>
+                <p className="text-sm text-[#D9DDF1] leading-relaxed">Workers keep 100% of their earnings with zero platform deductions.</p>
               </div>
             </div>
 
             <div className="mt-12 bg-white/5 rounded-2xl p-4 sm:p-6 border border-white/10 text-center max-w-2xl mx-auto">
-              <p className="text-xs text-[#D9DDF1]">
+              <p className="text-sm text-[#D9DDF1]">
                 <strong className="text-white">Scope Protection:</strong> Kovera’s pilot explicitly excludes private-home work, night shifts, hazardous environments, and licensed/specialized technical services.
               </p>
             </div>
@@ -2013,17 +2017,17 @@ export default function App() {
                   href="https://wa.me/919876543210?text=Hello%20Kovera%20Panipat%20Team%2C%20I%20need%20shift%20support%20today."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full sm:w-auto px-6 py-3.5 bg-[#18A999] hover:bg-[#128679] text-white font-bold text-sm rounded-xl transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:ring-offset-2 focus-visible:outline-none"
+                  className="w-full sm:w-auto px-6 py-3.5 bg-[#0E6E63] hover:bg-[#094841] text-white font-bold text-sm rounded-xl transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:ring-offset-2 focus-visible:outline-none"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span>WhatsApp Coordinator</span>
+                  <span>WhatsApp a coordinator</span>
                 </a>
                 <button
                   type="button"
                   onClick={() => goToWaitlist('business')}
                   className="w-full sm:w-auto px-6 py-3.5 bg-white hover:bg-[#F7F8FC] text-[#302F80] border border-[#EEEFFC] font-bold text-sm rounded-xl transition shadow-2xs flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:ring-offset-2 focus-visible:outline-none"
                 >
-                  <span>Open Intake Form</span>
+                  <span>Open the form</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
@@ -2048,7 +2052,8 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setActiveFormTab('business')}
-                  className={`w-full py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer text-center ${
+                  aria-pressed={activeFormTab === 'business'}
+                  className={`w-full py-2.5 min-h-11 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer text-center ${
                     activeFormTab === 'business' 
                       ? 'bg-[#302F80] text-white shadow-2xs' 
                       : 'text-[#62677D] hover:text-[#181A32]'
@@ -2059,9 +2064,10 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setActiveFormTab('worker')}
-                  className={`w-full py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer text-center ${
+                  aria-pressed={activeFormTab === 'worker'}
+                  className={`w-full py-2.5 min-h-11 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer text-center ${
                     activeFormTab === 'worker' 
-                      ? 'bg-[#18A999] text-white shadow-2xs' 
+                      ? 'bg-[#0E6E63] text-white shadow-2xs' 
                       : 'text-[#62677D] hover:text-[#181A32]'
                   }`}
                 >
@@ -2090,13 +2096,15 @@ export default function App() {
                       <label htmlFor="biz-name" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">Business name</label>
                       <input
                         id="biz-name"
+                        autoComplete="organization"
+                        aria-required="true"
                         type="text"
                         placeholder="e.g. Boutique or salon"
                         value={businessForm.businessName}
                         onChange={(e) => handleBusinessChange('businessName', e.target.value)}
                         aria-invalid={businessErrors.businessName ? "true" : undefined}
                         aria-describedby={businessErrors.businessName ? "biz-name-error" : undefined}
-                        className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${businessErrors.businessName ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20'}`}
+                        className={`w-full px-4 py-3 rounded-xl text-base outline-none transition ${businessErrors.businessName ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20'}`}
                       />
                       {businessErrors.businessName && (
                         <p id="biz-name-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
@@ -2109,13 +2117,15 @@ export default function App() {
                       <label htmlFor="biz-contact" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">Contact name</label>
                       <input
                         id="biz-contact"
+                        autoComplete="name"
+                        aria-required="true"
                         type="text"
                         placeholder="Your name"
                         value={businessForm.contactName}
                         onChange={(e) => handleBusinessChange('contactName', e.target.value)}
                         aria-invalid={businessErrors.contactName ? "true" : undefined}
                         aria-describedby={businessErrors.contactName ? "biz-contact-error" : undefined}
-                        className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${businessErrors.contactName ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20'}`}
+                        className={`w-full px-4 py-3 rounded-xl text-base outline-none transition ${businessErrors.contactName ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20'}`}
                       />
                       {businessErrors.contactName && (
                         <p id="biz-contact-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
@@ -2126,12 +2136,14 @@ export default function App() {
 
                     <div>
                       <label htmlFor="biz-phone" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">Phone number</label>
-                      <div className={`flex rounded-xl transition overflow-hidden ${businessErrors.phone ? 'border border-red-400 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus-within:bg-white focus-within:border-[#302F80] focus-within:ring-2 focus-within:ring-[#302F80]/20'}`}>
+                      <div className={`flex rounded-xl transition overflow-hidden ${businessErrors.phone ? 'border border-red-400 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#8A8FA8] focus-within:bg-white focus-within:border-[#302F80] focus-within:ring-2 focus-within:ring-[#302F80]/20'}`}>
                         <span className={`inline-flex items-center px-3.5 text-sm font-bold select-none border-r transition ${businessErrors.phone ? 'bg-red-100/50 text-red-700 border-red-300' : 'bg-[#EEEFFC] text-[#302F80] border-[#EEEFFC]'}`}>
                           +91
                         </span>
                         <input
                           id="biz-phone"
+                          autoComplete="tel-national"
+                          aria-required="true"
                           type="tel"
                           inputMode="tel"
                           maxLength={14}
@@ -2140,7 +2152,7 @@ export default function App() {
                           onChange={(e) => handleBusinessChange('phone', e.target.value)}
                           aria-invalid={businessErrors.phone ? "true" : undefined}
                           aria-describedby={businessErrors.phone ? "biz-phone-error" : undefined}
-                          className="w-full px-4 py-3 bg-transparent text-sm outline-none text-[#181A32] placeholder-[#62677D]/60"
+                          className="w-full px-4 py-3 bg-transparent text-base outline-none text-[#181A32]"
                         />
                       </div>
                       {businessErrors.phone && (
@@ -2157,13 +2169,14 @@ export default function App() {
                         <label htmlFor="biz-city" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">City</label>
                         <input
                           id="biz-city"
+                          aria-required="true"
                           type="text"
                           placeholder="e.g. Panipat"
                           value={businessForm.city}
                           onChange={(e) => handleBusinessChange('city', e.target.value)}
                           aria-invalid={businessErrors.city ? "true" : undefined}
                           aria-describedby={businessErrors.city ? "biz-city-error" : undefined}
-                          className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${businessErrors.city ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20'}`}
+                          className={`w-full px-4 py-3 rounded-xl text-base outline-none transition ${businessErrors.city ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20'}`}
                         />
                         {businessErrors.city && (
                           <p id="biz-city-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
@@ -2176,13 +2189,14 @@ export default function App() {
                         <label htmlFor="biz-state" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">State</label>
                         <input
                           id="biz-state"
+                          aria-required="true"
                           type="text"
                           placeholder="e.g. Haryana"
                           value={businessForm.state}
                           onChange={(e) => handleBusinessChange('state', e.target.value)}
                           aria-invalid={businessErrors.state ? "true" : undefined}
                           aria-describedby={businessErrors.state ? "biz-state-error" : undefined}
-                          className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${businessErrors.state ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20'}`}
+                          className={`w-full px-4 py-3 rounded-xl text-base outline-none transition ${businessErrors.state ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20'}`}
                         />
                         {businessErrors.state && (
                           <p id="biz-state-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
@@ -2200,7 +2214,7 @@ export default function App() {
                         placeholder="e.g. Model Town Market, Insar Bazaar"
                         value={businessForm.locality}
                         onChange={(e) => handleBusinessChange('locality', e.target.value)}
-                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20 rounded-xl text-sm outline-none transition"
+                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20 rounded-xl text-base outline-none transition"
                       />
                     </div>
 
@@ -2212,7 +2226,7 @@ export default function App() {
                         placeholder="Describe the task or shift timing"
                         value={businessForm.supportNeed}
                         onChange={(e) => handleBusinessChange('supportNeed', e.target.value)}
-                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20 rounded-xl text-sm outline-none transition resize-none"
+                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#302F80] focus-visible:ring-2 focus-visible:ring-[#302F80]/20 rounded-xl text-base outline-none transition resize-none"
                       />
                     </div>
 
@@ -2263,13 +2277,15 @@ export default function App() {
                       <label htmlFor="worker-name" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">Full name</label>
                       <input
                         id="worker-name"
+                        autoComplete="name"
+                        aria-required="true"
                         type="text"
                         placeholder="Your name"
                         value={workerForm.fullName}
                         onChange={(e) => handleWorkerChange('fullName', e.target.value)}
                         aria-invalid={workerErrors.fullName ? "true" : undefined}
                         aria-describedby={workerErrors.fullName ? "worker-name-error" : undefined}
-                        className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${workerErrors.fullName ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20'}`}
+                        className={`w-full px-4 py-3 rounded-xl text-base outline-none transition ${workerErrors.fullName ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20'}`}
                       />
                       {workerErrors.fullName && (
                         <p id="worker-name-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
@@ -2280,12 +2296,14 @@ export default function App() {
 
                     <div>
                       <label htmlFor="worker-phone" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">Phone number</label>
-                      <div className={`flex rounded-xl transition overflow-hidden ${workerErrors.phone ? 'border border-red-400 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus-within:bg-white focus-within:border-[#18A999] focus-within:ring-2 focus-within:ring-[#18A999]/20'}`}>
+                      <div className={`flex rounded-xl transition overflow-hidden ${workerErrors.phone ? 'border border-red-400 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#8A8FA8] focus-within:bg-white focus-within:border-[#18A999] focus-within:ring-2 focus-within:ring-[#18A999]/20'}`}>
                         <span className={`inline-flex items-center px-3.5 text-sm font-bold select-none border-r transition ${workerErrors.phone ? 'bg-red-100/50 text-red-700 border-red-300' : 'bg-[#E4F7F3] text-[#0E6E63] border-[#EEEFFC]'}`}>
                           +91
                         </span>
                         <input
                           id="worker-phone"
+                          autoComplete="tel-national"
+                          aria-required="true"
                           type="tel"
                           inputMode="tel"
                           maxLength={14}
@@ -2294,7 +2312,7 @@ export default function App() {
                           onChange={(e) => handleWorkerChange('phone', e.target.value)}
                           aria-invalid={workerErrors.phone ? "true" : undefined}
                           aria-describedby={workerErrors.phone ? "worker-phone-error" : undefined}
-                          className="w-full px-4 py-3 bg-transparent text-sm outline-none text-[#181A32] placeholder-[#62677D]/60"
+                          className="w-full px-4 py-3 bg-transparent text-base outline-none text-[#181A32]"
                         />
                       </div>
                       {workerErrors.phone && (
@@ -2311,13 +2329,14 @@ export default function App() {
                         <label htmlFor="worker-city" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">City</label>
                         <input
                           id="worker-city"
+                          aria-required="true"
                           type="text"
                           placeholder="e.g. Panipat"
                           value={workerForm.city}
                           onChange={(e) => handleWorkerChange('city', e.target.value)}
                           aria-invalid={workerErrors.city ? "true" : undefined}
                           aria-describedby={workerErrors.city ? "worker-city-error" : undefined}
-                          className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${workerErrors.city ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20'}`}
+                          className={`w-full px-4 py-3 rounded-xl text-base outline-none transition ${workerErrors.city ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20'}`}
                         />
                         {workerErrors.city && (
                           <p id="worker-city-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
@@ -2330,13 +2349,14 @@ export default function App() {
                         <label htmlFor="worker-state" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">State</label>
                         <input
                           id="worker-state"
+                          aria-required="true"
                           type="text"
                           placeholder="e.g. Haryana"
                           value={workerForm.state}
                           onChange={(e) => handleWorkerChange('state', e.target.value)}
                           aria-invalid={workerErrors.state ? "true" : undefined}
                           aria-describedby={workerErrors.state ? "worker-state-error" : undefined}
-                          className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition ${workerErrors.state ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20'}`}
+                          className={`w-full px-4 py-3 rounded-xl text-base outline-none transition ${workerErrors.state ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20'}`}
                         />
                         {workerErrors.state && (
                           <p id="worker-state-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
@@ -2354,7 +2374,7 @@ export default function App() {
                         placeholder="e.g. Model Town, Insar Bazaar"
                         value={workerForm.locality}
                         onChange={(e) => handleWorkerChange('locality', e.target.value)}
-                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20 rounded-xl text-sm outline-none transition"
+                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20 rounded-xl text-base outline-none transition"
                       />
                     </div>
 
@@ -2366,7 +2386,7 @@ export default function App() {
                         placeholder="e.g. Student, retail greeting, cashier, shop help"
                         value={workerForm.experience}
                         onChange={(e) => handleWorkerChange('experience', e.target.value)}
-                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20 rounded-xl text-sm outline-none transition"
+                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20 rounded-xl text-base outline-none transition"
                       />
                     </div>
 
@@ -2378,7 +2398,7 @@ export default function App() {
                         placeholder="e.g. Weekday afternoons, weekends 4-8pm"
                         value={workerForm.availability}
                         onChange={(e) => handleWorkerChange('availability', e.target.value)}
-                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#EEEFFC] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20 rounded-xl text-sm outline-none transition"
+                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20 rounded-xl text-base outline-none transition"
                       />
                     </div>
 
@@ -2392,7 +2412,7 @@ export default function App() {
                     <button
                       type="submit"
                       disabled={isSubmittingWorker}
-                      className="w-full py-4 bg-[#18A999] hover:bg-[#128679] disabled:bg-[#18A999]/70 disabled:cursor-not-allowed text-white font-bold rounded-xl transition shadow-md mt-4 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:ring-offset-2 focus-visible:outline-none"
+                      className="w-full py-4 bg-[#0E6E63] hover:bg-[#094841] disabled:bg-[#0E6E63]/70 disabled:cursor-not-allowed text-white font-bold rounded-xl transition shadow-md mt-4 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:ring-offset-2 focus-visible:outline-none"
                     >
                       {isSubmittingWorker ? (
                         <>
@@ -2492,7 +2512,7 @@ export default function App() {
                 Have a specific question?{' '}
                 <button 
                   onClick={() => goToWaitlist('business')}
-                  className="text-[#302F80] font-bold underline hover:text-[#18A999] cursor-pointer"
+                  className="text-[#302F80] font-bold underline hover:text-[#201F53] cursor-pointer"
                 >
                   Join the waitlist and tell us what you’re looking for.
                 </button>
@@ -2522,13 +2542,13 @@ export default function App() {
             </div>
 
             <div className="flex flex-wrap items-center gap-6 text-sm text-[#D9DDF1]">
-              <button onClick={() => scrollToSection('shift-explorer')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Shifts</button>
-              <button onClick={() => scrollToSection('shift-calculator')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Rates</button>
-              <button onClick={() => scrollToSection('coverage-zones')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Zones</button>
-              <button onClick={() => scrollToSection('how-it-works')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">How it works</button>
-              <button onClick={() => scrollToSection('roadmap')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Roadmap</button>
-              <button onClick={() => scrollToSection('trust')} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5">Approach</button>
-              <button onClick={() => goToWaitlist('business')} className="text-white font-bold hover:text-[#18A999] transition cursor-pointer flex items-center gap-1.5 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none rounded-lg px-2 py-1">
+              <a href="#shift-explorer" onClick={() => setMobileMenuOpen(false)} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5 min-h-11 inline-flex items-center">Shifts</a>
+              <a href="#shift-calculator" onClick={() => setMobileMenuOpen(false)} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5 min-h-11 inline-flex items-center">Rates</a>
+              <a href="#coverage-zones" onClick={() => setMobileMenuOpen(false)} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5 min-h-11 inline-flex items-center">Zones</a>
+              <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5 min-h-11 inline-flex items-center">How it works</a>
+              <a href="#roadmap" onClick={() => setMobileMenuOpen(false)} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5 min-h-11 inline-flex items-center">Roadmap</a>
+              <a href="#trust" onClick={() => setMobileMenuOpen(false)} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5 min-h-11 inline-flex items-center">Approach</a>
+              <button onClick={() => goToWaitlist('business')} className="text-white font-bold hover:text-[#18A999] transition cursor-pointer flex items-center gap-1.5 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none rounded-lg px-2 py-1 min-h-11">
                 <span>Register interest</span>
                 <ArrowRight className="w-3.5 h-3.5 text-[#18A999]" />
               </button>

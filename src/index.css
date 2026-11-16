@@ -29,6 +29,12 @@ input, textarea {
   caret-color: #302F80;
 }
 
+/* Placeholder text at 5.27:1 on the field fill (was ~2.4:1) */
+::placeholder {
+  color: #62677D;
+  opacity: 1;
+}
+
 a, button.underline {
   text-underline-offset: 3px;
 }

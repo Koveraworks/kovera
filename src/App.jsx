@@ -2285,7 +2285,7 @@ export default function App() {
                         onChange={(e) => handleWorkerChange('fullName', e.target.value)}
                         aria-invalid={workerErrors.fullName ? "true" : undefined}
                         aria-describedby={workerErrors.fullName ? "worker-name-error" : undefined}
-                        className={`w-full px-4 py-3 rounded-xl text-base outline-none transition ${workerErrors.fullName ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20'}`}
+                        className={`w-full px-4 py-3 rounded-xl text-base outline-none transition ${workerErrors.fullName ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#0E6E63] focus-visible:ring-2 focus-visible:ring-[#18A999]/20'}`}
                       />
                       {workerErrors.fullName && (
                         <p id="worker-name-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
@@ -2296,7 +2296,7 @@ export default function App() {
 
                     <div>
                       <label htmlFor="worker-phone" className="block text-xs font-bold text-[#181A32] uppercase mb-1.5">Phone number</label>
-                      <div className={`flex rounded-xl transition overflow-hidden ${workerErrors.phone ? 'border border-red-400 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#8A8FA8] focus-within:bg-white focus-within:border-[#18A999] focus-within:ring-2 focus-within:ring-[#18A999]/20'}`}>
+                      <div className={`flex rounded-xl transition overflow-hidden ${workerErrors.phone ? 'border border-red-400 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#8A8FA8] focus-within:bg-white focus-within:border-[#0E6E63] focus-within:ring-2 focus-within:ring-[#18A999]/20'}`}>
                         <span className={`inline-flex items-center px-3.5 text-sm font-bold select-none border-r transition ${workerErrors.phone ? 'bg-red-100/50 text-red-700 border-red-300' : 'bg-[#E4F7F3] text-[#0E6E63] border-[#EEEFFC]'}`}>
                           +91
                         </span>
@@ -2336,7 +2336,7 @@ export default function App() {
                           onChange={(e) => handleWorkerChange('city', e.target.value)}
                           aria-invalid={workerErrors.city ? "true" : undefined}
                           aria-describedby={workerErrors.city ? "worker-city-error" : undefined}
-                          className={`w-full px-4 py-3 rounded-xl text-base outline-none transition ${workerErrors.city ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20'}`}
+                          className={`w-full px-4 py-3 rounded-xl text-base outline-none transition ${workerErrors.city ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#0E6E63] focus-visible:ring-2 focus-visible:ring-[#18A999]/20'}`}
                         />
                         {workerErrors.city && (
                           <p id="worker-city-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
@@ -2356,7 +2356,7 @@ export default function App() {
                           onChange={(e) => handleWorkerChange('state', e.target.value)}
                           aria-invalid={workerErrors.state ? "true" : undefined}
                           aria-describedby={workerErrors.state ? "worker-state-error" : undefined}
-                          className={`w-full px-4 py-3 rounded-xl text-base outline-none transition ${workerErrors.state ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20'}`}
+                          className={`w-full px-4 py-3 rounded-xl text-base outline-none transition ${workerErrors.state ? 'border border-red-400 focus:border-red-500 focus-visible:ring-2 focus-visible:ring-red-400/20 bg-red-50/20' : 'bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#0E6E63] focus-visible:ring-2 focus-visible:ring-[#18A999]/20'}`}
                         />
                         {workerErrors.state && (
                           <p id="worker-state-error" className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1" role="alert">
@@ -2374,7 +2374,7 @@ export default function App() {
                         placeholder="e.g. Model Town, Insar Bazaar"
                         value={workerForm.locality}
                         onChange={(e) => handleWorkerChange('locality', e.target.value)}
-                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20 rounded-xl text-base outline-none transition"
+                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#0E6E63] focus-visible:ring-2 focus-visible:ring-[#18A999]/20 rounded-xl text-base outline-none transition"
                       />
                     </div>
 
@@ -2386,7 +2386,7 @@ export default function App() {
                         placeholder="e.g. Student, retail greeting, cashier, shop help"
                         value={workerForm.experience}
                         onChange={(e) => handleWorkerChange('experience', e.target.value)}
-                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20 rounded-xl text-base outline-none transition"
+                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#0E6E63] focus-visible:ring-2 focus-visible:ring-[#18A999]/20 rounded-xl text-base outline-none transition"
                       />
                     </div>
 
@@ -2398,7 +2398,7 @@ export default function App() {
                         placeholder="e.g. Weekday afternoons, weekends 4-8pm"
                         value={workerForm.availability}
                         onChange={(e) => handleWorkerChange('availability', e.target.value)}
-                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#18A999] focus-visible:ring-2 focus-visible:ring-[#18A999]/20 rounded-xl text-base outline-none transition"
+                        className="w-full px-4 py-3 bg-[#F7F8FC] border border-[#8A8FA8] focus:bg-white focus:border-[#0E6E63] focus-visible:ring-2 focus-visible:ring-[#18A999]/20 rounded-xl text-base outline-none transition"
                       />
                     </div>
 

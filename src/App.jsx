@@ -17,13 +17,28 @@ import {
   Coffee, 
   ShoppingBag,
   AlertCircle,
-  MessageCircle
+  UserRoundCheck,
+  IdCard,
+  Sun,
+  Wallet
 } from 'lucide-react';
 import { 
   submitBusinessRegistration, 
   submitWorkerRegistration 
 } from './lib/supabase';
 import koveraLogo from './assets/kovera-logo.webp';
+
+// Coordinator desk: +91 80531 23817
+const WHATSAPP_NUMBER = '918053123817';
+const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hello Kovera Panipat Team, I need shift support today.')}`;
+
+function WhatsAppIcon({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className}>
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+    </svg>
+  );
+}
 
 export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -654,9 +669,6 @@ export default function App() {
             <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#302F80] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
               How it works
             </a>
-            <a href="#roadmap" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#302F80] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
-              Roadmap
-            </a>
             <a href="#trust" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#302F80] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#302F80] focus-visible:outline-none rounded-lg px-2.5 py-1">
               Approach
             </a>
@@ -756,9 +768,6 @@ export default function App() {
           <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl transition-colors cursor-pointer">
             How it works
           </a>
-          <a href="#roadmap" onClick={() => setMobileMenuOpen(false)} className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl transition-colors cursor-pointer">
-            Roadmap
-          </a>
           <a href="#trust" onClick={() => setMobileMenuOpen(false)} className="block w-full text-left px-3.5 py-3 text-base font-semibold text-[#181A32] hover:bg-[#F7F8FC] active:bg-[#EEEFFC] rounded-xl transition-colors cursor-pointer">
             Approach
           </a>
@@ -770,6 +779,20 @@ export default function App() {
           </button>
         </div>
       </header>
+
+      {/* Floating WhatsApp shortcut to the coordinator desk */}
+      {!toastMessage && (
+        <a
+          href={WHATSAPP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="WhatsApp a Kovera coordinator"
+          className="fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-30 inline-flex items-center gap-2.5 h-14 min-w-14 justify-center px-4 sm:px-5 rounded-full bg-[#0E6E63] hover:bg-[#094841] text-white font-bold text-sm shadow-xl transition active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-[#0E6E63] focus-visible:ring-offset-2 focus-visible:outline-none"
+        >
+          <WhatsAppIcon className="w-6 h-6 shrink-0" />
+          <span className="hidden sm:inline">WhatsApp us</span>
+        </a>
+      )}
 
       <main>
         {/* 02 — Hero Section: Split Showcase with 3D Workspace */}
@@ -959,7 +982,7 @@ export default function App() {
                       </div>
 
                       <div className="pt-2.5 mt-2.5 border-t border-[#18A999]/20 flex flex-wrap items-center justify-between gap-2 text-xs">
-                        <span className="font-extrabold text-[#181A32] tabular-nums">₹{inr(calculatorRates[dispatchScenarios[activeDispatchScenario].rateKey].minPay * 4)} – ₹{inr(calculatorRates[dispatchScenarios[activeDispatchScenario].rateKey].maxPay * 4)} for 4 hrs</span>
+                        <span className="font-extrabold text-[#181A32] tabular-nums">₹{inr(calculatorRates[dispatchScenarios[activeDispatchScenario].rateKey].minPay * 4)} – ₹{inr(calculatorRates[dispatchScenarios[activeDispatchScenario].rateKey].maxPay * 4)} for 4 hrs*</span>
                         <span className="font-bold text-[#0E6E63]">₹0 Worker Fee · Direct Pay</span>
                       </div>
                     </div>
@@ -1001,6 +1024,8 @@ export default function App() {
                       </span>
                     </div>
 
+                    <p className="text-xs text-[#62677D]">*Example only. Actual pay varies by shift.</p>
+
                     <div className="flex items-center justify-between text-xs text-[#62677D] pt-1">
                       <span>Coordinated via phone/WhatsApp</span>
                       <span className="text-[#302F80] font-bold">Phase 0 Pilot Network</span>
@@ -1036,13 +1061,13 @@ export default function App() {
                   </div>
                   <ul className="space-y-2 text-sm text-[#524444]">
                     <li className="flex items-start gap-2">
-                      <span className="text-red-500 font-bold">✕</span> 2-3 weeks to post ads and interview
+                      <X className="w-4 h-4 text-red-600 shrink-0 mt-0.5" /> 2-3 weeks to post ads and interview
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-red-500 font-bold">✕</span> Long-term contracts for short-term surges
+                      <X className="w-4 h-4 text-red-600 shrink-0 mt-0.5" /> Long-term contracts for short-term surges
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-red-500 font-bold">✕</span> Store owners forced to work overtime and stress
+                      <X className="w-4 h-4 text-red-600 shrink-0 mt-0.5" /> Store owners forced to work overtime and stress
                     </li>
                   </ul>
                 </div>
@@ -1314,7 +1339,7 @@ export default function App() {
                               </span>
                             </div>
                             <span className="text-xs text-[#0E6E63] font-extrabold tabular-nums block">
-                              ₹{role.minPay} – ₹{role.maxPay} / hr
+                              ₹{role.minPay} – ₹{role.maxPay} / hr*
                             </span>
                           </button>
                         );
@@ -1416,7 +1441,7 @@ export default function App() {
                         <div className="mb-4">
                           <span className="text-xs text-[#62677D] block mb-1">Worker Direct Compensation ({calcDuration} Hours)</span>
                           <p key={`biz-total-${calcRole}-${calcDuration}`} className="text-3xl font-black text-[#181A32] tabular-nums animate-value-pop">
-                            ₹{inr(calculatorRates[calcRole].minPay * calcDuration)} – ₹{inr(calculatorRates[calcRole].maxPay * calcDuration)}
+                            ₹{inr(calculatorRates[calcRole].minPay * calcDuration)} – ₹{inr(calculatorRates[calcRole].maxPay * calcDuration)}*
                           </p>
                           <span className="text-xs text-[#62677D] mt-1 block">
                             Direct settlement at shift completion.
@@ -1454,7 +1479,7 @@ export default function App() {
                             Estimated Monthly Supplementary Income
                           </span>
                           <p key={`worker-total-${calcRole}-${calcWeeklyShifts}`} className="text-3xl font-black text-[#0E6E63] tabular-nums animate-value-pop">
-                            ₹{inr(calculatorRates[calcRole].minPay * 4 * calcWeeklyShifts * 4)} – ₹{inr(calculatorRates[calcRole].maxPay * 4 * calcWeeklyShifts * 4)}
+                            ₹{inr(calculatorRates[calcRole].minPay * 4 * calcWeeklyShifts * 4)} – ₹{inr(calculatorRates[calcRole].maxPay * 4 * calcWeeklyShifts * 4)}*
                           </p>
                           <span className="text-xs text-[#62677D] mt-1 block">
                             Based on {calcWeeklyShifts} four-hour shift{calcWeeklyShifts > 1 ? 's' : ''}/week.
@@ -1493,6 +1518,9 @@ export default function App() {
 
                     <p className="text-xs text-center text-[#62677D] mt-3">
                       Prefills the intake form with your selected rate and scheduling preferences.
+                    </p>
+                    <p className="text-xs text-center text-[#62677D] mt-2">
+                      *Example rates for illustration. Actual pay varies by shift and is confirmed with both sides before work begins.
                     </p>
                   </div>
                 </div>
@@ -1788,135 +1816,6 @@ export default function App() {
           </div>
         </section>
 
-        {/* 06b — Strategic Evolution Roadmap: From Pilot to Regional Grid */}
-        <section id="roadmap" className="py-24 md:py-28 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#181A32] mb-3">
-                From Panipat pilot to regional grid
-              </h2>
-              <p className="text-base sm:text-lg text-[#62677D] max-w-2xl mx-auto leading-relaxed">
-                We are intentionally starting with human curation to understand real retail needs before introducing algorithmic dispatch.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-              {/* Phase 0 */}
-              <div className="bg-[#F7F8FC] rounded-3xl p-8 border-2 border-[#302F80] shadow-md relative flex flex-col justify-between">
-                <div className="absolute -top-3.5 left-6 px-3 py-1 bg-[#302F80] text-white text-xs font-black uppercase tracking-wider rounded-full shadow-xs">
-                  PHASE 0 · ACTIVE NOW
-                </div>
-                <div>
-                  <div className="flex items-center justify-between mb-4 mt-2">
-                    <span className="text-xs font-extrabold text-[#0E6E63] tracking-wider uppercase">Pilot stage</span>
-                    <span className="px-2.5 py-1 bg-[#E4F7F3] text-[#0E6E63] text-xs font-bold rounded-lg border border-[#18A999]/20">Panipat Core</span>
-                  </div>
-                  <h3 className="text-2xl font-bold text-[#181A32] mb-3">Hyperlocal Intake Pilot</h3>
-                  <p className="text-sm text-[#62677D] leading-relaxed mb-6">
-                    Hands-on demand &amp; supply validation across Insar Bazaar, Model Town, and Sector 11/12 with dedicated human coordinators.
-                  </p>
-                  <ul className="space-y-3 text-xs text-[#181A32] mb-8 font-medium">
-                    <li className="flex items-start gap-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" />
-                      <span>100% Free pilot testing with ₹0 worker fees</span>
-                    </li>
-                    <li className="flex items-start gap-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" />
-                      <span>In-person 18+ adult identity verification</span>
-                    </li>
-                    <li className="flex items-start gap-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" />
-                      <span>Direct WhatsApp &amp; phone coordinator matching</span>
-                    </li>
-                    <li className="flex items-start gap-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" />
-                      <span>Public commercial daylight shifts only</span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="pt-4 border-t border-[#EEEFFC] flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#302F80]">Current Stage</span>
-                  <span className="font-extrabold text-[#0E6E63] flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-[#18A999] animate-pulse" /> Live in Panipat
-                  </span>
-                </div>
-              </div>
-
-              {/* Phase 1 */}
-              <div className="bg-white rounded-3xl p-8 border border-[#EEEFFC] shadow-sm relative flex flex-col justify-between hover:border-[#18A999]/40 transition">
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-extrabold text-[#62677D] tracking-wider uppercase">PHASE 1 · NEXT</span>
-                    <span className="px-2.5 py-1 bg-[#E4F7F3] text-[#0E6E63] text-xs font-bold rounded-lg border border-[#18A999]/20">Expansion</span>
-                  </div>
-                  <h3 className="text-2xl font-bold text-[#181A32] mb-3">Live Dispatch Network</h3>
-                  <p className="text-sm text-[#62677D] leading-relaxed mb-6">
-                    Automating match routing with an official WhatsApp bot and expanding shift corridors into Chandigarh and Mohali commercial hubs.
-                  </p>
-                  <ul className="space-y-3 text-xs text-[#62677D] mb-8 font-medium">
-                    <li className="flex items-start gap-2.5">
-                      <Clock className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" />
-                      <span>Direct WhatsApp bot instant intake &amp; broadcast</span>
-                    </li>
-                    <li className="flex items-start gap-2.5">
-                      <Clock className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" />
-                      <span>Automated SMS shift reminders &amp; verification codes</span>
-                    </li>
-                    <li className="flex items-start gap-2.5">
-                      <Clock className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" />
-                      <span>Launch in Chandigarh Sector 17/35 &amp; Mohali 3B2</span>
-                    </li>
-                    <li className="flex items-start gap-2.5">
-                      <Clock className="w-4 h-4 text-[#18A999] shrink-0 mt-0.5" />
-                      <span>Optional merchant expedited match tier</span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="pt-4 border-t border-[#EEEFFC] flex items-center justify-between text-xs text-[#62677D]">
-                  <span className="font-bold">Next Milestone</span>
-                  <span className="font-semibold text-[#302F80]">In Preparation</span>
-                </div>
-              </div>
-
-              {/* Phase 2 */}
-              <div className="bg-white rounded-3xl p-8 border border-[#EEEFFC] shadow-sm relative flex flex-col justify-between hover:border-[#18A999]/40 transition">
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-extrabold text-[#62677D] tracking-wider uppercase">PHASE 2 · LATER</span>
-                    <span className="px-2.5 py-1 bg-[#FFF8EB] text-[#8F5B10] text-xs font-bold rounded-lg border border-[#F4B86A]/40">Vision</span>
-                  </div>
-                  <h3 className="text-2xl font-bold text-[#181A32] mb-3">The Regional Grid</h3>
-                  <p className="text-sm text-[#62677D] leading-relaxed mb-6">
-                    A self-serve regional shift grid allowing retail chains to hold backup retainers and trusted workers to build local reputation.
-                  </p>
-                  <ul className="space-y-3 text-xs text-[#62677D] mb-8 font-medium">
-                    <li className="flex items-start gap-2.5">
-                      <Sparkles className="w-4 h-4 text-[#F4B86A] shrink-0 mt-0.5" />
-                      <span>Self-serve merchant backup scheduling dashboard</span>
-                    </li>
-                    <li className="flex items-start gap-2.5">
-                      <Sparkles className="w-4 h-4 text-[#F4B86A] shrink-0 mt-0.5" />
-                      <span>Merchant on-demand shift backup retainers</span>
-                    </li>
-                    <li className="flex items-start gap-2.5">
-                      <Sparkles className="w-4 h-4 text-[#F4B86A] shrink-0 mt-0.5" />
-                      <span>Worker reliability scores &amp; priority shift alerts</span>
-                    </li>
-                    <li className="flex items-start gap-2.5">
-                      <Sparkles className="w-4 h-4 text-[#F4B86A] shrink-0 mt-0.5" />
-                      <span>Multi-city Haryana &amp; Punjab commercial coverage</span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="pt-4 border-t border-[#EEEFFC] flex items-center justify-between text-xs text-[#62677D]">
-                  <span className="font-bold">Scale Vision</span>
-                  <span className="font-semibold text-[#8F5B10]">Regional Network</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* 07 — Trust and Clarity Section (Navy Theme) */}
         <section id="trust" className="py-24 md:py-28 bg-[#201F53] text-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1934,8 +1833,8 @@ export default function App() {
               
               {/* Trust Item 1 */}
               <div className="bg-[#302F67] rounded-3xl p-6 border border-white/10 flex flex-col items-start hover:border-[#18A999]/50 transition">
-                <div className="w-12 h-12 rounded-2xl bg-[#302F80] text-white font-black text-sm flex items-center justify-center mb-4">
-                  18+
+                <div className="w-12 h-12 rounded-2xl bg-[#302F80] text-white flex items-center justify-center mb-4">
+                  <UserRoundCheck className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">Adult worker eligibility</h3>
                 <p className="text-sm text-[#D9DDF1] leading-relaxed">All workers must be verified adults before entering the pilot.</p>
@@ -1943,8 +1842,8 @@ export default function App() {
 
               {/* Trust Item 2 */}
               <div className="bg-[#302F67] rounded-3xl p-6 border border-white/10 flex flex-col items-start hover:border-[#18A999]/50 transition">
-                <div className="w-12 h-12 rounded-2xl bg-[#302F80] text-white font-black text-sm flex items-center justify-center mb-4">
-                  ID
+                <div className="w-12 h-12 rounded-2xl bg-[#302F80] text-white flex items-center justify-center mb-4">
+                  <IdCard className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">Identity & suitability checks</h3>
                 <p className="text-sm text-[#D9DDF1] leading-relaxed">Basic identity checks to protect stores and ensure accountability.</p>
@@ -1952,8 +1851,8 @@ export default function App() {
 
               {/* Trust Item 3 */}
               <div className="bg-[#302F67] rounded-3xl p-6 border border-white/10 flex flex-col items-start hover:border-[#18A999]/50 transition">
-                <div className="w-12 h-12 rounded-2xl bg-[#0E6E63] text-white font-black text-xs flex items-center justify-center mb-4">
-                  DAY
+                <div className="w-12 h-12 rounded-2xl bg-[#0E6E63] text-white flex items-center justify-center mb-4">
+                  <Sun className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">Public daytime workplaces</h3>
                 <p className="text-sm text-[#D9DDF1] leading-relaxed">Strictly public retail, boutique & salon premises during business hours.</p>
@@ -1961,8 +1860,8 @@ export default function App() {
 
               {/* Trust Item 4 */}
               <div className="bg-[#302F67] rounded-3xl p-6 border border-white/10 flex flex-col items-start hover:border-[#18A999]/50 transition">
-                <div className="w-12 h-12 rounded-2xl bg-[#0E6E63] text-white font-black text-base flex items-center justify-center mb-4">
-                  ₹0
+                <div className="w-12 h-12 rounded-2xl bg-[#0E6E63] text-white flex items-center justify-center mb-4">
+                  <Wallet className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">Workers never pay fees</h3>
                 <p className="text-sm text-[#D9DDF1] leading-relaxed">Workers keep 100% of their earnings with zero platform deductions.</p>
@@ -1994,7 +1893,7 @@ export default function App() {
             <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#EEEFFC] shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-2xl bg-[#E4F7F3] text-[#18A999] flex items-center justify-center shrink-0 shadow-xs">
-                  <MessageCircle className="w-7 h-7" />
+                  <WhatsAppIcon className="w-7 h-7" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2.5 mb-1 flex-wrap">
@@ -2014,12 +1913,12 @@ export default function App() {
 
               <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto shrink-0">
                 <a
-                  href="https://wa.me/919876543210?text=Hello%20Kovera%20Panipat%20Team%2C%20I%20need%20shift%20support%20today."
+                  href={WHATSAPP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full sm:w-auto px-6 py-3.5 bg-[#0E6E63] hover:bg-[#094841] text-white font-bold text-sm rounded-xl transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:ring-offset-2 focus-visible:outline-none"
                 >
-                  <MessageCircle className="w-4 h-4" />
+                  <WhatsAppIcon className="w-4 h-4" />
                   <span>WhatsApp a coordinator</span>
                 </a>
                 <button
@@ -2546,7 +2445,6 @@ export default function App() {
               <a href="#shift-calculator" onClick={() => setMobileMenuOpen(false)} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5 min-h-11 inline-flex items-center">Rates</a>
               <a href="#coverage-zones" onClick={() => setMobileMenuOpen(false)} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5 min-h-11 inline-flex items-center">Zones</a>
               <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5 min-h-11 inline-flex items-center">How it works</a>
-              <a href="#roadmap" onClick={() => setMobileMenuOpen(false)} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5 min-h-11 inline-flex items-center">Roadmap</a>
               <a href="#trust" onClick={() => setMobileMenuOpen(false)} className="hover:text-white transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#18A999] focus-visible:outline-none rounded-lg px-1.5 py-0.5 min-h-11 inline-flex items-center">Approach</a>
               <button onClick={() => goToWaitlist('business')} className="text-white font-bold hover:text-[#18A999] transition cursor-pointer flex items-center gap-1.5 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none rounded-lg px-2 py-1 min-h-11">
                 <span>Register interest</span>

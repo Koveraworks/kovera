@@ -36,13 +36,13 @@ export default function Hero({ onJoin }) {
           phones one line would need about 17px, so it takes two: lead, then accent.
           Sizes are in rem and nothing is nowrap, so enlarged text wraps instead of overflowing.
         */}
-        <h1 className="mt-5 text-[1.5rem] min-[360px]:text-[1.75rem] min-[400px]:text-[1.875rem] sm:text-[1.625rem] md:text-[2rem] lg:text-[2.75rem] xl:text-[3.25rem] font-extrabold tracking-tight leading-[1.15] text-ink">
+        <h1 className="mt-5 text-[1.5rem] min-[22.5rem]:text-[1.75rem] min-[25rem]:text-[1.875rem] sm:text-[1.625rem] md:text-[2rem] lg:text-[2.75rem] xl:text-[3.25rem] font-extrabold tracking-tight leading-[1.15] text-ink">
           <span className="block sm:inline">{s.headline.lead}</span>{' '}
           <span className="block text-biz sm:inline">{s.headline.accent}</span>
         </h1>
 
         {/* One line on phones too: sized to fit from 320px wide. */}
-        <p className="mt-3 text-sm min-[360px]:text-base min-[400px]:text-[1.0625rem] sm:text-xl lg:text-2xl font-semibold tracking-tight text-worker">
+        <p className="mt-3 text-sm min-[22.5rem]:text-base min-[25rem]:text-[1.0625rem] sm:text-xl lg:text-2xl font-semibold tracking-tight text-worker">
           {c.tagline}
         </p>
 

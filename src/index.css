@@ -60,6 +60,14 @@
   outline-color: #ffffff;
 }
 
+/*
+ * Headings that receive focus from script (after a join button, or on the
+ * confirmation) are landing points for screen readers, not controls: no box.
+ */
+[tabindex="-1"]:focus-visible {
+  outline: none;
+}
+
 input, textarea {
   caret-color: var(--color-biz);
 }

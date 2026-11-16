@@ -191,7 +191,9 @@ export function Segmented({ options, value, onChange, ariaLabel, className }) {
             aria-pressed={selected}
             onClick={() => onChange(option.value)}
             className={cx(
-              'flex-1 min-w-0 min-h-11 rounded-xl px-3 py-2 text-sm sm:text-base font-semibold wrap-anywhere transition-colors cursor-pointer',
+              // No min-w-0: a segment never gets narrower than its longest word. When three
+              // do not fit side by side, the last one wraps to its own row.
+              'flex-1 min-h-11 rounded-xl px-2 py-2 text-sm sm:px-4 sm:text-base font-semibold transition-colors cursor-pointer',
               selected
                 ? (option.tone === 'worker' ? 'bg-worker text-white' : 'bg-biz text-white')
                 : 'text-ink hover:bg-page',

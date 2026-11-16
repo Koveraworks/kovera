@@ -60,7 +60,7 @@ export default function Faq() {
       <p className="mt-10 text-center text-sm text-body">
         {s.more}{' '}
         <Button
-          variant="link-biz"
+          variant="link-whatsapp"
           href={whatsappUrl(c.whatsapp.question)}
           target="_blank"
           rel="noopener noreferrer"

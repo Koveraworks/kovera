@@ -16,7 +16,7 @@ export default function HowItWorks() {
 
       <ol className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {s.steps.map((step, i) => (
-          <Card key={step.title} as="li" tone="page">
+          <Card lift key={step.title} as="li" tone="page">
             <div className={`w-11 h-11 rounded-2xl flex items-center justify-center text-lg font-bold ${STEP_TILES[i]}`}>
               {i + 1}
             </div>

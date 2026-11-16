@@ -16,6 +16,10 @@ colors:
   worker-bright: "#0891B2"
   worker-pale: "#E0F7FA"
   worker-glow: "#67E8F9"
+  whatsapp: "#0E6E63"
+  whatsapp-dark: "#094841"
+  whatsapp-bright: "#18A999"
+  whatsapp-pale: "#E4F7F3"
   gold: "#F4B86A"
   gold-pale: "#FFF2E1"
   gold-ink: "#8F5B10"
@@ -122,7 +126,7 @@ Kovera deliberately rejects the cold, sterile data grids of corporate gig apps a
 
 **Key Characteristics:**
 - **Dual-Sided Marketplace Symmetry:** Purposeful structural pairing of Deep Civic Indigo for business needs and Worker Cyan for worker opportunities.
-- **Flat Tonal Layering:** Subtle tinted card surfaces (`biz-pale` and `worker-pale`) with 1px hairline borders. No shadows, gradients or decorative shapes.
+- **Flat Tonal Layering:** Subtle tinted card surfaces (`biz-pale` and `worker-pale`) with 1px hairline borders. Flat at rest; a shadow appears only as a response to hover, or on things that float. No decorative shapes.
 - **Tactile Ergonomics:** Pill badges, friendly rounded containers and 44px-minimum controls make participation welcoming and frictionless on mobile screens.
 - **High-Integrity Clarity:** Strict avoidance of hype, opaque tech terminology, or false urgency.
 
@@ -144,6 +148,13 @@ JSX uses Tailwind token utilities defined in `@theme` in `src/index.css` (`bg-bi
 - **Bright Worker Cyan** (`worker-bright`, `#0891B2`): Icons, the logo dot and accents only. Never text (3.68:1 on white).
 - **Pale Cyan** (`worker-pale`, `#E0F7FA`): Worker surfaces. `worker` on it is 4.81:1.
 - **Worker Glow** (`worker-glow`, `#67E8F9`): Accents on the dark navy sections only.
+
+### WhatsApp (green)
+Used only on things that open WhatsApp: the contact band's button and icon tile, the floating button, the button on the form's confirmation, and the WhatsApp link under the questions. It is not a side colour and never marks worker content.
+- **WhatsApp Green** (`whatsapp`, `#0E6E63`): Fills and link text. White on it is 6.12:1, and it is 6.12:1 on white.
+- **Deep WhatsApp Green** (`whatsapp-dark`, `#094841`): Hover.
+- **Bright WhatsApp Green** (`whatsapp-bright`, `#18A999`): The icon in the contact band's tile only.
+- **Pale WhatsApp Green** (`whatsapp-pale`, `#E4F7F3`): The icon tile, and the hover fill of the outlined variant.
 
 ### Tertiary
 - **Sunrise Gold** (`gold`, `#F4B86A`): Warm accent tone for small highlights.
@@ -206,15 +217,17 @@ The spatial model relies on a responsive single-column mobile foundation that ex
 
 ## Elevation & Depth
 
-Depth comes from tonal surface layering and hairline borders. Cards, forms and lists are flat at rest and stay flat on hover.
+Depth comes from tonal surface layering and hairline borders. Cards, forms and lists are flat at rest. Elevation is a response: informational cards and filled buttons lift slightly and gain a shadow on hover.
 
 ### Shadow Vocabulary
-- **Cards, forms, lists:** None. 1px border (`border-line`) and surface tint only.
-- **Floating WhatsApp button:** `shadow-lg`. It appears only after the hero, contact band and form have scrolled out of view.
-- **Open mobile menu:** a shadow, since it overlays the page.
+- **Cards, forms, lists at rest:** None. 1px border (`border-line`) and surface tint only.
+- **Informational cards on hover** (`Card lift`, or the `CARD_LIFT` classes): rise 4px with `shadow-lg`. Forms and the calculator card do not lift.
+- **Filled buttons on hover:** rise 2px with `shadow-md`.
+- **Floating WhatsApp button:** `shadow-lg`, `shadow-xl` on hover. It appears only after the hero, contact band and form have scrolled out of view.
+- **Open mobile menu:** `shadow-xl`, since it overlays the page.
 
 ### Named Rules
-**The Flat-At-Rest Rule.** All content cards, form containers, and lists remain flat, distinguished only by surface tint and 1px hairline strokes. The only shadows are on the floating WhatsApp button and the open mobile menu. No gradients, blurred background shapes or decorative animation.
+**The Flat-At-Rest Rule.** All content cards, form containers, and lists are flat at rest, distinguished only by surface tint and 1px hairline strokes. Shadows are reserved for hover responses and for the two things that float: the WhatsApp button and the open mobile menu. No blurred background shapes. The one gradient is the scroll progress bar in the header.
 
 ## Shapes
 
@@ -233,10 +246,12 @@ All shared pieces live in `src/ui.jsx`: `Section`, `SectionHeading`, `Card`, `Bu
 - **Shape:** 16px rounding (`rounded-2xl`), `min-h-11` (44px), `text-base font-semibold`, padding `px-5 py-2.5` (md) or `px-7 py-3.5` (lg).
 - **Primary Business CTA (`biz`):** Background `biz`, white text, hover `biz-dark`.
 - **Primary Worker CTA (`worker`):** Background `worker`, white text, hover `worker-dark`.
-- **Outline / Outline worker:** White background, `biz` or `worker` text, 1px `line-strong` border; hover shifts the border to the side colour.
+- **WhatsApp (`whatsapp`, `outline-whatsapp`, `link-whatsapp`):** WhatsApp green, only on things that open WhatsApp.
+- **Hover:** filled buttons darken, rise 2px and gain `shadow-md`; a trailing arrow nudges 3px forward. All buttons press in slightly on tap.
+- **Outline / Outline worker:** White background, `biz` or `worker` text, 1px `line-strong` border; hover shifts the border to the side colour and fills with that side's pale tint.
 - **Soft worker:** `worker-pale` background, `worker-dark` text, hover to white.
 - **White:** White background with `biz` text, for use on navy.
-- **Text Link (`link-biz`, `link-worker`):** Side-colour text, underline on hover, no padding.
+- **Text Link (`link-biz`, `link-worker`, `link-whatsapp`):** Coloured text, underline on hover, no padding.
 
 ### Chips & Badges
 - **Pill:** `text-sm font-semibold`, 1px border, padding `px-3 py-1`, sentence case. Tones: neutral, white, biz, worker, gold. Never shrinks to make room for a neighbour.
@@ -257,21 +272,35 @@ One style everywhere (`Choice`, `Segmented`): solid side colour, white text and 
 
 ### Navigation
 - **Header:** Solid white sticky bar with a bottom hairline. No backdrop blur. It wraps instead of overflowing at large text sizes, and stops sticking on very narrow screens with very large text. Holds the Hindi/English switch.
-- **Logo:** Lowercase bold wordmark `kovera` in `biz` followed by a `worker-bright` dot.
-- **Mobile menu:** Solid white, with a shadow while open.
+- **Scroll progress bar:** A 3px bar along the header's bottom edge that fills as the page scrolls, in a `biz` → `worker-bright` → `gold` gradient.
+- **Desktop links:** `ink`, turning `biz` on hover with a `worker-bright` underline that grows from the left.
+- **Logo:** Lowercase bold wordmark `kovera` in `biz` followed by a `worker-bright` dot. On hover the emblem and the dot grow slightly.
+- **Menu button (below 1280px):** Three bars that fold into a cross; pale indigo while open.
+- **Mobile menu:** Solid white, slides down from under the header and fades in, with a shadow while open. The page behind dims, and a tap on it closes the menu. The header itself stays clear.
 
 ### Confirmation
 - **Success:** Shown inline in the form card, not in a modal.
 
+### Hero
+- **Headline:** Runs the full width above the two columns so it fits on one line from 640px up; its size steps down with the space (26px to 52px). On phones it takes two lines (lead, then accent), because one line would need about 18px. Sizes are in rem and nothing is `nowrap`, so enlarged text wraps instead of overflowing.
+- **Tagline:** One line from 320px up.
+
 ### Motion
-The only animation is a short fade (`animate-swap`) when chosen content swaps, plus the FAQ accordion. Both respect `prefers-reduced-motion`.
+Every animation is feedback for something the visitor did, lasts 150 to 300ms, and is switched off under `prefers-reduced-motion`:
+- **Scroll:** the header's progress bar.
+- **Hover:** buttons, cards, desktop links and the logo, as described above (pointer devices only).
+- **Menu:** the button folds into a cross, the menu slides down and the page dims.
+- **Floating WhatsApp button:** pops in once the form has scrolled away; lifts on hover, presses in on tap.
+- **Choices:** a short fade (`animate-swap`) when chosen content swaps, plus the FAQ accordion.
+
+Nothing animates on its own: no looping, floating or pulsing elements.
 
 ## Do's and Don'ts
 
 ### Do:
 - **Do** maintain strict visual symmetry between Business and Worker content blocks across all comparison surfaces.
 - **Do** use the Tailwind tokens from `src/index.css` (`bg-biz`, `text-worker`, `border-line`, `text-body`) instead of one-off hexes.
-- **Do** keep cards flat at rest, with no shadows.
+- **Do** keep cards flat at rest; a shadow is a response to hover, never decoration.
 - **Do** use one selected style everywhere: solid side colour, white text, check mark.
 - **Do** make every control at least 44px tall.
 - **Do** keep informative text at 14px or larger; footnotes included.
@@ -283,7 +312,8 @@ The only animation is a short fade (`animate-swap`) when chosen content swaps, p
 - **Don't** use flashy discount banners, sticker badges, or countdown timers that evoke spam classifieds.
 - **Don't** mix business indigo and worker cyan within the same component button or badge.
 - **Don't** use `worker-bright` for text; it is for icons, the logo dot and accents.
-- **Don't** use gradients, blurred background shapes, backdrop blur or decorative animation.
+- **Don't** use blurred background shapes, backdrop blur, or animation that runs on its own. The scroll progress bar is the only gradient.
+- **Don't** use the WhatsApp green for anything that does not open WhatsApp.
 - **Don't** use uppercase or letter-spaced labels.
 - **Don't** add per-element focus ring classes; the global outline is the only focus style.
 - **Don't** use pure black (`#000000`) for text or backgrounds; always use Ink Navy (`ink`) or Midnight Indigo (`biz-dark`).

@@ -121,14 +121,14 @@
       {
         "name": "floating-button",
         "value": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)",
-        "purpose": "Floating WhatsApp button and the open mobile menu only; cards and forms have no shadow"
+        "purpose": "Floating WhatsApp button and the open mobile menu; also the hover response of informational cards and filled buttons. Nothing has a shadow at rest"
       }
     ],
     "motion": [
       {
         "name": "ease-swift",
         "value": "cubic-bezier(0.16, 1, 0.3, 1)",
-        "purpose": "Short fade when chosen content swaps, and the FAQ accordion; disabled under reduced motion"
+        "purpose": "Hover lifts, the menu slide and button fold, the floating button pop-in, the fade when chosen content swaps, and the FAQ accordion; all disabled under reduced motion"
       },
       {
         "name": "duration-swap",

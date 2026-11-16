@@ -275,7 +275,7 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
               <p className="mt-4 rounded-xl border border-gold/40 bg-gold-pale p-3 text-sm text-gold-ink">{s.success.demo}</p>
             )}
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Button variant="outline" href={whatsappUrl(done.side === 'worker' ? c.whatsapp.joinedWorker : c.whatsapp.joinedBusiness)} target="_blank" rel="noopener noreferrer">
+              <Button variant="whatsapp" href={whatsappUrl(done.side === 'worker' ? c.whatsapp.joinedWorker : c.whatsapp.joinedBusiness)} target="_blank" rel="noopener noreferrer">
                 <WhatsAppIcon className="h-5 w-5" />
                 {s.success.whatsapp}
               </Button>

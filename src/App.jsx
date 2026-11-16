@@ -92,9 +92,10 @@ function Site() {
         rel="noopener noreferrer"
         aria-label={c.cta.whatsapp}
         inert={!fabVisible}
+        // Pops in once the form has scrolled away; lifts on hover, presses in on tap.
         className={cx(
-          'fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-30 inline-flex h-14 min-w-14 items-center justify-center gap-2 rounded-full bg-biz px-4 text-base font-semibold text-white shadow-lg transition-opacity duration-200 hover:bg-biz-dark sm:px-5',
-          fabVisible ? 'opacity-100' : 'pointer-events-none opacity-0',
+          'fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-30 inline-flex h-14 min-w-14 items-center justify-center gap-2 rounded-full bg-whatsapp px-4 text-base font-semibold text-white shadow-lg transition-[opacity,transform,background-color,box-shadow] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:bg-whatsapp-dark hover:shadow-xl active:scale-95 sm:px-5',
+          fabVisible ? 'translate-y-0 scale-100 opacity-100' : 'pointer-events-none translate-y-3 scale-75 opacity-0',
         )}
       >
         <WhatsAppIcon className="h-6 w-6 shrink-0" />

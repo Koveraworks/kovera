@@ -18,7 +18,6 @@ export default {
     },
     card: {
       title: 'Example of a Kovera match',
-      pill: 'Example match',
       switchLabel: 'Choose an example shop',
       requestLabel: 'Example request from a shop',
       bridge: 'Target: matched within {n} minutes',
@@ -69,7 +68,6 @@ export default {
     },
     card: {
       title: 'Kovera मैच का एक उदाहरण',
-      pill: 'मैच का उदाहरण',
       switchLabel: 'उदाहरण के लिए दुकान चुनें',
       requestLabel: 'उदाहरण: दुकान की रिक्वेस्ट',
       bridge: 'लक्ष्य: {n} मिनट के अंदर मैच',

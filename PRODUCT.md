@@ -41,7 +41,7 @@ Kovera acts as an on-demand, hyperlocal backup workforce layer connecting local 
 
 ## Brand Commitments
 
-- **Name**: Kovera (`kovera` in lower-case wordmark with a cyan dot). Note: the logo image file itself still contains the old teal, a known mismatch with the cyan palette.
+- **Name**: Kovera (`kovera` in lower-case wordmark with a cyan dot). Note: the logo image file itself still contains the old teal, a known mismatch with the cyan palette. WhatsApp buttons and links keep their own green (`#0E6E63`), separate from the worker cyan.
 - **Voice**: Grounded, specific, and candid about pilot limits. Rejects empty tech-startup hyperbole in favor of explicit commitments ("Good work starts with the right people", "Reliable people, when work needs them"). Copy rules:
   - Times are stated as targets and pay as examples.
   - No claims of measured results while the service is at waitlist stage.

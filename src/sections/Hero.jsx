@@ -28,20 +28,27 @@ export default function Hero({ onJoin }) {
   return (
     <section className="bg-white border-b border-line pt-10 pb-14 md:pt-16 md:pb-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-10 items-center lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
+        <Pill wrap tone="biz" icon={MapPin}>{s.pilot}</Pill>
+
+        {/*
+          The headline runs the full width above both columns so it fits on one
+          line from tablet width up; the size steps down with the space. On
+          phones one line would need about 17px, so it takes two: lead, then accent.
+          Sizes are in rem and nothing is nowrap, so enlarged text wraps instead of overflowing.
+        */}
+        <h1 className="mt-5 text-[1.5rem] min-[360px]:text-[1.75rem] min-[400px]:text-[1.875rem] sm:text-[1.625rem] md:text-[2rem] lg:text-[2.75rem] xl:text-[3.25rem] font-extrabold tracking-tight leading-[1.15] text-ink">
+          <span className="block sm:inline">{s.headline.lead}</span>{' '}
+          <span className="block text-biz sm:inline">{s.headline.accent}</span>
+        </h1>
+
+        {/* One line on phones too: sized to fit from 320px wide. */}
+        <p className="mt-3 text-sm min-[360px]:text-base min-[400px]:text-[1.0625rem] sm:text-xl lg:text-2xl font-semibold tracking-tight text-worker">
+          {c.tagline}
+        </p>
+
+        <div className="mt-6 grid grid-cols-1 gap-10 items-start lg:mt-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
           <div className="min-w-0">
-            <Pill wrap tone="biz" icon={MapPin}>{s.pilot}</Pill>
-
-            <h1 className="mt-5 text-4xl sm:text-5xl font-extrabold tracking-tight leading-[1.1] text-balance lg:text-wrap text-ink">
-              {s.headline.lead}{' '}
-              <span className="text-biz lg:block">{s.headline.accent}</span>
-            </h1>
-
-            <p className="mt-4 text-xl sm:text-2xl font-semibold text-worker break-words">
-              {c.tagline}
-            </p>
-
-            <p className="mt-4 max-w-2xl text-base sm:text-lg leading-relaxed text-body break-words">
+            <p className="max-w-2xl text-base sm:text-lg leading-relaxed text-body break-words">
               {s.intro}
             </p>
 
@@ -75,10 +82,7 @@ export default function Hero({ onJoin }) {
           <div className="min-w-0">
             <Card>
               <h2 className="sr-only">{s.card.title}</h2>
-              <Pill wrap tone="gold">{s.card.pill}</Pill>
-
               <Segmented
-                className="mt-4"
                 options={options}
                 value={active}
                 onChange={setActive}

@@ -3,7 +3,8 @@
  * selected states and the two side colours stay consistent.
  *
  * Rules these encode:
- * - Cards are flat at rest (border + tint, no shadow).
+ * - Cards are flat at rest (border + tint, no shadow); a shadow appears only
+ *   as a response to hover, or on things that float (menu, WhatsApp button).
  * - One selected style: solid side colour, white text, check mark.
  * - Every control is at least 44px tall (min-h-11).
  * - Text that carries information is 14px (text-sm) or larger.
@@ -52,26 +53,36 @@ const CARD_TONES = {
   worker: 'bg-worker-pale border-worker/25',
 };
 
-/** Flat container. `as` changes the element (default div). */
-export function Card({ tone = 'white', as: Tag = 'div', className, children, ...rest }) {
+/** Hover response for cards: a small lift and shadow. Also usable on hand-built cards. */
+export const CARD_LIFT = 'transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-1 hover:shadow-lg';
+
+/** Flat container. `as` changes the element (default div). `lift` adds the hover response. */
+export function Card({ tone = 'white', as: Tag = 'div', lift = false, className, children, ...rest }) {
   return (
-    <Tag className={cx('min-w-0 rounded-3xl border p-6 sm:p-8', CARD_TONES[tone], className)} {...rest}>
+    <Tag className={cx('min-w-0 rounded-3xl border p-6 sm:p-8', CARD_TONES[tone], lift && CARD_LIFT, className)} {...rest}>
       {children}
     </Tag>
   );
 }
 
-const BUTTON_BASE = 'inline-flex max-w-full items-center justify-center gap-2 min-h-11 rounded-2xl text-base font-semibold text-center transition-colors cursor-pointer active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed';
+// `btn` hooks the arrow nudge in index.css. Transform and shadow are in the
+// transition list so the hover lift eases instead of snapping.
+const BUTTON_BASE = 'btn inline-flex max-w-full items-center justify-center gap-2 min-h-11 rounded-2xl text-base font-semibold text-center transition-[color,background-color,border-color,box-shadow,transform] duration-200 ease-out cursor-pointer active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed';
 
+// Hover: filled buttons darken, lift a little and gain a shadow; outlined
+// buttons take their side's colour on the border and a pale fill.
 const BUTTON_VARIANTS = {
-  biz: 'bg-biz text-white hover:bg-biz-dark',
-  worker: 'bg-worker text-white hover:bg-worker-dark',
-  outline: 'bg-white text-biz border border-line-strong hover:border-biz',
-  'outline-worker': 'bg-white text-worker border border-line-strong hover:border-worker',
+  biz: 'bg-biz text-white hover:bg-biz-dark hover:-translate-y-0.5 hover:shadow-md',
+  worker: 'bg-worker text-white hover:bg-worker-dark hover:-translate-y-0.5 hover:shadow-md',
+  whatsapp: 'bg-whatsapp text-white hover:bg-whatsapp-dark hover:-translate-y-0.5 hover:shadow-md',
+  outline: 'bg-white text-biz border border-line-strong hover:border-biz hover:bg-biz-pale',
+  'outline-worker': 'bg-white text-worker border border-line-strong hover:border-worker hover:bg-worker-pale',
+  'outline-whatsapp': 'bg-white text-whatsapp border border-line-strong hover:border-whatsapp hover:bg-whatsapp-pale',
   'soft-worker': 'bg-worker-pale text-worker-dark border border-worker/30 hover:bg-white',
-  white: 'bg-white text-biz hover:bg-page',
+  white: 'bg-white text-biz hover:bg-page hover:-translate-y-0.5 hover:shadow-md',
   'link-biz': 'text-biz hover:text-biz-dark hover:underline',
   'link-worker': 'text-worker hover:text-worker-dark hover:underline',
+  'link-whatsapp': 'text-whatsapp hover:text-whatsapp-dark hover:underline',
 };
 
 const BUTTON_SIZES = {
@@ -81,8 +92,9 @@ const BUTTON_SIZES = {
 
 /**
  * Button, or a link styled as one when `href` is given.
- * Variants: biz, worker, outline, outline-worker, soft-worker, white (on navy),
- * link-biz, link-worker (text links, no padding).
+ * Variants: biz, worker, whatsapp, outline, outline-worker, outline-whatsapp,
+ * soft-worker, white (on navy), link-biz, link-worker, link-whatsapp (text
+ * links, no padding). The whatsapp variants are only for things that open WhatsApp.
  */
 export function Button({ variant = 'biz', size = 'md', href, className, children, ...rest }) {
   const isLink = variant.startsWith('link-');

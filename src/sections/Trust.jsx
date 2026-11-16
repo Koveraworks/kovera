@@ -1,5 +1,5 @@
 import { UserRoundCheck, IdCard, Sun, Wallet, X, ArrowRight } from 'lucide-react';
-import { Section, SectionHeading, Button } from '../ui.jsx';
+import { Section, SectionHeading, Button, CARD_LIFT } from '../ui.jsx';
 import { useStrings } from '../i18n/index.js';
 import { cx } from '../lib/cx.js';
 
@@ -40,7 +40,7 @@ export default function Trust({ onJoin }) {
           return (
             <li
               key={key}
-              className={cx('bg-white text-ink rounded-3xl p-6 border-t-4 min-w-0 break-words', style.card)}
+              className={cx('bg-white text-ink rounded-3xl p-6 border-t-4 min-w-0 break-words', CARD_LIFT, style.card)}
             >
               <span className={cx('w-11 h-11 rounded-2xl flex items-center justify-center', style.tile)}>
                 <Icon className="w-5 h-5" aria-hidden="true" />

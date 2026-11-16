@@ -8,6 +8,9 @@
  * Contrast (WCAG): worker on white 5.36:1, white on worker 5.36:1,
  * worker on worker-pale 4.81:1, worker-bright on white 3.68:1 (icons/rings only),
  * body on page 5.27:1, line-strong on white 3.19:1 (control borders).
+ *
+ * WhatsApp has its own green, used only on things that open WhatsApp
+ * (white on whatsapp 6.12:1; whatsapp on white 6.12:1).
  */
 @theme {
   --color-ink: #181A32;
@@ -26,6 +29,11 @@
   --color-worker-bright: #0891B2;
   --color-worker-pale: #E0F7FA;
   --color-worker-glow: #67E8F9;
+
+  --color-whatsapp: #0E6E63;
+  --color-whatsapp-dark: #094841;
+  --color-whatsapp-bright: #18A999;
+  --color-whatsapp-pale: #E4F7F3;
 
   --color-gold: #F4B86A;
   --color-gold-pale: #FFF2E1;
@@ -116,11 +124,27 @@ body {
 /* With very large text on a narrow screen the header stops sticking so it cannot eat the viewport. */
 @media (max-width: 19rem) {
   .site-header {
-    position: static;
+    position: relative;
   }
 }
 
-/* Motion: content swaps and the menu only. */
+/*
+ * Motion. Everything here is feedback for something the visitor did
+ * (scrolled, hovered, opened the menu, picked an option) and is switched
+ * off by the reduced-motion rule at the bottom of this file.
+ */
+
+/* The arrow in a button nudges forward on hover (pointer devices only). */
+.btn .lucide-arrow-right {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (hover: hover) {
+  .btn:hover .lucide-arrow-right {
+    transform: translateX(3px);
+  }
+}
+
 @keyframes swapIn {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }

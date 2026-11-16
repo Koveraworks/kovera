@@ -183,7 +183,7 @@ No web font is loaded. Earlier versions named Inter but never loaded it, so visi
 - **Label** (Semibold 600, `text-sm` / 14px, sentence case): Field labels, pills, table and fact labels. No uppercase and no letter-spacing.
 
 ### Rules
-- Body is `text-base` (16px). The smallest size for anything informative is 14px (`text-sm`). 12px is only for asterisk footnotes.
+- Body is `text-base` (16px). Nothing is smaller than 14px (`text-sm`), footnotes included.
 - No uppercase labels and no letter-spaced labels; labels are sentence case.
 - Weights: extrabold for h1/h2 and one key number per card, bold for h3, semibold for labels and buttons, regular otherwise.
 - In Hindi, letter-spacing is reset to normal and heading line-height is 1.4 so matras are not clipped.
@@ -274,7 +274,7 @@ The only animation is a short fade (`animate-swap`) when chosen content swaps, p
 - **Do** keep cards flat at rest, with no shadows.
 - **Do** use one selected style everywhere: solid side colour, white text, check mark.
 - **Do** make every control at least 44px tall.
-- **Do** keep informative text at 14px or larger; 12px only for asterisk footnotes.
+- **Do** keep informative text at 14px or larger; footnotes included.
 - **Do** write labels in sentence case.
 - **Do** frame all shifts around daylight hours (8 AM to 8 PM) and public commercial workspaces.
 - **Do** write concise, scannable microcopy with explicit ₹0 worker guarantees.

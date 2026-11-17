@@ -13,6 +13,12 @@ export const supabase = isSupabaseConfigured
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
+// Email is optional. It is left out of the request when empty, so a
+// registration without one does not depend on the email column at all.
+function optionalEmail(data) {
+  return data.email ? { email: data.email } : {};
+}
+
 /**
  * Register business interest in Supabase or fallback mock
  */
@@ -33,6 +39,7 @@ export async function submitBusinessRegistration(data) {
         phone_number: data.phone || data.phoneNumber || null,
         work_location: data.workLocation || null,
         support_need: data.supportNeed || null,
+        ...optionalEmail(data),
       },
     ]);
 
@@ -64,6 +71,7 @@ export async function submitWorkerRegistration(data) {
         locality: data.locality,
         experience: data.experience || null,
         availability: data.availability || null,
+        ...optionalEmail(data),
       },
     ]);
 

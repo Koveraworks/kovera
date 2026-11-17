@@ -97,7 +97,7 @@ The site is in English (India) and Hindi. Visitors switch from the header; the c
 The forms write to the database straight from the visitor's browser, using a key that is public by design. So the database itself decides what is allowed (section 6 of `supabase/schema.sql`):
 
 - Anyone can submit the Business or Worker waitlist form, and nothing else. Visitors **cannot** read, update, or delete any records, and cannot set a row's `id`, `created_at` or `status`.
-- Each submitted row must have a valid Indian mobile number and the required names, and every text field has a length cap. The form's own `maxLength` values (`MAX_LENGTH` in `src/sections/Waitlist.jsx`) sit below those caps.
+- Each submitted row must have a valid Indian mobile number and the required names, and every text field has a length cap. Email is optional; when given it must look like an address. The form's own `maxLength` values (`MAX_LENGTH` in `src/sections/Waitlist.jsx`) sit below those caps.
 - Submissions are rate-limited: 30 an hour per IP address and 300 an hour in total across both forms. If the database cannot tell which address a row came from, only the total applies to that row. Change these in `private.intake_config` (Supabase Studio, schema `private`). When the total is reached, every signup fails for the rest of that hour and the visitor is told to try again or use WhatsApp. The limits slow a script down; they do not replace looking at the table now and then.
 - Only you as admin can view and export records in your Supabase dashboard. `private.business_latest` and `private.worker_latest` show the latest row per phone number.
 - Rows you add or edit in Supabase Studio are not checked or limited.

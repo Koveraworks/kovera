@@ -41,7 +41,8 @@ if (limitArg && !(Number.isInteger(limit) && limit >= 3)) {
 }
 
 const TEST = 'TEST delete me';
-const BUSINESS = { business_name: TEST, contact_name: TEST, phone_number: '98765 43210', work_location: 'Test area, Test city', support_need: null };
+// The business row carries an email and the worker row does not, so both shapes are covered.
+const BUSINESS = { business_name: TEST, contact_name: TEST, phone_number: '98765 43210', email: 'test@example.com', work_location: 'Test area, Test city', support_need: null };
 const WORKER = { full_name: TEST, phone_number: '98765 43210', locality: 'Test area, Test city', experience: null, availability: 'Weekends' };
 
 let failures = 0;
@@ -96,9 +97,9 @@ for (const view of ['business_latest', 'worker_latest']) {
 }
 
 const business = await insert('business_registrations', BUSINESS);
-report(business.status === 201, 'a valid business row is saved', `HTTP ${business.status} ${business.status === 201 ? '' : business.text}`.trim());
+report(business.status === 201, 'a valid business row with an email is saved', `HTTP ${business.status} ${business.status === 201 ? '' : business.text}`.trim());
 const worker = await insert('worker_registrations', WORKER);
-report(worker.status === 201, 'a valid worker row is saved', `HTTP ${worker.status} ${worker.status === 201 ? '' : worker.text}`.trim());
+report(worker.status === 201, 'a valid worker row without an email is saved', `HTTP ${worker.status} ${worker.status === 201 ? '' : worker.text}`.trim());
 
 const denied = [401, 403];
 await expectRejected('a visitor cannot set status', 'business_registrations', { ...BUSINESS, status: 'approved' }, denied);
@@ -106,6 +107,7 @@ await expectRejected('a visitor cannot set created_at', 'worker_registrations', 
 await expectRejected('a visitor cannot set id', 'worker_registrations', { ...WORKER, id: '00000000-0000-4000-8000-000000000000' }, denied);
 await expectRejected('a bad phone number is refused', 'business_registrations', { ...BUSINESS, phone_number: '12345 67890' }, [400]);
 await expectRejected('a missing phone number is refused', 'worker_registrations', { ...WORKER, phone_number: null }, [400]);
+await expectRejected('a malformed email is refused', 'worker_registrations', { ...WORKER, email: 'not an email' }, [400]);
 await expectRejected('a blank required name is refused', 'business_registrations', { ...BUSINESS, business_name: '   ' }, [400]);
 await expectRejected('an over-long field is refused', 'business_registrations', { ...BUSINESS, support_need: 'x'.repeat(1001) }, [400]);
 await expectRejected('an over-long worker field is refused', 'worker_registrations', { ...WORKER, experience: 'x'.repeat(501) }, [400]);

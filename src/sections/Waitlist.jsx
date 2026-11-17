@@ -5,18 +5,26 @@ import { Button, Card, Choice, Segmented } from '../ui.jsx';
 import { fmt, getStrings, useStrings } from '../i18n/index.js';
 import { whatsappUrl } from '../lib/contact.js';
 import { cx } from '../lib/cx.js';
+import { EMAIL_MAX_LENGTH, isValidEmail, normalizeEmail } from '../lib/email.js';
 import { caretAfterDigits, digitsBefore, formatPhone, isValidIndianMobile } from '../lib/phone.js';
 import { submitBusinessRegistration, submitWorkerRegistration } from '../lib/supabase.js';
 
 const EMPTY = {
-  business: { businessName: '', contactName: '', phone: '', city: '', state: '', locality: '', supportNeed: '' },
-  worker: { fullName: '', phone: '', city: '', state: '', locality: '', experience: '', availability: [] },
+  business: { businessName: '', contactName: '', phone: '', email: '', city: '', state: '', locality: '', supportNeed: '' },
+  worker: { fullName: '', phone: '', email: '', city: '', state: '', locality: '', experience: '', availability: [] },
 };
 
-// Order doubles as focus order when validation fails.
 const REQUIRED = {
   business: ['businessName', 'contactName', 'phone', 'city'],
   worker: ['fullName', 'phone', 'city'],
+};
+
+// Every field that can fail validation, in the order it appears in the form:
+// focus goes to the first one that failed. Email is optional, but is checked
+// when something is typed.
+const CHECKED = {
+  business: ['businessName', 'contactName', 'phone', 'email', 'city'],
+  worker: ['fullName', 'phone', 'email', 'city'],
 };
 
 // Not required to submit, but not labelled "optional" either: the team wants
@@ -35,6 +43,7 @@ const MAX_LENGTH = {
   locality: 100,
   supportNeed: 800,
   experience: 300,
+  email: EMAIL_MAX_LENGTH,
 };
 
 const AVAILABILITY_KEYS = ['weekdayMornings', 'weekdayAfternoons', 'weekends'];
@@ -45,7 +54,10 @@ const SAVED_COMMON = getStrings('common', 'en');
 const SAVED_WAITLIST = getStrings('waitlist', 'en');
 
 function isInvalid(field, value) {
-  return field === 'phone' ? !isValidIndianMobile(value) : !String(value).trim();
+  if (field === 'phone') return !isValidIndianMobile(value);
+  // Empty is fine for email; anything typed has to be a full address.
+  if (field === 'email') return Boolean(String(value).trim()) && !isValidEmail(value);
+  return !String(value).trim();
 }
 
 function savedContext(side, context) {
@@ -136,11 +148,11 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const found = {};
-    for (const field of REQUIRED[side]) {
+    for (const field of CHECKED[side]) {
       if (isInvalid(field, form[field])) found[field] = true;
     }
     setErrors((prev) => ({ ...prev, [side]: found }));
-    const firstInvalid = REQUIRED[side].find((field) => found[field]);
+    const firstInvalid = CHECKED[side].find((field) => found[field]);
     if (firstInvalid) {
       document.getElementById(`${side}-${firstInvalid}`)?.focus();
       return;
@@ -152,6 +164,7 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
     try {
       const place = joinParts([form.locality, form.city, form.state], ', ');
       const phone = formatPhone(form.phone);
+      const email = normalizeEmail(form.email);
       let result;
       let name;
       if (side === 'business') {
@@ -160,6 +173,7 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
           businessName: form.businessName.trim(),
           contactName: name,
           phone,
+          email,
           workLocation: place,
           supportNeed: joinParts([savedContext('business', context), form.supportNeed], ' '),
         });
@@ -171,6 +185,7 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
         result = await submitWorkerRegistration({
           fullName: name,
           phone,
+          email,
           locality: place,
           experience: joinParts([savedContext('worker', context), form.experience], ' '),
           // Listed in a fixed order, not click order, so identical answers save identically.
@@ -217,7 +232,7 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
       placeholder: s.fields[field].placeholder,
       maxLength: MAX_LENGTH[field],
       onChange: field === 'phone' ? handlePhoneChange : (e) => setField(field, e.target.value),
-      onBlur: required ? () => checkOnBlur(field) : undefined,
+      onBlur: CHECKED[side].includes(field) ? () => checkOnBlur(field) : undefined,
       'aria-required': required ? 'true' : undefined,
       'aria-invalid': hasError ? 'true' : undefined,
       'aria-describedby': hasError ? `${id}-error` : hint ? `${id}-hint` : undefined,
@@ -356,6 +371,10 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
                   </span>
                   <input type="tel" inputMode="tel" autoComplete="tel-national" {...inputProps('phone', { className: cx(INPUT_BASE, 'min-w-0 rounded-l-none', formErrors.phone ? 'border-danger' : 'border-line-strong hover:border-ink') })} />
                 </div>
+              </Field>
+
+              <Field {...fieldProps('email')}>
+                <input type="email" inputMode="email" autoComplete="email" autoCapitalize="none" spellCheck={false} {...inputProps('email')} />
               </Field>
 
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">

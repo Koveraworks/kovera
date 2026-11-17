@@ -28,6 +28,9 @@ CREATE TABLE IF NOT EXISTS public.worker_registrations (
 -- Migration helpers if tables already exist
 ALTER TABLE public.business_registrations ADD COLUMN IF NOT EXISTS phone_number TEXT;
 ALTER TABLE public.worker_registrations ADD COLUMN IF NOT EXISTS phone_number TEXT;
+-- Email is optional on both forms; phone stays the way people are reached.
+ALTER TABLE public.business_registrations ADD COLUMN IF NOT EXISTS email TEXT;
+ALTER TABLE public.worker_registrations ADD COLUMN IF NOT EXISTS email TEXT;
 
 -- 3. Enable Row Level Security (RLS)
 ALTER TABLE public.business_registrations ENABLE ROW LEVEL SECURITY;
@@ -67,7 +70,8 @@ CREATE INDEX IF NOT EXISTS idx_worker_registrations_created_at ON public.worker_
 --       They cannot set id, created_at or status, and cannot read, update or
 --       delete anything.
 --   6b. Rows arriving through the API are checked: a valid Indian mobile
---       number, required names present, a length cap on every text field.
+--       number, required names present, a well-formed email when one is
+--       given, a length cap on every text field.
 --   6c. Rows arriving through the API are rate-limited, per IP address and in
 --       total. Change the limits in private.intake_config.
 --   6d. private.business_latest / private.worker_latest: the latest row per
@@ -93,11 +97,11 @@ REVOKE ALL ON SCHEMA private FROM anon, authenticated;
 -- When a form gains a column, add it to the matching GRANT below, or the form
 -- will fail with a permission error.
 REVOKE ALL ON public.business_registrations FROM anon, authenticated;
-GRANT INSERT (business_name, contact_name, phone_number, work_location, support_need)
+GRANT INSERT (business_name, contact_name, phone_number, email, work_location, support_need)
     ON public.business_registrations TO anon, authenticated;
 
 REVOKE ALL ON public.worker_registrations FROM anon, authenticated;
-GRANT INSERT (full_name, phone_number, locality, experience, availability)
+GRANT INSERT (full_name, phone_number, email, locality, experience, availability)
     ON public.worker_registrations TO anon, authenticated;
 
 -- 6c (tables). Limits, and a short-lived log of recent API inserts -------------
@@ -166,6 +170,19 @@ AS $$
     SELECT phone IS NOT NULL
        AND char_length(phone) <= 20
        AND regexp_replace(phone, '[^0-9]', '', 'g') ~ '^[6-9][0-9]{9}$';
+$$;
+
+-- Matches isValidEmail in src/lib/email.js. Email is optional, so NULL passes;
+-- anything else has to look like an address.
+CREATE OR REPLACE FUNCTION private.intake_valid_email(email text)
+RETURNS boolean
+LANGUAGE sql
+IMMUTABLE
+SET search_path = ''
+AS $$
+    SELECT email IS NULL
+        OR (char_length(email) <= 254
+            AND email ~ '^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$');
 $$;
 
 CREATE OR REPLACE FUNCTION private.intake_text_ok(value text, max_length integer, required boolean)
@@ -244,6 +261,7 @@ BEGIN
     END IF;
 
     IF NOT (private.intake_valid_phone(NEW.phone_number)
+        AND private.intake_valid_email(NEW.email)
         AND private.intake_text_ok(NEW.business_name, 120, true)
         AND private.intake_text_ok(NEW.contact_name, 80, true)
         AND private.intake_text_ok(NEW.work_location, 250, false)
@@ -269,6 +287,7 @@ BEGIN
     END IF;
 
     IF NOT (private.intake_valid_phone(NEW.phone_number)
+        AND private.intake_valid_email(NEW.email)
         AND private.intake_text_ok(NEW.full_name, 80, true)
         AND private.intake_text_ok(NEW.locality, 250, true)
         AND private.intake_text_ok(NEW.experience, 500, false)

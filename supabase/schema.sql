@@ -31,6 +31,16 @@ ALTER TABLE public.worker_registrations ADD COLUMN IF NOT EXISTS phone_number TE
 -- Email is optional on both forms; phone stays the way people are reached.
 ALTER TABLE public.business_registrations ADD COLUMN IF NOT EXISTS email TEXT;
 ALTER TABLE public.worker_registrations ADD COLUMN IF NOT EXISTS email TEXT;
+-- State, city (a district) and area as separate columns (issue #7). The forms
+-- still fill work_location / locality with the three joined, so older views
+-- and exports keep working. They are NULL on rows saved before this change.
+ALTER TABLE public.business_registrations ADD COLUMN IF NOT EXISTS state TEXT;
+ALTER TABLE public.business_registrations ADD COLUMN IF NOT EXISTS city TEXT;
+ALTER TABLE public.business_registrations ADD COLUMN IF NOT EXISTS area TEXT;
+ALTER TABLE public.business_registrations ADD COLUMN IF NOT EXISTS shop_type TEXT;
+ALTER TABLE public.worker_registrations ADD COLUMN IF NOT EXISTS state TEXT;
+ALTER TABLE public.worker_registrations ADD COLUMN IF NOT EXISTS city TEXT;
+ALTER TABLE public.worker_registrations ADD COLUMN IF NOT EXISTS area TEXT;
 
 -- 3. Enable Row Level Security (RLS)
 ALTER TABLE public.business_registrations ENABLE ROW LEVEL SECURITY;
@@ -97,11 +107,13 @@ REVOKE ALL ON SCHEMA private FROM anon, authenticated;
 -- When a form gains a column, add it to the matching GRANT below, or the form
 -- will fail with a permission error.
 REVOKE ALL ON public.business_registrations FROM anon, authenticated;
-GRANT INSERT (business_name, contact_name, phone_number, email, work_location, support_need)
+GRANT INSERT (business_name, contact_name, phone_number, email, work_location, support_need,
+              state, city, area, shop_type)
     ON public.business_registrations TO anon, authenticated;
 
 REVOKE ALL ON public.worker_registrations FROM anon, authenticated;
-GRANT INSERT (full_name, phone_number, email, locality, experience, availability)
+GRANT INSERT (full_name, phone_number, email, locality, experience, availability,
+              state, city, area)
     ON public.worker_registrations TO anon, authenticated;
 
 -- 6c (tables). Limits, and a short-lived log of recent API inserts -------------
@@ -172,7 +184,8 @@ AS $$
        AND regexp_replace(phone, '[^0-9]', '', 'g') ~ '^[6-9][0-9]{9}$';
 $$;
 
--- Matches isValidEmail in src/lib/email.js. Email is optional, so NULL passes;
+-- The email check the forms used until issue #7 removed the field (rows from
+-- older forms may still carry one). Email is optional, so NULL passes;
 -- anything else has to look like an address.
 CREATE OR REPLACE FUNCTION private.intake_valid_email(email text)
 RETURNS boolean
@@ -183,6 +196,49 @@ AS $$
     SELECT email IS NULL
         OR (char_length(email) <= 254
             AND email ~ '^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$');
+$$;
+
+-- States and their districts: what the State and City pickers offer. Filled
+-- by supabase/places.sql (generated from src/data/places/source/places.json
+-- by scripts/build-places.mjs), which is run after this file.
+CREATE TABLE IF NOT EXISTS private.places (
+    state_code TEXT NOT NULL,
+    state TEXT NOT NULL,
+    district TEXT NOT NULL,
+    PRIMARY KEY (state, district)
+);
+
+-- State and city must both be given and be a listed pair, or both be absent.
+-- Absent is allowed so that a form deployed before issue #7 keeps saving;
+-- the Worker API (issue #8) makes them required.
+CREATE OR REPLACE FUNCTION private.intake_valid_district(state text, city text)
+RETURNS boolean
+LANGUAGE sql
+STABLE
+SET search_path = ''
+AS $$
+    SELECT CASE
+        WHEN state IS NULL AND city IS NULL THEN true
+        WHEN state IS NULL OR city IS NULL THEN false
+        ELSE EXISTS (SELECT 1 FROM private.places p
+                      WHERE p.state = intake_valid_district.state
+                        AND p.district = intake_valid_district.city)
+    END;
+$$;
+
+-- The English names in src/i18n/strings/shopTypes.js, which the business form
+-- saves. NULL is allowed for forms deployed before issue #7.
+CREATE OR REPLACE FUNCTION private.intake_valid_shop_type(shop_type text)
+RETURNS boolean
+LANGUAGE sql
+IMMUTABLE
+SET search_path = ''
+AS $$
+    SELECT shop_type IS NULL OR shop_type IN (
+        'Boutique / clothing', 'Handloom & textiles', 'Café / restaurant',
+        'Salon / beauty parlour', 'Kirana / supermarket', 'Mobile & electronics shop',
+        'Bakery / sweet shop', 'Hotel / guest house front desk', 'Events & weddings',
+        'Packing / warehouse', 'Gym / fitness front desk', 'Other');
 $$;
 
 CREATE OR REPLACE FUNCTION private.intake_text_ok(value text, max_length integer, required boolean)
@@ -265,7 +321,10 @@ BEGIN
         AND private.intake_text_ok(NEW.business_name, 120, true)
         AND private.intake_text_ok(NEW.contact_name, 80, true)
         AND private.intake_text_ok(NEW.work_location, 250, false)
-        AND private.intake_text_ok(NEW.support_need, 1000, false))
+        AND private.intake_text_ok(NEW.support_need, 1000, false)
+        AND private.intake_text_ok(NEW.area, 120, false)
+        AND private.intake_valid_district(NEW.state, NEW.city)
+        AND private.intake_valid_shop_type(NEW.shop_type))
     THEN
         PERFORM private.intake_reject(400, 'A required field is missing or a field is too long.');
     END IF;
@@ -291,7 +350,9 @@ BEGIN
         AND private.intake_text_ok(NEW.full_name, 80, true)
         AND private.intake_text_ok(NEW.locality, 250, true)
         AND private.intake_text_ok(NEW.experience, 500, false)
-        AND private.intake_text_ok(NEW.availability, 200, false))
+        AND private.intake_text_ok(NEW.availability, 200, false)
+        AND private.intake_text_ok(NEW.area, 120, false)
+        AND private.intake_valid_district(NEW.state, NEW.city))
     THEN
         PERFORM private.intake_reject(400, 'A required field is missing or a field is too long.');
     END IF;

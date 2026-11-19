@@ -207,9 +207,9 @@ No web font is loaded. Earlier versions named Inter but never loaded it, so visi
 
 The spatial model relies on a responsive single-column mobile foundation that expands into a 1280px (`max-w-7xl`) centered grid on desktop (`max-w-4xl` for narrow sections). The header is wider still (`max-w-[100rem]`) and 80px tall from lg up.
 
-- **Page structure:** `src/App.jsx` composes `src/sections/*.jsx`, built from the shared primitives in `src/ui.jsx`. Order: header, hero (with the example match card), WhatsApp/call band, waitlist form, "a 4-hour problem", shifts & rates, areas, for businesses / for workers, how it works, approach, questions, footer.
+- **Page structure:** `src/App.jsx` composes `src/sections/*.jsx`, built from the shared primitives in `src/ui.jsx`. Order: header, hero (with the example match card), WhatsApp/call band, waitlist form, "a 4-hour problem", what a shift looks like, areas, for businesses / for workers, how it works, approach, questions, footer.
 - **Container Bounds:** `max-w-7xl` centered with responsive horizontal gutters: `px-4` on mobile (16px), `px-6` on tablet (24px), and `px-8` on desktop (32px).
-- **Vertical Rhythm:** `py-16 md:py-24` (64px on phones, 96px from md up) for top-level sections; the three emphasis sections (shifts and rates, for businesses / for workers, approach) take `lg:py-28` (112px). The hero is `md:pt-20 md:pb-32`. Section headings sit `md:mb-14` above their content.
+- **Vertical Rhythm:** `py-16 md:py-24` (64px on phones, 96px from md up) for top-level sections; the three emphasis sections (what a shift looks like, for businesses / for workers, approach) take `lg:py-28` (112px). The hero is `md:pt-20 md:pb-32`. Section headings sit `md:mb-14` above their content.
 - **Section tones:** `page` (canvas), `white` (white with hairline top and bottom borders) and `navy` (the approach band: white cards, indigo top edge for business commitments, cyan for worker commitments).
 - **Grid Models:**
   - 2-Column Marketplace Split: `grid grid-cols-1 lg:grid-cols-2 gap-8` for symmetric Business vs. Worker comparisons.
@@ -289,7 +289,7 @@ One style everywhere (`Choice`, `Segmented`): solid side colour and white text. 
 - **Trust row:** A plain wrapping row of icon + text on phones and tablets. From 1024px up, flat chips (`rounded-xl`, `page` fill, `line` border, small pale icon tile) in a wrapping row under a hairline.
 
 ### Waitlist
-- **Before a side is chosen:** One wide card (`max-w-5xl`) with an indigo band on top (a one-line description and "Free during the pilot"), then the two paths side by side, each with its side pill, a title, a short description, two check items and a full-width join button in its own colour. A footer strip carries the example-rate note. Below 768px the paths stack.
+- **Before a side is chosen:** One wide card (`max-w-5xl`) with an indigo band on top (a one-line description and "Free during the pilot"), then the two paths side by side, each with its side pill, a title, a short description, two check items and a full-width join button in its own colour. Below 768px the paths stack.
 - **After a side is chosen:** The card gives way to the narrow column (`max-w-2xl`): the segmented "I need workers / I want work" switch, then that side's form. Focus moves to the form heading.
 
 ### Motion
@@ -314,9 +314,10 @@ Nothing animates on its own: no looping, floating or pulsing elements.
 - **Do** keep informative text at 14px or larger; footnotes included.
 - **Do** write labels in sentence case.
 - **Do** frame all shifts around daylight hours (8 AM to 8 PM) and public commercial workspaces.
-- **Do** write concise, scannable microcopy with explicit ₹0 worker guarantees.
+- **Do** write concise, scannable microcopy with explicit no-fee guarantees for workers, in words.
 
 ### Don't:
+- **Don't** show pay figures, rupee amounts or earnings estimates until the pilot has real numbers; say that pay is agreed and shown before every shift.
 - **Don't** use flashy discount banners, sticker badges, or countdown timers that evoke spam classifieds.
 - **Don't** mix business indigo and worker cyan within the same component button or badge.
 - **Don't** use `worker-bright` for text; it is for icons, the logo dot and accents.

@@ -2,7 +2,7 @@
 // database the same way a visitor's browser (or a script with the public key) can.
 //
 //   node scripts/check-waitlist-db.mjs               the standard checks
-//   node scripts/check-waitlist-db.mjs --limit=3     also test the rate limit
+//   node scripts/check-waitlist-db.mjs --limit=5     also test the rate limit
 //
 // Reads VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY from the environment or .env.
 // Point it at a scratch project, not the live one: it saves a few rows named
@@ -35,15 +35,19 @@ if (!rest || (!key && !process.env.WAITLIST_REST_URL)) {
   console.error('Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (in .env or the environment) first.');
   process.exit(2);
 }
-if (limitArg && !(Number.isInteger(limit) && limit >= 3)) {
-  console.error('--limit needs a whole number of 3 or more, matching private.intake_config.per_ip_per_hour.');
+if (limitArg && !(Number.isInteger(limit) && limit >= 5)) {
+  console.error('--limit needs a whole number of 5 or more (the standard checks save 4 rows first), matching private.intake_config.per_ip_per_hour.');
   process.exit(2);
 }
 
 const TEST = 'TEST delete me';
-// The business row carries an email and the worker row does not, so both shapes are covered.
-const BUSINESS = { business_name: TEST, contact_name: TEST, phone_number: '98765 43210', email: 'test@example.com', work_location: 'Test area, Test city', support_need: null };
-const WORKER = { full_name: TEST, phone_number: '98765 43210', locality: 'Test area, Test city', experience: null, availability: 'Weekends' };
+// The rows the site sends since issue #7: state, city (a district) and area in
+// their own columns, plus the joined place. OLD_* are the shapes a form
+// deployed before issue #7 sends, which must keep saving.
+const BUSINESS = { business_name: TEST, contact_name: TEST, phone_number: '98765 43210', shop_type: 'Kirana / supermarket', state: 'Haryana', city: 'Panipat', area: 'Test area', work_location: 'Test area, Panipat, Haryana' };
+const WORKER = { full_name: TEST, phone_number: '98765 43210', state: 'Punjab', city: 'SAS Nagar', area: null, locality: 'SAS Nagar, Punjab', experience: null };
+const OLD_BUSINESS = { business_name: TEST, contact_name: TEST, phone_number: '98765 43210', email: 'test@example.com', work_location: 'Test area, Test city', support_need: null };
+const OLD_WORKER = { full_name: TEST, phone_number: '98765 43210', locality: 'Test area, Test city', experience: null, availability: 'Weekends' };
 
 let failures = 0;
 let warnings = 0;
@@ -97,9 +101,13 @@ for (const view of ['business_latest', 'worker_latest']) {
 }
 
 const business = await insert('business_registrations', BUSINESS);
-report(business.status === 201, 'a valid business row with an email is saved', `HTTP ${business.status} ${business.status === 201 ? '' : business.text}`.trim());
+report(business.status === 201, 'a valid business row is saved', `HTTP ${business.status} ${business.status === 201 ? '' : business.text}`.trim());
 const worker = await insert('worker_registrations', WORKER);
-report(worker.status === 201, 'a valid worker row without an email is saved', `HTTP ${worker.status} ${worker.status === 201 ? '' : worker.text}`.trim());
+report(worker.status === 201, 'a valid worker row is saved', `HTTP ${worker.status} ${worker.status === 201 ? '' : worker.text}`.trim());
+const oldBusiness = await insert('business_registrations', OLD_BUSINESS);
+report(oldBusiness.status === 201, 'a business row from the older form (email, no state or city) is saved', `HTTP ${oldBusiness.status} ${oldBusiness.status === 201 ? '' : oldBusiness.text}`.trim());
+const oldWorker = await insert('worker_registrations', OLD_WORKER);
+report(oldWorker.status === 201, 'a worker row from the older form is saved', `HTTP ${oldWorker.status} ${oldWorker.status === 201 ? '' : oldWorker.text}`.trim());
 
 const denied = [401, 403];
 await expectRejected('a visitor cannot set status', 'business_registrations', { ...BUSINESS, status: 'approved' }, denied);
@@ -107,9 +115,14 @@ await expectRejected('a visitor cannot set created_at', 'worker_registrations', 
 await expectRejected('a visitor cannot set id', 'worker_registrations', { ...WORKER, id: '00000000-0000-4000-8000-000000000000' }, denied);
 await expectRejected('a bad phone number is refused', 'business_registrations', { ...BUSINESS, phone_number: '12345 67890' }, [400]);
 await expectRejected('a missing phone number is refused', 'worker_registrations', { ...WORKER, phone_number: null }, [400]);
-await expectRejected('a malformed email is refused', 'worker_registrations', { ...WORKER, email: 'not an email' }, [400]);
+await expectRejected('a malformed email is refused', 'worker_registrations', { ...OLD_WORKER, email: 'not an email' }, [400]);
+await expectRejected('a city outside the list is refused', 'worker_registrations', { ...WORKER, city: 'Atlantis' }, [400]);
+await expectRejected('a city from another state is refused', 'business_registrations', { ...BUSINESS, state: 'Punjab' }, [400]);
+await expectRejected('a state without a city is refused', 'worker_registrations', { ...WORKER, city: null }, [400]);
+await expectRejected('an unknown shop type is refused', 'business_registrations', { ...BUSINESS, shop_type: 'Casino' }, [400]);
+await expectRejected('an over-long area is refused', 'worker_registrations', { ...WORKER, area: 'x'.repeat(121) }, [400]);
 await expectRejected('a blank required name is refused', 'business_registrations', { ...BUSINESS, business_name: '   ' }, [400]);
-await expectRejected('an over-long field is refused', 'business_registrations', { ...BUSINESS, support_need: 'x'.repeat(1001) }, [400]);
+await expectRejected('an over-long field is refused', 'business_registrations', { ...OLD_BUSINESS, support_need: 'x'.repeat(1001) }, [400]);
 await expectRejected('an over-long worker field is refused', 'worker_registrations', { ...WORKER, experience: 'x'.repeat(501) }, [400]);
 
 if (limit !== null) {

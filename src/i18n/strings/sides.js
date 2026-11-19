@@ -15,7 +15,7 @@ export default {
       title: 'Daytime shifts that fit your week',
       body: 'Pick up a few hours of work close to home, at a public workplace.',
       points: [
-        '₹0 to join, ₹0 platform fee',
+        'Free to join, no platform fee',
         'Daytime only, 8am to 8pm',
         'Public workplaces only (shops, cafés, salons)',
       ],
@@ -38,7 +38,7 @@ export default {
       title: 'दिन की शिफ्ट, आपके हफ़्ते के हिसाब से',
       body: 'घर के पास, सार्वजनिक जगह पर कुछ घंटों का काम चुनें।',
       points: [
-        'रजिस्टर करने के ₹0, प्लेटफ़ॉर्म फ़ीस ₹0',
+        'रजिस्टर करना मुफ़्त, कोई प्लेटफ़ॉर्म फ़ीस नहीं',
         'सिर्फ़ दिन का समय, सुबह 8 से शाम 8 बजे तक',
         'सिर्फ़ सार्वजनिक जगह (दुकान, कैफ़े, सैलून)',
       ],

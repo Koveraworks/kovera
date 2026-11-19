@@ -66,9 +66,12 @@ src/
 scripts/check-i18n.mjs         Checks that en and hi strings have identical shapes
 scripts/check-waitlist-db.mjs  Checks that the database refuses what it should (see below)
 supabase/schema.sql            Database schema, RLS policies and the hardening for public inserts
+supabase/places.sql            States and districts the database accepts (generated, run after schema.sql)
+src/data/places/               State and district lists for the form; source and update steps in its README
+scripts/build-places.mjs       Rebuilds the place lists and places.sql from src/data/places/source/places.json
 ```
 
-Page order: header, hero (with the example match card), WhatsApp/call band, waitlist form, "a 4-hour problem", shifts & rates, areas, for businesses / for workers, how it works, approach, questions, footer.
+Page order: header, hero (with the example match card), WhatsApp/call band, waitlist form, "a 4-hour problem", what a shift looks like, areas, for businesses / for workers, how it works, approach, questions, footer.
 
 Styling uses the colour tokens in `src/index.css` (`bg-biz`, `text-worker`, `border-line`, ...) rather than hex values. Indigo is the business side, cyan the worker side. See `DESIGN.md`.
 
@@ -89,7 +92,7 @@ The site is in English (India) and Hindi. Visitors switch from the header; the c
 
 1. Create a free project at [supabase.com](https://supabase.com).
 2. Go to the **SQL Editor** in the left sidebar.
-3. Paste and run the contents of [`supabase/schema.sql`](./supabase/schema.sql). It is safe to run again later.
+3. Paste and run the contents of [`supabase/schema.sql`](./supabase/schema.sql), then [`supabase/places.sql`](./supabase/places.sql) (the states and districts the form offers). Both are safe to run again later; re-run `places.sql` whenever the district list changes.
 4. Copy your **Project URL** and **publishable key** (`sb_publishable_...`) from **Project Settings** -> **API**. The key goes in `VITE_SUPABASE_ANON_KEY`. Supabase is deprecating the older `anon` key, so use the publishable one.
 
 ### Security & Privacy
@@ -97,7 +100,7 @@ The site is in English (India) and Hindi. Visitors switch from the header; the c
 The forms write to the database straight from the visitor's browser, using a key that is public by design. So the database itself decides what is allowed (section 6 of `supabase/schema.sql`):
 
 - Anyone can submit the Business or Worker waitlist form, and nothing else. Visitors **cannot** read, update, or delete any records, and cannot set a row's `id`, `created_at` or `status`.
-- Each submitted row must have a valid Indian mobile number and the required names, and every text field has a length cap. Email is optional; when given it must look like an address. The form's own `maxLength` values (`MAX_LENGTH` in `src/sections/Waitlist.jsx`) sit below those caps.
+- Each submitted row must have a valid Indian mobile number and the required names, and every text field has a length cap. State and city must be a pair listed in `private.places`, and a business's shop type one of the names in `src/i18n/strings/shopTypes.js`. Rows without state, city or shop type are still accepted, so a form deployed before those fields keeps saving. The forms no longer ask for email; an older form's email must look like an address. The form's own `maxLength` values (`MAX_LENGTH` in `src/sections/Waitlist.jsx`) sit below those caps.
 - Submissions are rate-limited: 30 an hour per IP address and 300 an hour in total across both forms. If the database cannot tell which address a row came from, only the total applies to that row. Change these in `private.intake_config` (Supabase Studio, schema `private`). When the total is reached, every signup fails for the rest of that hour and the visitor is told to try again or use WhatsApp. The limits slow a script down; they do not replace looking at the table now and then.
 - Only you as admin can view and export records in your Supabase dashboard. `private.business_latest` and `private.worker_latest` show the latest row per phone number.
 - Rows you add or edit in Supabase Studio are not checked or limited.
@@ -113,9 +116,9 @@ When a form gains a field, add its column to the matching `GRANT INSERT (...)` i
 node scripts/check-waitlist-db.mjs
 
 # Also test the rate limit. First run in the SQL Editor:
-#   update private.intake_config set per_ip_per_hour = 3;
+#   update private.intake_config set per_ip_per_hour = 5;
 #   delete from private.intake_log;
-node scripts/check-waitlist-db.mjs --limit=3
+node scripts/check-waitlist-db.mjs --limit=5
 # Afterwards: update private.intake_config set per_ip_per_hour = 30;
 ```
 

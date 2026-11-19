@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { ArrowRight, BadgeIndianRupee, Clock, MapPin, ShieldCheck, Store, Sun, UserRound } from 'lucide-react';
+import { ArrowRight, Clock, MapPin, ShieldCheck, Store, Sun, UserRound, Wallet } from 'lucide-react';
 import { Button, Card, Pill, Segmented } from '../ui.jsx';
 import { fmt, useStrings } from '../i18n/index.js';
-import { EXAMPLE_RATES } from '../data/rates.js';
-import { inrRange } from '../lib/format.js';
 
 /** Example scenarios, in switcher order. Ids are category ids; text lives in strings. */
 const SCENARIO_IDS = ['handloom', 'boutique', 'cafe'];
@@ -14,11 +12,10 @@ const WORKER_MINUTES = { handloom: 15, boutique: 12, cafe: 18 };
 /** The three promises under the buttons, in order. Text lives in strings (hero.trust). */
 const TRUST_CHIPS = [
   { key: 'adults', icon: ShieldCheck, color: 'text-biz', tile: 'lg:bg-biz-pale' },
-  { key: 'zeroFee', icon: BadgeIndianRupee, color: 'text-worker-bright', tile: 'lg:bg-worker-pale lg:text-worker' },
+  { key: 'noFee', icon: Wallet, color: 'text-worker-bright', tile: 'lg:bg-worker-pale lg:text-worker' },
   { key: 'daytime', icon: Sun, color: 'text-worker-bright', tile: 'lg:bg-worker-pale lg:text-worker' },
 ];
 
-const SHIFT_HOURS = 4;
 const TARGET_MINUTES = 30;
 
 export default function Hero({ onJoin }) {
@@ -27,8 +24,6 @@ export default function Hero({ onJoin }) {
   const [active, setActive] = useState(SCENARIO_IDS[0]);
 
   const scenario = s.scenarios[active];
-  const rate = EXAMPLE_RATES[active];
-  const payRange = inrRange(rate.min * SHIFT_HOURS, rate.max * SHIFT_HOURS);
 
   const options = SCENARIO_IDS.map((id) => ({ value: id, label: c.categories[id] }));
 
@@ -133,17 +128,10 @@ export default function Hero({ onJoin }) {
                     <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5 text-worker-bright" aria-hidden="true" />
                     <span className="min-w-0 break-words">{fmt(s.card.workerMeta, { n: WORKER_MINUTES[active] })}</span>
                   </p>
-                  <div className="mt-3 pt-3 border-t border-worker/25">
-                    <p className="flex flex-wrap items-baseline gap-x-2 text-sm text-ink">
-                      <span className="break-words">{fmt(s.card.payLabel, { hours: SHIFT_HOURS })}</span>
-                      <span className="text-base font-extrabold tabular-nums">{fmt(s.card.payValue, { range: payRange })}</span>
-                    </p>
-                    <p className="mt-1 text-sm text-worker-dark break-words">{s.card.payTerms}</p>
-                  </div>
+                  {/* No pay figure until the pilot has real ones: only how pay works. */}
+                  <p className="mt-3 pt-3 border-t border-worker/25 text-sm text-worker-dark break-words">{s.card.payTerms}</p>
                 </div>
               </div>
-
-              <p className="mt-4 text-sm text-body">{c.exampleRateNote}</p>
             </Card>
           </div>
         </div>

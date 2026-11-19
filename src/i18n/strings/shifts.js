@@ -1,34 +1,28 @@
 /**
- * Shifts and rates section: one category list, a business view (cost of one
- * shift) and a worker view (example monthly income). Numbers live in the
- * component; per-category text is keyed by category id (see src/data/rates.js).
+ * "What a shift looks like" section: pick a type of shop to see the work, the
+ * limits and the usual hours, plus the facts that hold for every shift. No pay
+ * figures until the pilot has real ones: pay is agreed before each shift.
+ * Per-category text is keyed by category id (see CATEGORY_IDS in src/data/rates.js).
  */
 export default {
   en: {
-    title: 'What a shift looks like, and what it pays',
-    sub: 'Pick a type of shop to see the work, the hours and example pay, shown up front.',
-    sideLabel: 'Show numbers for',
-    sideBusiness: 'Shift cost',
-    sideWorker: 'What I could earn',
-
+    title: 'What a shift looks like',
+    sub: 'Pick a type of shop to see the work and the usual hours. Pay is agreed and shown before every shift.',
     categoryLabel: 'Type of shop',
-    lengthLabel: 'Shift length',
-    lengthNote: 'Daytime only, 8am to 8pm',
-    lengths: {
-      4: 'busy hours',
-      6: 'half day',
-      8: 'full day',
-    },
-    perWeekLabel: 'Shifts per week',
-    perWeekNote: 'Estimate uses 4-hour daytime shifts',
-    shiftOne: '1 shift',
-    shiftMany: '{n} shifts',
+    lengthPill: 'Usually 4 hours',
 
     work: {
       boutique: 'Greet customers, fold and arrange clothes, help with trial rooms and keep the floor tidy.',
       handloom: 'Greet customers, fold and stack stock, and help get ready for festival and weekend rush.',
       cafe: 'Help at the counter in the rush, pack takeaway orders and clear tables.',
       salon: 'Set up stations, fold towels, greet clients and keep work areas clean. No hair or skin treatments.',
+    },
+    // What the work does not include, per category.
+    limits: {
+      boutique: 'No heavy lifting or machines.',
+      handloom: 'Light work only, no heavy loads.',
+      cafe: 'Counter and tables only.',
+      salon: 'Helper tasks only.',
     },
     typicalHoursLabel: 'Typical hours',
     typicalHours: {
@@ -38,58 +32,49 @@ export default {
       salon: 'Between 11am and 7pm',
     },
 
-    bizEstimateLabel: 'Example pay for a {n}-hour shift',
-    pilotFeeLabel: 'Kovera pilot fee',
-    pilotFeeValue: '₹0, the pilot is free',
-    paymentLabel: 'Payment',
-    paymentValue: 'Paid directly to the worker when the shift ends',
+    // The same for every shift, whatever the shop.
+    everyShiftLabel: 'Every shift',
+    daytimeLabel: 'Shift hours',
+    daytimeValue: 'Daytime only, 8am to 8pm',
+    payLabel: 'Pay',
+    payValue: 'Agreed and shown before every shift',
+    paidLabel: 'Paid',
+    paidValue: 'Directly to the worker when the shift ends, with nothing deducted',
+    feeLabel: 'Kovera fee',
+    feeValue: 'None during the pilot, and never for workers',
     matchLabel: 'Target match time',
     matchValue: 'Within 30 minutes',
 
-    workerEstimateLabel: 'Example extra income per month',
-    basisOne: 'Based on 1 four-hour shift a week, 4 weeks a month',
-    basisMany: 'Based on {n} four-hour shifts a week, 4 weeks a month',
-    perShiftLabel: 'Per shift (4 hours)',
-    perWeekFactLabel: 'Per week',
-    workerFeeLabel: 'Worker fee',
-    workerFeeValue: '₹0, you keep all of it',
-
-    // What the work does not include, per category.
-    limits: {
-      boutique: 'No heavy lifting or machines.',
-      handloom: 'Light work only, no heavy loads.',
-      cafe: 'Counter and tables only.',
-      salon: 'Helper tasks only.',
+    ctaBusiness: {
+      boutique: 'Find help for my boutique',
+      handloom: 'Find help for my textile shop',
+      cafe: 'Find help for my café',
+      salon: 'Find help for my salon',
     },
-
-    ctaBusiness: 'Join with this shift',
-    ctaWorker: 'Join for shifts like this',
+    ctaWorker: {
+      boutique: 'Find work at a boutique',
+      handloom: 'Find work at a textile shop',
+      cafe: 'Find work at a café',
+      salon: 'Find work at a salon',
+    },
   },
   hi: {
-    title: 'शिफ्ट में क्या काम होता है, और कितना भुगतान मिलता है',
-    sub: 'चुनें कि दुकान किस तरह की है। काम, समय और भुगतान का उदाहरण, सब पहले ही दिख जाएगा।',
-    sideLabel: 'किसके लिए देखें',
-    sideBusiness: 'वर्कर चाहिए: शिफ्ट का ख़र्च',
-    sideWorker: 'काम चाहिए: कितनी कमाई हो सकती है',
-
+    title: 'शिफ्ट में क्या होता है',
+    sub: 'चुनें कि दुकान किस तरह की है, और देखें कि काम क्या है और आम तौर पर कब होता है। भुगतान हर शिफ्ट से पहले तय होता है और आपको बता दिया जाता है।',
     categoryLabel: 'किस तरह की दुकान',
-    lengthLabel: 'शिफ्ट कितने घंटे की',
-    lengthNote: 'सिर्फ़ दिन का समय, सुबह 8 से शाम 8 बजे तक',
-    lengths: {
-      4: 'भीड़ के घंटे',
-      6: 'आधा दिन',
-      8: 'पूरा दिन',
-    },
-    perWeekLabel: 'हफ़्ते में कितनी शिफ्ट',
-    perWeekNote: 'अनुमान दिन की 4 घंटे की शिफ्ट के हिसाब से',
-    shiftOne: '1 शिफ्ट',
-    shiftMany: '{n} शिफ्ट',
+    lengthPill: 'आम तौर पर 4 घंटे',
 
     work: {
       boutique: 'ग्राहकों का स्वागत, कपड़े तह करके सजाना, ट्रायल रूम में मदद और दुकान साफ़-सुथरी रखना।',
       handloom: 'ग्राहकों का स्वागत, माल तह करके लगाना, त्योहार और वीकेंड की भीड़ की तैयारी में मदद।',
       cafe: 'भीड़ के समय काउंटर पर मदद, टेकअवे ऑर्डर पैक करना और टेबल साफ़ करना।',
       salon: 'कुर्सी और सामान तैयार रखना, तौलिए तह करना, ग्राहकों का स्वागत और जगह साफ़ रखना। बाल या स्किन का कोई ट्रीटमेंट नहीं।',
+    },
+    limits: {
+      boutique: 'भारी सामान या मशीन का काम नहीं।',
+      handloom: 'सिर्फ़ हल्का काम, भारी बोझ नहीं।',
+      cafe: 'सिर्फ़ काउंटर और टेबल का काम।',
+      salon: 'सिर्फ़ मदद का काम।',
     },
     typicalHoursLabel: 'आम तौर पर समय',
     typicalHours: {
@@ -99,30 +84,29 @@ export default {
       salon: 'सुबह 11 से शाम 7 बजे के बीच',
     },
 
-    bizEstimateLabel: 'उदाहरण: {n} घंटे की शिफ्ट का भुगतान',
-    pilotFeeLabel: 'Kovera की पायलट फ़ीस',
-    pilotFeeValue: '₹0, पायलट मुफ़्त है',
-    paymentLabel: 'भुगतान',
-    paymentValue: 'शिफ्ट ख़त्म होने पर सीधे वर्कर को',
+    everyShiftLabel: 'हर शिफ्ट में',
+    daytimeLabel: 'शिफ्ट का समय',
+    daytimeValue: 'सिर्फ़ दिन में, सुबह 8 से शाम 8 बजे तक',
+    payLabel: 'भुगतान',
+    payValue: 'हर शिफ्ट से पहले तय होता है और बता दिया जाता है',
+    paidLabel: 'भुगतान कब',
+    paidValue: 'शिफ्ट ख़त्म होते ही सीधे वर्कर को, बिना किसी कटौती के',
+    feeLabel: 'Kovera की फ़ीस',
+    feeValue: 'पायलट में कोई फ़ीस नहीं, और वर्कर से कभी नहीं',
     matchLabel: 'मैच का लक्ष्य',
     matchValue: '30 मिनट के अंदर',
 
-    workerEstimateLabel: 'उदाहरण: हर महीने की एक्स्ट्रा कमाई',
-    basisOne: 'हफ़्ते में 1 शिफ्ट (4 घंटे) और महीने में 4 हफ़्ते के हिसाब से',
-    basisMany: 'हफ़्ते में {n} शिफ्ट (हर शिफ्ट 4 घंटे) और महीने में 4 हफ़्ते के हिसाब से',
-    perShiftLabel: 'हर शिफ्ट (4 घंटे)',
-    perWeekFactLabel: 'हर हफ़्ते',
-    workerFeeLabel: 'वर्कर की फ़ीस',
-    workerFeeValue: '₹0, पूरा भुगतान आपका',
-
-    limits: {
-      boutique: 'भारी सामान या मशीन का काम नहीं।',
-      handloom: 'सिर्फ़ हल्का काम, भारी बोझ नहीं।',
-      cafe: 'सिर्फ़ काउंटर और टेबल का काम।',
-      salon: 'सिर्फ़ मदद का काम।',
+    ctaBusiness: {
+      boutique: 'मेरे बुटीक के लिए वर्कर चाहिए',
+      handloom: 'मेरी कपड़े की दुकान के लिए वर्कर चाहिए',
+      cafe: 'मेरे कैफ़े के लिए वर्कर चाहिए',
+      salon: 'मेरे सैलून के लिए वर्कर चाहिए',
     },
-
-    ctaBusiness: 'इस शिफ्ट के साथ जुड़ें',
-    ctaWorker: 'ऐसी शिफ्ट के लिए जुड़ें',
+    ctaWorker: {
+      boutique: 'बुटीक में काम चाहिए',
+      handloom: 'कपड़े की दुकान पर काम चाहिए',
+      cafe: 'कैफ़े में काम चाहिए',
+      salon: 'सैलून में काम चाहिए',
+    },
   },
 };

@@ -3,7 +3,7 @@
  *
  * Hindi style: everyday spoken Hindi in Devanagari, formal "आप", short
  * sentences. Familiar English words stay as loanwords (शिफ्ट, वर्कर,
- * बिज़नेस, वेटलिस्ट). "Kovera", "WhatsApp", ₹ and digits stay in Latin script.
+ * बिज़नेस, वेटलिस्ट). "Kovera", "WhatsApp" and digits stay in Latin script.
  */
 export default {
   en: {
@@ -40,16 +40,10 @@ export default {
       'gt-road': 'GT Road',
     },
     example: 'Example',
-    exampleRateNote: '*Example rates. Actual pay is agreed with both sides before each shift.',
-    zeroFee: '₹0 platform fee',
-    perHour: 'per hour',
-    hours: '{n} hours',
     // Prefilled WhatsApp messages, by where the button sits.
     whatsapp: {
       urgent: 'Hello Kovera team, I need shift support today.',
       question: 'Hello Kovera team, I have a question.',
-      joinedBusiness: 'Hello Kovera team, I just joined the waitlist as a business.',
-      joinedWorker: 'Hello Kovera team, I just joined the waitlist as a worker.',
     },
   },
   hi: {
@@ -82,15 +76,9 @@ export default {
       'gt-road': 'जीटी रोड',
     },
     example: 'उदाहरण',
-    exampleRateNote: '*ये उदाहरण के रेट हैं। असली भुगतान हर शिफ्ट से पहले बिज़नेस और वर्कर, दोनों से बात करके तय होता है।',
-    zeroFee: '₹0 प्लेटफ़ॉर्म फ़ीस',
-    perHour: 'प्रति घंटा',
-    hours: '{n} घंटे',
     whatsapp: {
       urgent: 'नमस्ते Kovera टीम, मुझे आज शिफ्ट के लिए मदद चाहिए।',
       question: 'नमस्ते Kovera टीम, मुझे कुछ पूछना है।',
-      joinedBusiness: 'नमस्ते Kovera टीम, मैंने अभी बिज़नेस के तौर पर वेटलिस्ट में नाम जोड़ा है।',
-      joinedWorker: 'नमस्ते Kovera टीम, मैंने अभी वर्कर के तौर पर वेटलिस्ट में नाम जोड़ा है।',
     },
   },
 };

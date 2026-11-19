@@ -1,60 +1,41 @@
 import { useEffect, useRef, useState } from 'react';
-import { AlertCircle, ArrowRight, CheckCircle2, Loader2, Store, UserRound, X } from 'lucide-react';
+import { AlertCircle, ArrowRight, CheckCircle2, ChevronDown, Loader2, Store, UserRound, X } from 'lucide-react';
 import WhatsAppIcon from '../components/WhatsAppIcon.jsx';
-import { Button, Card, CheckItem, Choice, Pill, Segmented } from '../ui.jsx';
-import { fmt, getStrings, useStrings } from '../i18n/index.js';
-import { EXAMPLE_RATES } from '../data/rates.js';
+import Combobox from '../components/Combobox.jsx';
+import Confetti from '../components/Confetti.jsx';
+import { Button, Card, CheckItem, Pill, Segmented } from '../ui.jsx';
+import { fmt, getStrings, useLang, useStrings } from '../i18n/index.js';
+import { SHOP_TYPE_IDS, isShopType } from '../data/shopTypes.js';
 import { whatsappUrl } from '../lib/contact.js';
 import { cx } from '../lib/cx.js';
-import { EMAIL_MAX_LENGTH, isValidEmail, normalizeEmail } from '../lib/email.js';
-import { inrRange } from '../lib/format.js';
+import { buzz, canCelebrate } from '../lib/motion.js';
 import { caretAfterDigits, digitsBefore, formatPhone, isValidIndianMobile } from '../lib/phone.js';
+import { districtOptions, loadDistricts, stateByCode, stateOptions } from '../lib/places.js';
 import { submitBusinessRegistration, submitWorkerRegistration } from '../lib/supabase.js';
 
+// state holds a state code (e.g. "HR"); city the district's English name.
 const EMPTY = {
-  business: { businessName: '', contactName: '', phone: '', email: '', city: '', state: '', locality: '', supportNeed: '' },
-  worker: { fullName: '', phone: '', email: '', city: '', state: '', locality: '', experience: '', availability: [] },
+  business: { businessName: '', contactName: '', phone: '', shopType: '', state: '', city: '', area: '' },
+  worker: { fullName: '', phone: '', state: '', city: '', area: '' },
 };
 
+// Every field that must be filled, in the order it appears in the form:
+// focus goes to the first one that failed. Area is not required, but is not
+// labelled "optional" either: the team wants it whenever the visitor knows it.
 const REQUIRED = {
-  business: ['businessName', 'contactName', 'phone', 'city'],
-  worker: ['fullName', 'phone', 'city'],
+  business: ['businessName', 'contactName', 'phone', 'shopType', 'state', 'city'],
+  worker: ['fullName', 'phone', 'state', 'city'],
 };
-
-// Every field that can fail validation, in the order it appears in the form:
-// focus goes to the first one that failed. Email is optional, but is checked
-// when something is typed.
-const CHECKED = {
-  business: ['businessName', 'contactName', 'phone', 'email', 'city'],
-  worker: ['fullName', 'phone', 'email', 'city'],
-};
-
-// Not required to submit, but not labelled "optional" either: the team wants
-// them filled in whenever the visitor knows them.
-const UNLABELLED = ['state', 'locality'];
 
 // The database refuses longer text (supabase/schema.sql, section 6). Its caps
-// are higher than these, because what is saved also carries the picked
-// category in front and joins area, city and state into one field.
+// are higher than these, because what is saved also joins area, city and
+// state into one field.
 const MAX_LENGTH = {
   businessName: 100,
   contactName: 60,
   fullName: 60,
-  city: 60,
-  state: 60,
-  locality: 100,
-  supportNeed: 800,
-  experience: 300,
-  email: EMAIL_MAX_LENGTH,
+  area: 100,
 };
-
-// Example pay for a worker, across every shop type, for one standard shift.
-const SHIFT_HOURS = 4;
-const RATE_LIST = Object.values(EXAMPLE_RATES);
-const WORKER_PAY_RANGE = inrRange(
-  Math.min(...RATE_LIST.map((r) => r.min)) * SHIFT_HOURS,
-  Math.max(...RATE_LIST.map((r) => r.max)) * SHIFT_HOURS,
-);
 
 /** The two paths in the chooser card, in order. Text lives in strings (waitlist.chooser). */
 const PATHS = [
@@ -62,34 +43,13 @@ const PATHS = [
   { side: 'worker', tone: 'worker', icon: UserRound },
 ];
 
-const AVAILABILITY_KEYS = ['weekdayMornings', 'weekdayAfternoons', 'weekends'];
-
 // What is saved is always English, whichever language the visitor reads in,
 // so the team's sheet stays sortable.
-const SAVED_WAITLIST = getStrings('waitlist', 'en');
+const SAVED_SHOP_TYPES = getStrings('shopTypes', 'en');
 
 function isInvalid(field, value) {
   if (field === 'phone') return !isValidIndianMobile(value);
-  // Empty is fine for email; anything typed has to be a full address.
-  if (field === 'email') return Boolean(String(value).trim()) && !isValidEmail(value);
   return !String(value).trim();
-}
-
-// The category names saved with a registration. The page now shows shorter
-// names (common.categories); these stay as they were, so earlier and later
-// rows in the team's sheet use the same labels.
-const SAVED_CATEGORY = {
-  boutique: 'Boutique & studio',
-  handloom: 'Handloom & textiles',
-  cafe: 'Café & quick bites',
-  salon: 'Salon',
-};
-
-function savedContext(side, context) {
-  if (!context?.category || context.side !== side) return null;
-  const parts = [SAVED_CATEGORY[context.category]];
-  if (side === 'business' && context.hours) parts.push(`${context.hours} hours`);
-  return `[${parts.join(' · ')}]`;
 }
 
 function joinParts(parts, separator) {
@@ -97,13 +57,13 @@ function joinParts(parts, separator) {
 }
 
 const INPUT_BASE = 'w-full min-h-12 rounded-xl border bg-white px-4 py-3 text-base text-ink transition-colors';
+const inputBorder = (hasError) => (hasError ? 'border-danger' : 'border-line-strong hover:border-ink');
 
-function Field({ id, label, optionalText, hint, error, children }) {
+function Field({ id, label, hint, error, children }) {
   return (
     <div>
       <label htmlFor={id} className="mb-1.5 block text-sm font-semibold text-ink">
         {label}
-        {optionalText && <span className="font-normal text-body"> ({optionalText})</span>}
       </label>
       {children}
       {error && (
@@ -120,6 +80,8 @@ function Field({ id, label, optionalText, hint, error, children }) {
 export default function Waitlist({ side, onSideChange, context, onClearContext, headingRef, joinCount }) {
   const s = useStrings('waitlist');
   const c = useStrings('common');
+  const shopTypes = useStrings('shopTypes');
+  const { lang } = useLang();
 
   const [values, setValues] = useState(EMPTY);
   const [errors, setErrors] = useState({ business: {}, worker: {} });
@@ -127,6 +89,9 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
   const [submittingSide, setSubmittingSide] = useState(null);
   const [failedSide, setFailedSide] = useState(null);
   const [done, setDone] = useState(null);
+  // District lists by state code: an array once loaded, 'error' if it failed.
+  const [districts, setDistricts] = useState({});
+  const [retries, setRetries] = useState(0);
   const doneRef = useRef(null);
   const formHeadingRef = useRef(null);
   const returnToForm = useRef(false);
@@ -153,6 +118,28 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
     }
   }, [side]);
 
+  const form = side ? values[side] : null;
+  const formErrors = side ? errors[side] : {};
+  const stateCode = form?.state || '';
+
+  // Fetch the chosen state's districts (a small file per state).
+  useEffect(() => {
+    if (!stateCode || Array.isArray(districts[stateCode])) return undefined;
+    let live = true;
+    loadDistricts(stateCode).then(
+      (list) => live && setDistricts((prev) => ({ ...prev, [stateCode]: list })),
+      (err) => {
+        console.error(err);
+        if (live) setDistricts((prev) => ({ ...prev, [stateCode]: 'error' }));
+      },
+    );
+    return () => {
+      live = false;
+    };
+    // districts is read only to skip lists already loaded.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stateCode, retries]);
+
   const choosePath = (next) => {
     focusFormOnOpen.current = true;
     onSideChange(next);
@@ -161,37 +148,45 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
   const submitting = submittingSide === side;
   const failed = failedSide === side;
 
-  const form = side ? values[side] : null;
-  const formErrors = side ? errors[side] : {};
+  // A shop type picked in the hero or the shifts section fills the business
+  // form's shop type until the visitor chooses one themselves.
+  const contextShopType = context?.side === 'business' && isShopType(context.category) ? context.category : '';
+  const shopTypeValue = side === 'business' ? form.shopType || contextShopType : '';
 
-  const setField = (field, value) => {
-    setValues((prev) => ({ ...prev, [side]: { ...prev[side], [field]: value } }));
-    if (formErrors[field]) {
-      setErrors((prev) => ({ ...prev, [side]: { ...prev[side], [field]: false } }));
+  const setFields = (changes) => {
+    setValues((prev) => ({ ...prev, [side]: { ...prev[side], ...changes } }));
+    const cleared = Object.keys(changes).filter((field) => formErrors[field]);
+    if (cleared.length) {
+      setErrors((prev) => ({ ...prev, [side]: { ...prev[side], ...Object.fromEntries(cleared.map((f) => [f, false])) } }));
     }
     if (failed) setFailedSide(null);
   };
+  const setField = (field, value) => setFields({ [field]: value });
 
-  // Check a required field as soon as the visitor leaves it with something typed.
+  const markError = (field) => setErrors((prev) => ({ ...prev, [side]: { ...prev[side], [field]: true } }));
+
+  // Check a text field as soon as the visitor leaves it with something typed.
   const checkOnBlur = (field) => {
-    if (form[field] && isInvalid(field, form[field])) {
-      setErrors((prev) => ({ ...prev, [side]: { ...prev[side], [field]: true } }));
-    }
+    if (form[field] && isInvalid(field, form[field])) markError(field);
   };
 
-  const toggleAvailability = (key) => {
-    const current = values.worker.availability;
-    setField('availability', current.includes(key) ? current.filter((k) => k !== key) : [...current, key]);
+  const fieldValue = (field) => (field === 'shopType' ? shopTypeValue : form[field]);
+
+  const placeNames = (f, language) => {
+    const st = stateByCode(f.state);
+    const district = (Array.isArray(districts[f.state]) ? districts[f.state] : []).find((d) => d.en === f.city);
+    const pick = (item) => (item ? (language === 'hi' ? item.hi : item.en) : null);
+    return { state: pick(st), city: pick(district) ?? f.city };
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const found = {};
-    for (const field of CHECKED[side]) {
-      if (isInvalid(field, form[field])) found[field] = true;
+    for (const field of REQUIRED[side]) {
+      if (isInvalid(field, fieldValue(field))) found[field] = true;
     }
     setErrors((prev) => ({ ...prev, [side]: found }));
-    const firstInvalid = CHECKED[side].find((field) => found[field]);
+    const firstInvalid = REQUIRED[side].find((field) => found[field]);
     if (firstInvalid) {
       document.getElementById(`${side}-${firstInvalid}`)?.focus();
       return;
@@ -201,41 +196,57 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
     setSubmittingSide(sentSide);
     setFailedSide(null);
     try {
-      const place = joinParts([form.locality, form.city, form.state], ', ');
+      const saved = placeNames(form, 'en');
+      const shown = placeNames(form, lang);
+      const area = form.area.trim() || null;
+      const savedPlace = joinParts([area, saved.city, saved.state], ', ');
+      const shownPlace = joinParts([area, shown.city, shown.state], ', ');
       const phone = formatPhone(form.phone);
-      const email = normalizeEmail(form.email);
+      const place = { state: saved.state, city: saved.city, area };
       let result;
       let name;
+      let business = null;
       if (side === 'business') {
         name = form.contactName.trim();
+        business = form.businessName.trim();
         result = await submitBusinessRegistration({
-          businessName: form.businessName.trim(),
+          businessName: business,
           contactName: name,
           phone,
-          email,
-          workLocation: place,
-          supportNeed: joinParts([savedContext('business', context), form.supportNeed], ' '),
+          shopType: SAVED_SHOP_TYPES[shopTypeValue],
+          ...place,
+          workLocation: savedPlace,
         });
       } else {
         name = form.fullName.trim();
-        const shifts = context?.side === 'worker' && context.shiftsPerWeek
-          ? `${context.shiftsPerWeek} shift${context.shiftsPerWeek > 1 ? 's' : ''}/week`
+        const interest = context?.side === 'worker' && isShopType(context.category)
+          ? `[Interested in: ${SAVED_SHOP_TYPES[context.category]}]`
           : null;
         result = await submitWorkerRegistration({
           fullName: name,
           phone,
-          email,
-          locality: place,
-          experience: joinParts([savedContext('worker', context), form.experience], ' '),
-          // Listed in a fixed order, not click order, so identical answers save identically.
-          availability: joinParts([...AVAILABILITY_KEYS.filter((key) => form.availability.includes(key)).map((key) => SAVED_WAITLIST.availabilityOptions[key]), shifts], ', '),
+          ...place,
+          locality: savedPlace,
+          experience: interest,
         });
       }
       // Without a database nothing was saved. Only a local preview may pretend otherwise.
       if (result?.mock && !import.meta.env.DEV) {
         throw new Error('Supabase is not configured, so the registration was not saved.');
       }
-      setDone({ side: sentSide, joinCount, name, business: sentSide === 'business' ? form.businessName.trim() : null, place, phone, mock: Boolean(result?.mock) });
+      const celebrate = canCelebrate();
+      if (celebrate) buzz();
+      setDone({
+        side: sentSide,
+        joinCount,
+        name,
+        business,
+        shopType: sentSide === 'business' ? shopTypeValue : null,
+        place: shownPlace,
+        phone,
+        mock: Boolean(result?.mock),
+        celebrate,
+      });
       setValues((prev) => ({ ...prev, [sentSide]: EMPTY[sentSide] }));
       if (context?.side === sentSide) onClearContext();
     } catch (err) {
@@ -260,22 +271,25 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
     });
   };
 
-  const inputProps = (field, extra = {}) => {
+  const describedBy = (field) => {
     const id = `${side}-${field}`;
-    const required = REQUIRED[side].includes(field);
+    if (formErrors[field]) return `${id}-error`;
+    return s.fields[field].hint ? `${id}-hint` : undefined;
+  };
+
+  const inputProps = (field, extra = {}) => {
     const hasError = Boolean(formErrors[field]);
-    const hint = s.fields[field].hint;
     return {
-      id,
+      id: `${side}-${field}`,
       value: form[field],
       placeholder: s.fields[field].placeholder,
       maxLength: MAX_LENGTH[field],
       onChange: field === 'phone' ? handlePhoneChange : (e) => setField(field, e.target.value),
-      onBlur: CHECKED[side].includes(field) ? () => checkOnBlur(field) : undefined,
-      'aria-required': required ? 'true' : undefined,
+      onBlur: REQUIRED[side].includes(field) ? () => checkOnBlur(field) : undefined,
+      'aria-required': REQUIRED[side].includes(field) ? 'true' : undefined,
       'aria-invalid': hasError ? 'true' : undefined,
-      'aria-describedby': hasError ? `${id}-error` : hint ? `${id}-hint` : undefined,
-      className: cx(INPUT_BASE, hasError ? 'border-danger' : 'border-line-strong hover:border-ink'),
+      'aria-describedby': describedBy(field),
+      className: cx(INPUT_BASE, inputBorder(hasError)),
       ...extra,
     };
   };
@@ -283,25 +297,32 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
   const fieldProps = (field) => ({
     id: `${side}-${field}`,
     label: s.fields[field].label,
-    optionalText: REQUIRED[side].includes(field) || UNLABELLED.includes(field) ? null : s.optional,
     hint: s.fields[field].hint,
     error: formErrors[field] ? s.errors[field] : null,
   });
 
+  const cityList = districts[stateCode];
+  const cityStatus = !stateCode ? 'needsState' : cityList === 'error' ? 'error' : Array.isArray(cityList) ? 'ready' : 'loading';
+  const cityPlaceholder = {
+    needsState: s.fields.city.needsState,
+    loading: s.fields.city.loading,
+    error: s.fields.city.placeholder,
+    ready: s.fields.city.placeholder,
+  }[cityStatus];
+
   const tone = side === 'worker' ? 'worker' : 'biz';
   const copy = side ? s[side] : null;
-  const showContext = side && context?.category && context.side === side;
-  const contextText = showContext
-    ? [
-        c.categories[context.category],
-        side === 'business' && context.hours ? fmt(c.hours, { n: context.hours }) : null,
-        side === 'worker' && context.shiftsPerWeek
-          ? (context.shiftsPerWeek === 1 ? s.context.oneShift : fmt(s.context.shifts, { n: context.shiftsPerWeek }))
-          : null,
-      ].filter(Boolean).join(' · ')
-    : null;
+  // The worker form shows the shop type picked elsewhere as a removable chip;
+  // the business form puts it straight into its shop-type field.
+  const showContext = side === 'worker' && context?.side === 'worker' && isShopType(context.category);
   // A join button pressed elsewhere on the page since then opens a fresh form, not the old confirmation.
   const showDone = done && done.side === side && done.joinCount === joinCount;
+
+  const doneMessage = showDone
+    ? done.side === 'business'
+      ? fmt(s.whatsappMessage.business, { business: done.business, shopType: shopTypes[done.shopType], place: done.place })
+      : fmt(s.whatsappMessage.worker, { place: done.place })
+    : '';
 
   return (
     <section id="waitlist" className="bg-page pb-16 pt-16 md:pb-28 md:pt-24">
@@ -338,9 +359,7 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
                       <Pill tone={pathTone} icon={icon}>{c.side[pathSide]}</Pill>
                     </div>
                     <h3 className="mt-4 text-xl font-bold text-ink sm:text-2xl">{path.title}</h3>
-                    <p className="mt-2 text-base leading-relaxed text-body">
-                      {fmt(path.body, { range: WORKER_PAY_RANGE, hours: SHIFT_HOURS })}
-                    </p>
+                    <p className="mt-2 text-base leading-relaxed text-body">{path.body}</p>
                     <ul className="mt-4 space-y-2.5">
                       {path.points.map((point) => (
                         <CheckItem key={point} tone={pathTone} className="text-ink">{point}</CheckItem>
@@ -358,8 +377,6 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
                 );
               })}
             </div>
-
-            <p className="border-t border-line bg-page px-6 py-4 text-center text-sm text-body sm:px-8">{c.exampleRateNote}</p>
           </div>
         )}
 
@@ -378,38 +395,44 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
             />
 
             {showDone && (
-              <Card key={`done-${side}`} className="animate-swap" role="status">
-                <span className={cx('mb-4 flex h-12 w-12 items-center justify-center rounded-2xl', tone === 'worker' ? 'bg-worker-pale text-worker' : 'bg-biz-pale text-biz')}>
-                  <CheckCircle2 className="h-6 w-6" aria-hidden="true" />
-                </span>
-                <h3 ref={doneRef} tabIndex={-1} className="text-xl font-bold text-ink">
-                  {fmt(s.success.title, { name: done.name })}
-                </h3>
-                <p className="mt-2 text-base text-body">
-                  {done.business
-                    ? fmt(s.success.business, { business: done.business, place: done.place })
-                    : fmt(s.success.worker, { place: done.place })}
-                </p>
-                <p className="mt-2 text-base text-body">{fmt(s.success.next, { phone: done.phone })}</p>
-                {done.mock && (
-                  <p className="mt-4 rounded-xl border border-gold/40 bg-gold-pale p-3 text-sm text-gold-ink">{s.success.demo}</p>
-                )}
-                <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-                  <Button variant="whatsapp" href={whatsappUrl(done.side === 'worker' ? c.whatsapp.joinedWorker : c.whatsapp.joinedBusiness)} target="_blank" rel="noopener noreferrer">
-                    <WhatsAppIcon className="h-5 w-5" />
-                    {s.success.whatsapp}
-                  </Button>
-                  <Button
-                    variant={tone === 'worker' ? 'link-worker' : 'link-biz'}
-                    onClick={() => {
-                      returnToForm.current = true;
-                      setDone(null);
-                    }}
-                  >
-                    {s.success.again}
-                  </Button>
-                </div>
-              </Card>
+              <div className="relative">
+                {done.celebrate && <Confetti />}
+                <Card key={`done-${side}`} className="animate-swap" role="status">
+                  <span className={cx('mb-4 flex h-12 w-12 items-center justify-center rounded-2xl', tone === 'worker' ? 'bg-worker-pale text-worker' : 'bg-biz-pale text-biz')}>
+                    <CheckCircle2 className="h-6 w-6" aria-hidden="true" />
+                  </span>
+                  <h3 ref={doneRef} tabIndex={-1} className="text-xl font-bold text-ink">
+                    {fmt(s.success.title, { name: done.name })}
+                  </h3>
+                  <p className="mt-2 text-base text-body">
+                    {done.business
+                      ? fmt(s.success.business, { business: done.business, place: done.place })
+                      : fmt(s.success.worker, { place: done.place })}
+                  </p>
+                  <p className="mt-2 text-base text-body">{fmt(s.success.next, { phone: done.phone })}</p>
+                  {done.mock && (
+                    <p className="mt-4 rounded-xl border border-gold/40 bg-gold-pale p-3 text-sm text-gold-ink">{s.success.demo}</p>
+                  )}
+                  <div className="mt-6 rounded-2xl bg-whatsapp-pale p-4 sm:p-5">
+                    <p className="text-base font-semibold text-ink">{s.success.more}</p>
+                    <Button variant="whatsapp" size="lg" className="mt-4 w-full sm:w-auto" href={whatsappUrl(doneMessage)} target="_blank" rel="noopener noreferrer">
+                      <WhatsAppIcon className="h-5 w-5" />
+                      {s.success.whatsapp}
+                    </Button>
+                  </div>
+                  <div className="mt-4">
+                    <Button
+                      variant={tone === 'worker' ? 'link-worker' : 'link-biz'}
+                      onClick={() => {
+                        returnToForm.current = true;
+                        setDone(null);
+                      }}
+                    >
+                      {s.success.again}
+                    </Button>
+                  </div>
+                </Card>
+              </div>
             )}
 
             {side && !showDone && (
@@ -418,9 +441,9 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
                 <p className="mt-1 text-base text-body">{copy.sub}</p>
 
                 {showContext && (
-                  <div className={cx('mt-5 flex items-center justify-between gap-3 rounded-xl px-4 py-2 text-sm', tone === 'worker' ? 'bg-worker-pale text-worker-dark' : 'bg-biz-pale text-biz')}>
+                  <div className="mt-5 flex items-center justify-between gap-3 rounded-xl bg-worker-pale px-4 py-2 text-sm text-worker-dark">
                     <p className="min-w-0">
-                      {s.context.label}: <span className="font-semibold">{contextText}</span>
+                      {s.context.label}: <span className="font-semibold">{shopTypes[context.category]}</span>
                     </p>
                     <button
                       type="button"
@@ -454,52 +477,84 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
                       <span className="inline-flex select-none items-center rounded-l-xl border border-r-0 border-line-strong bg-page px-3.5 text-base font-semibold text-ink">
                         +91
                       </span>
-                      <input type="tel" inputMode="tel" autoComplete="tel-national" {...inputProps('phone', { className: cx(INPUT_BASE, 'min-w-0 rounded-l-none', formErrors.phone ? 'border-danger' : 'border-line-strong hover:border-ink') })} />
+                      <input type="tel" inputMode="tel" autoComplete="tel-national" {...inputProps('phone', { className: cx(INPUT_BASE, 'min-w-0 rounded-l-none', inputBorder(formErrors.phone)) })} />
                     </div>
                   </Field>
 
-                  <Field {...fieldProps('email')}>
-                    <input type="email" inputMode="email" autoComplete="email" autoCapitalize="none" spellCheck={false} {...inputProps('email')} />
-                  </Field>
+                  {side === 'business' && (
+                    <Field {...fieldProps('shopType')}>
+                      <div className="relative">
+                        <select
+                          id={`${side}-shopType`}
+                          value={shopTypeValue}
+                          onChange={(e) => setField('shopType', e.target.value)}
+                          aria-required="true"
+                          aria-invalid={formErrors.shopType ? 'true' : undefined}
+                          aria-describedby={describedBy('shopType')}
+                          className={cx(INPUT_BASE, 'cursor-pointer appearance-none pr-11', inputBorder(formErrors.shopType), !shopTypeValue && 'text-body')}
+                        >
+                          <option value="" disabled>{s.fields.shopType.placeholder}</option>
+                          {SHOP_TYPE_IDS.map((id) => (
+                            <option key={id} value={id} className="text-ink">{shopTypes[id]}</option>
+                          ))}
+                        </select>
+                        <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-body" aria-hidden="true" />
+                      </div>
+                    </Field>
+                  )}
 
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                    <Field {...fieldProps('city')}>
-                      <input type="text" autoComplete="address-level2" {...inputProps('city')} />
-                    </Field>
                     <Field {...fieldProps('state')}>
-                      <input type="text" autoComplete="address-level1" {...inputProps('state')} />
+                      <Combobox
+                        id={`${side}-state`}
+                        options={stateOptions(lang)}
+                        value={form.state}
+                        // A new state empties the city, which belonged to the old one.
+                        onChange={(code) => code !== form.state && setFields({ state: code, city: '' })}
+                        onBlur={({ unmatched }) => unmatched && markError('state')}
+                        placeholder={s.fields.state.placeholder}
+                        noMatchText={s.noMatch.state}
+                        required
+                        invalid={Boolean(formErrors.state)}
+                        describedBy={describedBy('state')}
+                        className={cx(INPUT_BASE, inputBorder(formErrors.state))}
+                      />
+                    </Field>
+                    <Field {...fieldProps('city')} error={formErrors.city ? s.errors.city : cityStatus === 'error' ? s.errors.places : null}>
+                      <Combobox
+                        // A new state (or language) starts the city box afresh.
+                        key={`${side}-${stateCode}`}
+                        id={`${side}-city`}
+                        options={districtOptions(Array.isArray(cityList) ? cityList : [], lang)}
+                        value={form.city}
+                        onChange={(city) => setField('city', city)}
+                        onBlur={({ unmatched }) => unmatched && markError('city')}
+                        placeholder={cityPlaceholder}
+                        noMatchText={s.noMatch.city}
+                        disabled={cityStatus === 'needsState' || cityStatus === 'loading'}
+                        required
+                        invalid={Boolean(formErrors.city) || cityStatus === 'error'}
+                        describedBy={formErrors.city || cityStatus === 'error' ? `${side}-city-error` : `${side}-city-hint`}
+                        className={cx(INPUT_BASE, inputBorder(formErrors.city || cityStatus === 'error'))}
+                      />
+                      {cityStatus === 'error' && (
+                        <Button
+                          variant={tone === 'worker' ? 'link-worker' : 'link-biz'}
+                          className="mt-1"
+                          onClick={() => {
+                            setDistricts((prev) => ({ ...prev, [stateCode]: undefined }));
+                            setRetries((n) => n + 1);
+                          }}
+                        >
+                          {s.errors.retry}
+                        </Button>
+                      )}
                     </Field>
                   </div>
 
-                  <Field {...fieldProps('locality')}>
-                    <input type="text" {...inputProps('locality')} />
+                  <Field {...fieldProps('area')}>
+                    <input type="text" autoComplete="address-level3" {...inputProps('area')} />
                   </Field>
-
-                  {side === 'business' ? (
-                    <Field {...fieldProps('supportNeed')}>
-                      <textarea rows={3} {...inputProps('supportNeed', { className: cx(INPUT_BASE, 'resize-none border-line-strong hover:border-ink') })} />
-                    </Field>
-                  ) : (
-                    <>
-                      <Field {...fieldProps('experience')}>
-                        <input type="text" {...inputProps('experience')} />
-                      </Field>
-                      <fieldset>
-                        <legend className="mb-1.5 text-sm font-semibold text-ink">
-                          {s.fields.availability.label}
-                          <span className="font-normal text-body"> ({s.optional})</span>
-                        </legend>
-                        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-                          {AVAILABILITY_KEYS.map((key) => (
-                            <Choice key={key} tone="worker" selected={form.availability.includes(key)} onClick={() => toggleAvailability(key)}>
-                              <span className="text-sm font-semibold">{s.availabilityOptions[key]}</span>
-                            </Choice>
-                          ))}
-                        </div>
-                        <p className="mt-1.5 text-sm text-body">{s.fields.availability.hint}</p>
-                      </fieldset>
-                    </>
-                  )}
 
                   {failed && (
                     <div role="alert" className="flex items-start gap-2 rounded-xl border border-danger/30 bg-white p-3.5 text-sm text-danger">

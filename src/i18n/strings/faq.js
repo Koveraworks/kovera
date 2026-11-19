@@ -26,7 +26,7 @@ export default {
       },
       {
         q: 'Do workers pay anything?',
-        a: 'No. It is ₹0 to join and there is a ₹0 platform fee.',
+        a: 'No. Joining is free, there is no platform fee, and nothing is deducted from your pay.',
       },
     ],
     more: 'Something else?',
@@ -58,7 +58,7 @@ export default {
       },
       {
         q: 'क्या वर्कर को कुछ देना पड़ता है?',
-        a: 'नहीं। जुड़ने के ₹0 और प्लेटफ़ॉर्म फ़ीस भी ₹0।',
+        a: 'नहीं। जुड़ना मुफ़्त है, कोई प्लेटफ़ॉर्म फ़ीस नहीं है, और आपके भुगतान से कुछ नहीं कटता।',
       },
     ],
     more: 'कुछ और पूछना है?',

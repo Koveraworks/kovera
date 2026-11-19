@@ -3,7 +3,7 @@ export default {
     home: 'Kovera home',
     navLabel: 'Main',
     nav: {
-      shifts: 'Shifts & rates',
+      shifts: 'Shifts',
       areas: 'Areas',
       how: 'How it works',
       approach: 'Our approach',
@@ -19,7 +19,7 @@ export default {
     home: 'Kovera होम',
     navLabel: 'मुख्य मेन्यू',
     nav: {
-      shifts: 'शिफ्ट और रेट',
+      shifts: 'शिफ्ट',
       areas: 'इलाक़े',
       how: 'तरीक़ा',
       approach: 'हमारे उसूल',

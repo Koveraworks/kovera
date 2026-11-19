@@ -21,7 +21,8 @@ function Site() {
   const c = useStrings('common');
 
   // Which form is open (null = the visitor has not chosen yet) and what they
-  // picked further down the page, as ids: { side, category, hours, shiftsPerWeek }.
+  // picked further down the page, as ids: { side, category }. category is a
+  // shop type id (src/data/shopTypes.js) that the waitlist form preselects.
   const [side, setSide] = useState(null);
   const [context, setContext] = useState(null);
   const [joinCount, setJoinCount] = useState(0);

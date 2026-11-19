@@ -4,7 +4,22 @@ export default {
     sub: 'Say whether you need workers or want work. It takes about a minute.',
     // The two options use the join-button labels in common.js (cta.needWorkers, cta.wantWork).
     chooserLabel: 'Joining as',
-    pickPrompt: 'Choose one above to see the form.',
+    // The two-path card shown before a side is chosen. Pay is an example
+    // range built from src/data/rates.js and footnoted with common.exampleRateNote.
+    chooser: {
+      band: 'Kovera connects local shops with dependable backup workers.',
+      bandNote: 'Free during the pilot',
+      business: {
+        title: 'Dependable help for short shifts',
+        body: 'For boutiques, textile showrooms, salons and cafés. Tell us what you need, and our team looks for a suitable person nearby.',
+        points: ['Adults (18+) with an ID check', '₹0 platform fee during the pilot'],
+      },
+      worker: {
+        title: 'Local day shifts with ₹0 fees',
+        body: 'Example pay is {range} for a {hours}-hour shift*, in public daytime workplaces. No night shifts, no home jobs, and nothing is deducted from your pay.',
+        points: ['Public daytime workplaces only', 'Paid directly when the shift ends'],
+      },
+    },
     optional: 'optional',
     context: {
       label: 'You picked',
@@ -66,7 +81,20 @@ export default {
     title: 'Kovera की वेटलिस्ट में जुड़ें',
     sub: 'बताएँ कि आपको वर्कर चाहिए या काम चाहिए। इसमें क़रीब एक मिनट लगेगा।',
     chooserLabel: 'किस तरह जुड़ना है',
-    pickPrompt: 'फ़ॉर्म देखने के लिए ऊपर से एक चुनें।',
+    chooser: {
+      band: 'Kovera आस-पास की दुकानों को भरोसेमंद बैकअप वर्कर से जोड़ता है।',
+      bandNote: 'पायलट के दौरान मुफ़्त',
+      business: {
+        title: 'छोटी शिफ्ट के लिए भरोसेमंद मदद',
+        body: 'बुटीक, कपड़ों के शोरूम, सैलून और कैफ़े के लिए। बताएँ क्या चाहिए। हमारी टीम आस-पास सही वर्कर ढूँढने की कोशिश करती है।',
+        points: ['18+ वयस्क, पहचान की जाँच के साथ', 'पायलट के दौरान ₹0 प्लेटफ़ॉर्म फ़ीस'],
+      },
+      worker: {
+        title: 'घर के पास दिन की शिफ्ट, ₹0 फ़ीस',
+        body: '{hours} घंटे की शिफ्ट के भुगतान का उदाहरण: {range}*। सिर्फ़ दिन में, सार्वजनिक जगहों पर। रात की शिफ्ट नहीं, घरों में काम नहीं, और आपके भुगतान से कुछ नहीं कटता।',
+        points: ['सिर्फ़ दिन के समय, सार्वजनिक जगह पर', 'शिफ्ट ख़त्म होने पर सीधा भुगतान'],
+      },
+    },
     optional: 'ज़रूरी नहीं',
     context: {
       label: 'आपने चुना',

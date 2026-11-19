@@ -1,0 +1,144 @@
+#!/usr/bin/env node
+// Builds everything the app and database need from data/india-districts.json.
+//
+//   node scripts/build-districts.mjs
+//
+// Writes:
+//   src/data/states.js                                    state list for the dropdown
+//   src/data/districts/<CODE>.json                        one lazily loaded file per state
+//   supabase/migrations/20261119120000_district_list.sql  private.districts, the list the DB checks
+//
+// No dependencies. Validates the source first and exits non-zero on any problem.
+
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..')
+const SRC = join(root, 'data/india-districts.json')
+const STATES_JS = join(root, 'src/data/states.js')
+const DIST_DIR = join(root, 'src/data/districts')
+const MIGRATION = join(root, 'supabase/migrations/20261119120000_district_list.sql')
+
+const data = JSON.parse(readFileSync(SRC, 'utf8'))
+
+// ---- validate --------------------------------------------------------------
+const errors = []
+const fail = (m) => errors.push(m)
+
+if (!data.source) fail('missing "source"')
+if (!/^\d{4}-\d{2}-\d{2}$/.test(data.retrieved || '')) fail('"retrieved" must be YYYY-MM-DD')
+if (!Array.isArray(data.states) || data.states.length === 0) fail('no states')
+
+const codes = new Set()
+const names = new Set()
+for (const s of data.states || []) {
+  const tag = `${s.code || '?'} (${s.name || '?'})`
+  if (!/^[A-Z]{2}$/.test(s.code || '')) fail(`${tag}: code must be two capital letters`)
+  if (codes.has(s.code)) fail(`${tag}: duplicate code`)
+  codes.add(s.code)
+  if (!s.name) fail(`${tag}: missing name`)
+  if (names.has(s.name)) fail(`${tag}: duplicate state name`)
+  names.add(s.name)
+  if (!s.hi || !/[ऀ-ॿ]/.test(s.hi)) fail(`${tag}: Hindi name missing or not Devanagari`)
+  if (s.type !== 'state' && s.type !== 'ut') fail(`${tag}: type must be "state" or "ut"`)
+  if (!Array.isArray(s.districts) || s.districts.length === 0) {
+    fail(`${tag}: no districts`)
+    continue
+  }
+  const seen = new Set()
+  for (const d of s.districts) {
+    if (typeof d !== 'string' || d !== d.trim() || d === '') fail(`${tag}: bad district ${JSON.stringify(d)}`)
+    const key = d.toLowerCase()
+    if (seen.has(key)) fail(`${tag}: duplicate district ${d}`)
+    seen.add(key)
+  }
+  const sorted = [...s.districts].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase(), 'en'))
+  if (sorted.join('\u0000') !== s.districts.join('\u0000')) fail(`${tag}: districts not sorted alphabetically`)
+  for (const [alias, target] of Object.entries(s.aliases || {})) {
+    if (!s.districts.includes(target)) fail(`${tag}: alias "${alias}" points at unknown district "${target}"`)
+    if (seen.has(alias.toLowerCase())) fail(`${tag}: alias "${alias}" is also a real district`)
+  }
+}
+const stateOrder = (data.states || []).map((s) => s.name)
+const stateSorted = [...stateOrder].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase(), 'en'))
+if (stateOrder.join('\u0000') !== stateSorted.join('\u0000')) fail('states not sorted by English name')
+const nStates = (data.states || []).filter((s) => s.type === 'state').length
+const nUts = (data.states || []).filter((s) => s.type === 'ut').length
+if (nStates !== 28 || nUts !== 8) fail(`expected 28 states and 8 UTs, found ${nStates} and ${nUts}`)
+
+if (errors.length) {
+  console.error('Validation failed:\n' + errors.map((e) => '  - ' + e).join('\n'))
+  process.exit(1)
+}
+
+// ---- src/data/states.js ----------------------------------------------------
+const header = (what) =>
+  `// GENERATED FILE. Do not edit by hand.\n// ${what}\n// Source: data/india-districts.json. Regenerate with: node scripts/build-districts.mjs\n`
+
+const statesJs =
+  header('State and UT list for the signup dropdown (ISO 3166-2:IN code without the IN- prefix).') +
+  `\nexport const STATES = [\n` +
+  data.states
+    .map((s) => `  { code: ${JSON.stringify(s.code)}, name: ${JSON.stringify(s.name)}, hi: ${JSON.stringify(s.hi)} },`)
+    .join('\n') +
+  `\n]\n`
+mkdirSync(dirname(STATES_JS), { recursive: true })
+writeFileSync(STATES_JS, statesJs)
+
+// ---- src/data/districts/<CODE>.json ---------------------------------------
+mkdirSync(DIST_DIR, { recursive: true })
+for (const f of readdirSync(DIST_DIR)) if (f.endsWith('.json')) rmSync(join(DIST_DIR, f))
+let totalBytes = 0
+for (const s of data.states) {
+  const body = JSON.stringify({ districts: s.districts, aliases: s.aliases || {} })
+  writeFileSync(join(DIST_DIR, `${s.code}.json`), body)
+  totalBytes += Buffer.byteLength(body)
+}
+
+// ---- migration -------------------------------------------------------------
+const q = (v) => `'${String(v).replace(/'/g, "''")}'`
+const rows = data.states.flatMap((s) => s.districts.map((d) => `  (${q(s.name)}, ${q(d)})`))
+const sql = `-- GENERATED FILE. Do not edit by hand.
+-- Generated by scripts/build-districts.mjs from data/india-districts.json.
+-- Source: ${data.source}
+-- Retrieved: ${data.retrieved}
+-- Regenerate with: node scripts/build-districts.mjs
+--
+-- private.districts holds the fixed list of (state, city) pairs a signup may use.
+-- state is the English state/UT name, city is the canonical LGD district name.
+-- Idempotent: a rerun replaces the whole list inside one transaction.
+
+create schema if not exists private;
+
+begin;
+
+create table if not exists private.districts (
+  state text not null,
+  city  text not null,
+  primary key (state, city)
+);
+
+revoke all on table private.districts from public, anon, authenticated;
+
+delete from private.districts;
+
+insert into private.districts (state, city) values
+${rows.join(',\n')};
+
+commit;
+`
+mkdirSync(dirname(MIGRATION), { recursive: true })
+writeFileSync(MIGRATION, sql)
+
+// ---- summary ---------------------------------------------------------------
+let total = 0
+console.log('code  districts  state')
+for (const s of data.states) {
+  total += s.districts.length
+  console.log(`${s.code.padEnd(5)} ${String(s.districts.length).padStart(9)}  ${s.name}`)
+}
+const aliasCount = data.states.reduce((n, s) => n + Object.keys(s.aliases || {}).length, 0)
+console.log(`\n${data.states.length} states/UTs (${nStates} states, ${nUts} UTs), ${total} districts, ${aliasCount} aliases`)
+console.log(`src/data/districts/*.json: ${totalBytes} bytes (${(totalBytes / 1024).toFixed(1)} KB) across ${data.states.length} files`)
+console.log(`wrote ${STATES_JS}\nwrote ${MIGRATION}`)

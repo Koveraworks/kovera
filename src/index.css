@@ -179,6 +179,42 @@ body {
 }
 
 /*
+ * Confetti over the waitlist confirmation (Waitlist.jsx, <Confetti>). Pure
+ * CSS, one short burst. The component is not rendered at all under reduced
+ * motion or Save-Data; the rule below is a second guard.
+ */
+.confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti i {
+  position: absolute;
+  top: -12px;
+  left: var(--x);
+  width: 8px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--color);
+  opacity: 0;
+  animation: confettiFall 1.4s cubic-bezier(0.2, 0.6, 0.4, 1) var(--delay) forwards;
+}
+
+.confetti i:nth-child(3n) {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+@keyframes confettiFall {
+  0% { opacity: 1; transform: translate(0, 0) rotate(0); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--drift), 220px) rotate(var(--spin)); }
+}
+
+/*
  * "Increase contrast" (a system setting): card hairlines take the control
  * border's colour, and control borders go to ink.
  */
@@ -195,6 +231,10 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .confetti {
+    display: none !important;
   }
 
   .animate-swap,

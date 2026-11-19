@@ -6,7 +6,8 @@
  *   node scripts/check-i18n.mjs src/i18n/strings/hero.js
  *
  * Errors (exit 1): a key missing on either side, a type mismatch, arrays of
- * different length, an empty string.
+ * different length, an empty string, a ₹ sign (no pay figures until the pilot
+ * has real ones: issue #7).
  * Warnings: a Hindi value with no Devanagari, or identical to the English.
  */
 import { readdirSync } from 'node:fs';
@@ -22,7 +23,7 @@ const files = process.argv.length > 2
 const DEVANAGARI = /[ऀ-ॿ]/;
 const HAS_LETTERS = /[A-Za-z]{3,}/;
 // Values that are legitimately the same in both languages.
-const SAME_OK = /^(Kovera|WhatsApp|[\d\s₹+–\-.,:*/#A-Z]*)$/;
+const SAME_OK = /^(Kovera|WhatsApp|[\d\s+–\-.,:*/#A-Z]*)$/;
 
 let errors = 0;
 let warnings = 0;
@@ -65,6 +66,10 @@ function compare(en, hi, path, file) {
     return;
   }
   if (te === 'string') {
+    if (en.includes('₹') || hi.includes('₹')) {
+      console.error(`ERROR ${file}: "${path}" shows a ₹ amount; say "Pay is agreed and shown before every shift" instead`);
+      errors += 1;
+    }
     if (!en.trim() || !hi.trim()) {
       console.error(`ERROR ${file}: "${path}" is empty`);
       errors += 1;

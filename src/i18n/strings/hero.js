@@ -1,7 +1,8 @@
 /**
  * Hero: the page's h1, the two main buttons and the example match card.
  * Scenario keys match the category ids in src/data/rates.js.
- * Numbers (minutes, hours, pay) live in the component and fill {placeholders}.
+ * Numbers (minutes) live in the component and fill {placeholders}. No pay
+ * figures: the card shows common.payAgreed instead.
  */
 export default {
   en: {
@@ -13,7 +14,7 @@ export default {
     intro: 'One missing person can throw off a whole day. Kovera connects local boutiques, salons, cafés and shops with dependable daytime help for short shifts, often just 4 hours.',
     trust: {
       adults: 'Adults (18+) with an ID check',
-      zeroFee: '₹0 fee for workers',
+      noFee: 'No fee for workers',
       daytime: 'Daytime shifts',
     },
     card: {
@@ -23,9 +24,7 @@ export default {
       bridge: 'Target: matched within {n} minutes',
       workerLabel: 'Example worker match',
       workerMeta: '18+ · ID checked · about {n} minutes away',
-      payLabel: 'Example pay for {hours} hours:',
-      payValue: '{range}*',
-      payTerms: '₹0 fee for the worker · paid directly',
+      payTerms: 'No fee for the worker · paid directly',
     },
     scenarios: {
       handloom: {
@@ -63,7 +62,7 @@ export default {
     intro: 'किसी एक के न आने से पूरा दिन बिगड़ सकता है। Kovera आस-पास के बुटीक, सैलून, कैफ़े और दुकानों को दिन के समय छोटी शिफ्ट के लिए भरोसेमंद वर्कर से जोड़ता है, अक्सर बस 4 घंटे के लिए।',
     trust: {
       adults: '18+ वयस्क, पहचान की जाँच के साथ',
-      zeroFee: 'वर्कर के लिए ₹0 फ़ीस',
+      noFee: 'वर्कर के लिए कोई फ़ीस नहीं',
       daytime: 'दिन की शिफ्ट',
     },
     card: {
@@ -73,9 +72,7 @@ export default {
       bridge: 'लक्ष्य: {n} मिनट के अंदर मैच',
       workerLabel: 'उदाहरण: वर्कर का मैच',
       workerMeta: '18+ · पहचान जाँची हुई · क़रीब {n} मिनट दूर',
-      payLabel: '{hours} घंटे के भुगतान का उदाहरण:',
-      payValue: '{range}*',
-      payTerms: 'वर्कर के लिए ₹0 फ़ीस · सीधा भुगतान',
+      payTerms: 'वर्कर से कोई फ़ीस नहीं · सीधा भुगतान',
     },
     scenarios: {
       handloom: {

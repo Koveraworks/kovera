@@ -21,7 +21,8 @@ function Site() {
   const c = useStrings('common');
 
   // Which form is open (null = the visitor has not chosen yet) and what they
-  // picked further down the page, as ids: { side, category, hours, shiftsPerWeek }.
+  // picked further down the page: { side, category }, where category preselects
+  // the business shop type.
   const [side, setSide] = useState(null);
   const [context, setContext] = useState(null);
   const [joinCount, setJoinCount] = useState(0);

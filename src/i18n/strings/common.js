@@ -3,7 +3,7 @@
  *
  * Hindi style: everyday spoken Hindi in Devanagari, formal "आप", short
  * sentences. Familiar English words stay as loanwords (शिफ्ट, वर्कर,
- * बिज़नेस, वेटलिस्ट). "Kovera", "WhatsApp", ₹ and digits stay in Latin script.
+ * बिज़नेस, वेटलिस्ट). "Kovera", "WhatsApp" and digits stay in Latin script.
  */
 export default {
   en: {
@@ -40,9 +40,9 @@ export default {
       'gt-road': 'GT Road',
     },
     example: 'Example',
-    exampleRateNote: '*Example rates. Actual pay is agreed with both sides before each shift.',
-    zeroFee: '₹0 platform fee',
-    perHour: 'per hour',
+    // The one line used wherever pay comes up. There are no pay figures on
+    // the site until the pilot produces real ones.
+    payAgreed: 'Pay is agreed and shown before every shift',
     hours: '{n} hours',
     // Prefilled WhatsApp messages, by where the button sits.
     whatsapp: {
@@ -82,9 +82,7 @@ export default {
       'gt-road': 'जीटी रोड',
     },
     example: 'उदाहरण',
-    exampleRateNote: '*ये उदाहरण के रेट हैं। असली भुगतान हर शिफ्ट से पहले बिज़नेस और वर्कर, दोनों से बात करके तय होता है।',
-    zeroFee: '₹0 प्लेटफ़ॉर्म फ़ीस',
-    perHour: 'प्रति घंटा',
+    payAgreed: 'हर शिफ्ट से पहले भुगतान तय होता है और आपको दिखाया जाता है',
     hours: '{n} घंटे',
     whatsapp: {
       urgent: 'नमस्ते Kovera टीम, मुझे आज शिफ्ट के लिए मदद चाहिए।',

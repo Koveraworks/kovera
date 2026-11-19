@@ -21,7 +21,7 @@ export default {
       },
       noFee: {
         title: 'Workers never pay a fee',
-        body: '₹0 to join, and nothing is deducted from your pay.',
+        body: 'Joining is free, and nothing is deducted from your pay.',
       },
     },
     dontTitle: 'What we don’t do',
@@ -50,7 +50,7 @@ export default {
       },
       noFee: {
         title: 'वर्कर से कभी फ़ीस नहीं ली जाती',
-        body: 'जुड़ने के ₹0, और आपके भुगतान से कुछ नहीं कटता।',
+        body: 'जुड़ना मुफ़्त है, और आपके भुगतान से कुछ नहीं कटता।',
       },
     },
     dontTitle: 'हम क्या नहीं करते',

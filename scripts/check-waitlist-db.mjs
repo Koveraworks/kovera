@@ -1,8 +1,9 @@
-// Checks that section 6 of supabase/schema.sql is in force, by talking to the
-// database the same way a visitor's browser (or a script with the public key) can.
+// Checks that section 6 of supabase/schema.sql and the migrations in
+// supabase/migrations/ are in force, by talking to the database the same way a
+// visitor's browser (or a script with the public key) can.
 //
 //   node scripts/check-waitlist-db.mjs               the standard checks
-//   node scripts/check-waitlist-db.mjs --limit=3     also test the rate limit
+//   node scripts/check-waitlist-db.mjs --limit=6     also test the rate limit
 //
 // Reads VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY from the environment or .env.
 // Point it at a scratch project, not the live one: it saves a few rows named
@@ -35,15 +36,22 @@ if (!rest || (!key && !process.env.WAITLIST_REST_URL)) {
   console.error('Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (in .env or the environment) first.');
   process.exit(2);
 }
-if (limitArg && !(Number.isInteger(limit) && limit >= 3)) {
-  console.error('--limit needs a whole number of 3 or more, matching private.intake_config.per_ip_per_hour.');
+// The standard checks save 5 rows from this address, so the limit must be above that.
+if (limitArg && !(Number.isInteger(limit) && limit >= 6)) {
+  console.error('--limit needs a whole number of 6 or more, matching private.intake_config.per_ip_per_hour.');
   process.exit(2);
 }
 
 const TEST = 'TEST delete me';
-// The business row carries an email and the worker row does not, so both shapes are covered.
-const BUSINESS = { business_name: TEST, contact_name: TEST, phone_number: '98765 43210', email: 'test@example.com', work_location: 'Test area, Test city', support_need: null };
-const WORKER = { full_name: TEST, phone_number: '98765 43210', locality: 'Test area, Test city', experience: null, availability: 'Weekends' };
+const PHONE = '98765 43210';
+// What the new short forms send (src/lib/supabase.js). (Haryana, Panipat) is in
+// private.districts; Panipat is not in Punjab.
+const BUSINESS = { business_name: TEST, contact_name: TEST, phone_number: PHONE, shop_type: 'cafe', state: 'Haryana', city: 'Panipat', area: 'Test area' };
+const WORKER = { full_name: TEST, phone_number: PHONE, state: 'Haryana', city: 'Panipat', area: null };
+// What the old forms on main send, which must keep working until the new
+// frontend is deployed.
+const OLD_BUSINESS = { business_name: TEST, contact_name: TEST, phone_number: PHONE, work_location: 'Test area, Test city', support_need: null };
+const OLD_WORKER = { full_name: TEST, phone_number: PHONE, locality: 'Test area, Test city', experience: null, availability: 'Weekends' };
 
 let failures = 0;
 let warnings = 0;
@@ -66,7 +74,7 @@ async function call(path, { method = 'GET', body, headers = {} } = {}) {
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   const text = await response.text();
-  return { status: response.status, text: text.slice(0, 200) };
+  return { status: response.status, text };
 }
 
 // The site sends one row in an array and names its columns, as supabase-js does.
@@ -77,9 +85,24 @@ async function insert(table, row, headers) {
   return result;
 }
 
-async function expectRejected(label, table, row, wanted) {
+async function expectSaved(label, table, row) {
   const { status, text } = await insert(table, row);
-  report(wanted.includes(status), label, `HTTP ${status}${wanted.includes(status) ? '' : ` ${text}`}`);
+  report(status === 201, label, `HTTP ${status}${status === 201 ? '' : ` ${text.slice(0, 200)}`}`);
+}
+
+// Not allowed by the column grants: PostgREST answers 401 or 403.
+async function expectDenied(label, table, row) {
+  const { status, text } = await insert(table, row);
+  const ok = [401, 403].includes(status);
+  report(ok, label, `HTTP ${status}${ok ? '' : ` ${text.slice(0, 200)}`}`);
+}
+
+// Refused by the guard trigger: HTTP 400 carrying its KOVERA_INTAKE code, so a
+// 400 for some other reason (an unknown column, say) does not count as a pass.
+async function expectRefused(label, table, row) {
+  const { status, text } = await insert(table, row);
+  const ok = status === 400 && text.includes('KOVERA_INTAKE');
+  report(ok, label, `HTTP ${status}${ok ? '' : ` ${text.slice(0, 200)}`}`);
 }
 
 const keepalive = await call('/rpc/keepalive', { method: 'POST', body: {} });
@@ -90,27 +113,49 @@ for (const table of ['business_registrations', 'worker_registrations']) {
   const hidden = read.status >= 400 || read.text.trim() === '[]';
   report(hidden, `visitors cannot read ${table}`, `HTTP ${read.status}`);
 }
-for (const view of ['business_latest', 'worker_latest']) {
+for (const view of ['business_latest', 'worker_latest', 'districts']) {
   const direct = await call(`/${view}?limit=1`);
   const viaProfile = await call(`/${view}?limit=1`, { headers: { 'Accept-Profile': 'private' } });
-  report(direct.status >= 400 && viaProfile.status >= 400, `visitors cannot read the team view ${view}`, `HTTP ${direct.status}, ${viaProfile.status}`);
+  report(direct.status >= 400 && viaProfile.status >= 400, `visitors cannot read private.${view}`, `HTTP ${direct.status}, ${viaProfile.status}`);
 }
 
-const business = await insert('business_registrations', BUSINESS);
-report(business.status === 201, 'a valid business row with an email is saved', `HTTP ${business.status} ${business.status === 201 ? '' : business.text}`.trim());
-const worker = await insert('worker_registrations', WORKER);
-report(worker.status === 201, 'a valid worker row without an email is saved', `HTTP ${worker.status} ${worker.status === 201 ? '' : worker.text}`.trim());
+// New forms.
+await expectSaved('a new-form business row is saved', 'business_registrations', BUSINESS);
+await expectSaved('a new-form worker row (no area) is saved', 'worker_registrations', WORKER);
+await expectSaved('a new-form worker row with an area is saved', 'worker_registrations', { ...WORKER, area: 'Samalkha' });
 
-const denied = [401, 403];
-await expectRejected('a visitor cannot set status', 'business_registrations', { ...BUSINESS, status: 'approved' }, denied);
-await expectRejected('a visitor cannot set created_at', 'worker_registrations', { ...WORKER, created_at: '2020-01-01T00:00:00Z' }, denied);
-await expectRejected('a visitor cannot set id', 'worker_registrations', { ...WORKER, id: '00000000-0000-4000-8000-000000000000' }, denied);
-await expectRejected('a bad phone number is refused', 'business_registrations', { ...BUSINESS, phone_number: '12345 67890' }, [400]);
-await expectRejected('a missing phone number is refused', 'worker_registrations', { ...WORKER, phone_number: null }, [400]);
-await expectRejected('a malformed email is refused', 'worker_registrations', { ...WORKER, email: 'not an email' }, [400]);
-await expectRejected('a blank required name is refused', 'business_registrations', { ...BUSINESS, business_name: '   ' }, [400]);
-await expectRejected('an over-long field is refused', 'business_registrations', { ...BUSINESS, support_need: 'x'.repeat(1001) }, [400]);
-await expectRejected('an over-long worker field is refused', 'worker_registrations', { ...WORKER, experience: 'x'.repeat(501) }, [400]);
+// Old forms on main, until the new frontend is live.
+await expectSaved('an old-form business row is saved', 'business_registrations', OLD_BUSINESS);
+await expectSaved('an old-form worker row is saved', 'worker_registrations', OLD_WORKER);
+
+// Columns visitors may not set.
+await expectDenied('a visitor cannot set status', 'business_registrations', { ...BUSINESS, status: 'approved' });
+await expectDenied('a visitor cannot set created_at', 'worker_registrations', { ...WORKER, created_at: '2020-01-01T00:00:00Z' });
+await expectDenied('a visitor cannot set id', 'worker_registrations', { ...WORKER, id: '00000000-0000-4000-8000-000000000000' });
+{
+  // Email is no longer granted. Where the column exists this is a 401/403;
+  // where it does not (the live project), PostgREST answers 400.
+  const { status } = await insert('worker_registrations', { ...WORKER, email: 'test@example.com' });
+  report(status >= 400 && status < 500, 'a visitor cannot set email', `HTTP ${status}`);
+}
+
+// Location and shop type.
+await expectRefused('an unknown city is refused', 'business_registrations', { ...BUSINESS, city: 'Atlantis' });
+await expectRefused('a city from another state is refused', 'worker_registrations', { ...WORKER, state: 'Punjab' });
+await expectRefused('a state without a city is refused', 'worker_registrations', { ...WORKER, city: null });
+await expectRefused('a city without a state is refused', 'business_registrations', { ...BUSINESS, state: null });
+await expectRefused('an unknown shop type is refused', 'business_registrations', { ...BUSINESS, shop_type: 'casino' });
+await expectRefused('a new-form business row without a shop type is refused', 'business_registrations', { ...BUSINESS, shop_type: null });
+await expectRefused('an over-long area is refused', 'worker_registrations', { ...WORKER, area: 'x'.repeat(121) });
+await expectRefused('a worker row with neither locality nor city is refused', 'worker_registrations', { ...WORKER, state: null, city: null, area: 'Samalkha' });
+
+// Phone, names and lengths, both shapes.
+await expectRefused('a bad phone number is refused', 'business_registrations', { ...BUSINESS, phone_number: '12345 67890' });
+await expectRefused('a bad phone number on the old form is refused', 'worker_registrations', { ...OLD_WORKER, phone_number: '12345 67890' });
+await expectRefused('a missing phone number is refused', 'worker_registrations', { ...WORKER, phone_number: null });
+await expectRefused('a blank required name is refused', 'business_registrations', { ...BUSINESS, business_name: '   ' });
+await expectRefused('an over-long old-form field is refused', 'business_registrations', { ...OLD_BUSINESS, support_need: 'x'.repeat(1001) });
+await expectRefused('an over-long old-form worker field is refused', 'worker_registrations', { ...OLD_WORKER, experience: 'x'.repeat(501) });
 
 if (limit !== null) {
   // Every row counts, so one request cannot carry more rows than the limit allows.

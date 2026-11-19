@@ -13,10 +13,15 @@ export const supabase = isSupabaseConfigured
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
-// Email is optional. It is left out of the request when empty, so a
-// registration without one does not depend on the email column at all.
-function optionalEmail(data) {
-  return data.email ? { email: data.email } : {};
+// State, city and area are saved in their own columns. state is the English
+// state name and city a district from the same list as the form
+// (src/data/districts), which the database checks.
+function location(data) {
+  return {
+    state: data.state,
+    city: data.city,
+    area: data.area || null,
+  };
 }
 
 /**
@@ -36,10 +41,9 @@ export async function submitBusinessRegistration(data) {
       {
         business_name: data.businessName,
         contact_name: data.contactName,
-        phone_number: data.phone || data.phoneNumber || null,
-        work_location: data.workLocation || null,
-        support_need: data.supportNeed || null,
-        ...optionalEmail(data),
+        phone_number: data.phone,
+        shop_type: data.shopType,
+        ...location(data),
       },
     ]);
 
@@ -67,11 +71,8 @@ export async function submitWorkerRegistration(data) {
     .insert([
       {
         full_name: data.fullName,
-        phone_number: data.phone || data.phoneNumber || null,
-        locality: data.locality,
-        experience: data.experience || null,
-        availability: data.availability || null,
-        ...optionalEmail(data),
+        phone_number: data.phone,
+        ...location(data),
       },
     ]);
 

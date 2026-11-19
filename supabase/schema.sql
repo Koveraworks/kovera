@@ -1,5 +1,10 @@
 -- Kovera Database Schema & Security Policies for Supabase
 -- Run this in the Supabase SQL Editor (https://supabase.com/dashboard/project/_/sql)
+--
+-- This file is the starting point, not the whole schema. After it, run every
+-- file in supabase/migrations/ in filename order (see the note at the top of
+-- section 6). Re-running this file on its own puts back older grants and
+-- guards that the current forms cannot save through.
 
 -- 1. Create Business Registrations Table
 CREATE TABLE IF NOT EXISTS public.business_registrations (
@@ -62,6 +67,17 @@ CREATE INDEX IF NOT EXISTS idx_worker_registrations_created_at ON public.worker_
 -- ============================================================================
 -- 6. Hardening for the public insert path
 -- ============================================================================
+-- RUN THE MIGRATIONS AFTER THIS FILE. The files in supabase/migrations/ change
+-- what this section sets up, and must be run after it, in filename order:
+--   20261119120000_district_list.sql           private.districts, the fixed
+--                                               list of (state, city) pairs
+--   20261119120100_waitlist_location_fields.sql state/city/area/shop_type
+--                                               columns, the visitors' column
+--                                               grants, and the guard functions
+-- The GRANTs in 6a and the guard functions in 6b below are the older versions;
+-- the latest migration replaces them. If you re-run this section, re-run the
+-- migrations straight after, or the current forms will fail to save.
+--
 -- The forms insert straight from the browser with the public key, so anything
 -- a visitor's browser can do, a script can do too. This section limits what
 -- such a script can write. It is safe to re-run.
@@ -84,8 +100,9 @@ CREATE INDEX IF NOT EXISTS idx_worker_registrations_created_at ON public.worker_
 -- row is edited, so older rows saved without a phone number could no longer
 -- have their status changed.
 --
--- Run it on a scratch project first, then check with:
+-- Run it, and then the migrations, on a scratch project first, then check with:
 --   node scripts/check-waitlist-db.mjs
+-- (the script expects the migrations too, and fails on this section alone).
 -- To undo it, run the rollback block at the end of this file.
 
 -- The "private" schema is not exposed through the API.
@@ -94,8 +111,9 @@ REVOKE ALL ON SCHEMA private FROM PUBLIC;
 REVOKE ALL ON SCHEMA private FROM anon, authenticated;
 
 -- 6a. Insert-only, form columns only -----------------------------------------
--- When a form gains a column, add it to the matching GRANT below, or the form
--- will fail with a permission error.
+-- When a form gains a column, it needs a matching GRANT, or the form will fail
+-- with a permission error. The current grants are in the latest migration in
+-- supabase/migrations/; add new columns there (in a new migration), not here.
 REVOKE ALL ON public.business_registrations FROM anon, authenticated;
 GRANT INSERT (business_name, contact_name, phone_number, email, work_location, support_need)
     ON public.business_registrations TO anon, authenticated;
@@ -249,6 +267,9 @@ $$;
 
 -- The length caps sit a little above the maxLength values in
 -- src/sections/Waitlist.jsx, so a real visitor never reaches them.
+-- Superseded: 20261119120100_waitlist_location_fields.sql replaces both guard
+-- functions (same names) with versions that check state, city, area and shop
+-- type and no longer look at email.
 CREATE OR REPLACE FUNCTION private.guard_business_registration()
 RETURNS trigger
 LANGUAGE plpgsql

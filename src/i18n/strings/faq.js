@@ -26,7 +26,11 @@ export default {
       },
       {
         q: 'Do workers pay anything?',
-        a: 'No. It is ₹0 to join and there is a ₹0 platform fee.',
+        a: 'No. Joining is free, there is no platform fee, and nothing is deducted from your pay.',
+      },
+      {
+        q: 'How much does a shift pay?',
+        a: 'It depends on the shop, the work and the hours. Pay is agreed and shown before every shift, so you know it before you say yes. We will share typical figures once the pilot has real ones.',
       },
     ],
     more: 'Something else?',
@@ -58,7 +62,11 @@ export default {
       },
       {
         q: 'क्या वर्कर को कुछ देना पड़ता है?',
-        a: 'नहीं। जुड़ने के ₹0 और प्लेटफ़ॉर्म फ़ीस भी ₹0।',
+        a: 'नहीं। जुड़ना मुफ़्त है, कोई प्लेटफ़ॉर्म फ़ीस नहीं, और आपके भुगतान से कुछ नहीं कटता।',
+      },
+      {
+        q: 'एक शिफ्ट में कितना भुगतान मिलता है?',
+        a: 'यह दुकान, काम और घंटों पर निर्भर करता है। हर शिफ्ट से पहले भुगतान तय होता है और आपको दिखाया जाता है, ताकि हाँ कहने से पहले आपको पता हो। पायलट से असली आँकड़े आने पर हम आम तौर पर मिलने वाला भुगतान भी बताएँगे।',
       },
     ],
     more: 'कुछ और पूछना है?',

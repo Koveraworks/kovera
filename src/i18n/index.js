@@ -22,6 +22,7 @@ import how from './strings/how.js';
 import trust from './strings/trust.js';
 import faq from './strings/faq.js';
 import footer from './strings/footer.js';
+import shopTypes from './strings/shopTypes.js';
 
 export const LANGS = ['en', 'hi'];
 export const DEFAULT_LANG = 'en';
@@ -30,7 +31,7 @@ export const LANG_STORAGE_KEY = 'kovera-lang';
 /** BCP 47 tags for <html lang>. */
 export const HTML_LANG = { en: 'en-IN', hi: 'hi' };
 
-const NAMESPACES = { common, header, hero, contact, waitlist, problem, shifts, areas, sides, how, trust, faq, footer };
+const NAMESPACES = { common, header, hero, contact, waitlist, problem, shifts, areas, sides, how, trust, faq, footer, shopTypes };
 
 function withFallback(primary, fallback) {
   if (primary === undefined || primary === null) return fallback;

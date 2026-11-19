@@ -2,6 +2,11 @@ name: Deploy to GitHub Pages
 
 on:
   workflow_dispatch:
+    inputs:
+      demo_mode:
+        description: 'Demo mode: build without Supabase, so signups are shown but not saved (for previews of unreleased forms)'
+        type: boolean
+        default: false
   # Uncomment the following lines if you want every push to main to automatically deploy to GitHub Pages:
   # push:
   #   branches: [main]
@@ -33,6 +38,7 @@ jobs:
           cache: 'npm'
 
       - name: Setup Pages
+        id: pages
         uses: actions/configure-pages@v4
 
       - name: Install dependencies
@@ -41,10 +47,12 @@ jobs:
       - name: Build with Vite
         run: npm run build
         env:
-          # If deploying to a repo subpath like username.github.io/kovera/, pass /kovera/ or repository name
-          VITE_BASE_PATH: ${{ steps.deployment.outputs.page_url != '' && format('/{0}/', github.event.repository.name) || '/' }}
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          # A project site lives under a subpath (koveraworks.github.io/kovera/);
+          # configure-pages reports it, e.g. "/kovera".
+          VITE_BASE_PATH: ${{ steps.pages.outputs.base_path }}/
+          VITE_DEMO_MODE: ${{ inputs.demo_mode && 'true' || '' }}
+          VITE_SUPABASE_URL: ${{ !inputs.demo_mode && secrets.VITE_SUPABASE_URL || '' }}
+          VITE_SUPABASE_ANON_KEY: ${{ !inputs.demo_mode && secrets.VITE_SUPABASE_ANON_KEY || '' }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

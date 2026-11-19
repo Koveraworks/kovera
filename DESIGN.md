@@ -283,8 +283,14 @@ One style everywhere (`Choice`, `Segmented`): solid side colour and white text. 
 - **Success:** Shown inline in the form card, not in a modal.
 
 ### Hero
-- **Headline:** Runs the full width above the two columns. It fits on one line from 1024px up (44px, then 56px from 1280px). Below that it takes two lines (lead, then accent) so it stays larger than the section headings: 24px to 30px on phones, 40px from 640px, 44px from 768px. Sizes are in rem and nothing is `nowrap`, so enlarged text wraps instead of overflowing.
+- **Layout:** From 1024px up, two columns that start at the top: the pilot pill, headline, tagline, intro, buttons and trust row on the left (7fr), the example match card on the right (5fr), level with the headline. Below 1024px everything stacks in that order.
+- **Headline:** From 1024px up it flows as one sentence and wraps within the left column (44px, then 56px from 1280px). Below that it takes two lines (lead, then accent) so it stays larger than the section headings: 24px to 30px on phones, 40px from 640px, 44px from 768px. Sizes are in rem and nothing is `nowrap`, so enlarged text wraps instead of overflowing.
 - **Tagline:** One line from 320px up.
+- **Trust row:** A plain wrapping row of icon + text on phones and tablets. From 1024px up, flat chips (`rounded-xl`, `page` fill, `line` border, small pale icon tile) in a wrapping row under a hairline.
+
+### Waitlist
+- **Before a side is chosen:** One wide card (`max-w-5xl`) with an indigo band on top (a one-line description and "Free during the pilot"), then the two paths side by side, each with its side pill, a title, a short description, two check items and a full-width join button in its own colour. A footer strip carries the example-rate note. Below 768px the paths stack.
+- **After a side is chosen:** The card gives way to the narrow column (`max-w-2xl`): the segmented "I need workers / I want work" switch, then that side's form. Focus moves to the form heading.
 
 ### Motion
 Every animation is feedback for something the visitor did, lasts 150 to 300ms, and is switched off under `prefers-reduced-motion`:

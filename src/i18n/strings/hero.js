@@ -14,7 +14,7 @@ export default {
     trust: {
       adults: 'Adults (18+) with an ID check',
       zeroFee: '₹0 fee for workers',
-      daytime: 'Daytime shifts in public workplaces',
+      daytime: 'Daytime shifts',
     },
     card: {
       title: 'Example of a Kovera match',
@@ -64,7 +64,7 @@ export default {
     trust: {
       adults: '18+ वयस्क, पहचान की जाँच के साथ',
       zeroFee: 'वर्कर के लिए ₹0 फ़ीस',
-      daytime: 'दिन के समय, सार्वजनिक जगह पर शिफ्ट',
+      daytime: 'दिन की शिफ्ट',
     },
     card: {
       title: 'Kovera मैच का एक उदाहरण',

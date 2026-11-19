@@ -10,10 +10,14 @@ export default function ContactBand() {
   const c = useStrings('common');
 
   return (
-    <section className="bg-page pt-10 md:pt-20">
+    // A pale indigo (business-side tint) strip between the white hero and the
+    // off-white waitlist, closed by a hairline, so it stands out from both and
+    // never runs into the waitlist below. Indigo because the band speaks to shops
+    // needing urgent cover. The card is white so it stands out on the tint.
+    <section className="border-b border-biz/15 bg-biz-pale py-10 md:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* From md the buttons sit beside the text, and drop below it as a group when they do not fit. */}
-        <Card className="flex flex-col gap-5 md:flex-row md:flex-wrap md:items-center md:justify-between">
+        <Card tone="white" className="flex flex-col gap-5 md:flex-row md:flex-wrap md:items-center md:justify-between">
           <div className="flex min-w-0 flex-col items-start gap-4 sm:flex-row md:flex-1 md:basis-80">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-whatsapp-pale text-whatsapp">
               <WhatsAppIcon className="h-6 w-6" />

@@ -27,9 +27,9 @@ export default {
     },
     // Category ids: boutique, handloom, cafe, salon (see src/data/rates.js)
     categories: {
-      boutique: 'Boutique & studio',
-      handloom: 'Handloom & textiles',
-      cafe: 'Café & quick bites',
+      boutique: 'Boutique',
+      handloom: 'Textiles',
+      cafe: 'Café',
       salon: 'Salon',
     },
     // Area ids: insar, model-town, sector-11-12, gt-road
@@ -70,9 +70,9 @@ export default {
       worker: 'वर्कर के लिए',
     },
     categories: {
-      boutique: 'बुटीक और स्टूडियो',
-      handloom: 'हैंडलूम और कपड़ा',
-      cafe: 'कैफ़े और नाश्ता',
+      boutique: 'बुटीक',
+      handloom: 'कपड़ा उद्योग',
+      cafe: 'कैफ़े',
       salon: 'सैलून',
     },
     areas: {

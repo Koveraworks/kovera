@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { AlertCircle, ArrowRight, CheckCircle2, Loader2, X } from 'lucide-react';
+import { AlertCircle, ArrowRight, CheckCircle2, Loader2, Store, UserRound, X } from 'lucide-react';
 import WhatsAppIcon from '../components/WhatsAppIcon.jsx';
-import { Button, Card, Choice, Segmented } from '../ui.jsx';
+import { Button, Card, CheckItem, Choice, Pill, Segmented } from '../ui.jsx';
 import { fmt, getStrings, useStrings } from '../i18n/index.js';
+import { EXAMPLE_RATES } from '../data/rates.js';
 import { whatsappUrl } from '../lib/contact.js';
 import { cx } from '../lib/cx.js';
 import { EMAIL_MAX_LENGTH, isValidEmail, normalizeEmail } from '../lib/email.js';
+import { inrRange } from '../lib/format.js';
 import { caretAfterDigits, digitsBefore, formatPhone, isValidIndianMobile } from '../lib/phone.js';
 import { submitBusinessRegistration, submitWorkerRegistration } from '../lib/supabase.js';
 
@@ -46,11 +48,24 @@ const MAX_LENGTH = {
   email: EMAIL_MAX_LENGTH,
 };
 
+// Example pay for a worker, across every shop type, for one standard shift.
+const SHIFT_HOURS = 4;
+const RATE_LIST = Object.values(EXAMPLE_RATES);
+const WORKER_PAY_RANGE = inrRange(
+  Math.min(...RATE_LIST.map((r) => r.min)) * SHIFT_HOURS,
+  Math.max(...RATE_LIST.map((r) => r.max)) * SHIFT_HOURS,
+);
+
+/** The two paths in the chooser card, in order. Text lives in strings (waitlist.chooser). */
+const PATHS = [
+  { side: 'business', tone: 'biz', icon: Store },
+  { side: 'worker', tone: 'worker', icon: UserRound },
+];
+
 const AVAILABILITY_KEYS = ['weekdayMornings', 'weekdayAfternoons', 'weekends'];
 
 // What is saved is always English, whichever language the visitor reads in,
 // so the team's sheet stays sortable.
-const SAVED_COMMON = getStrings('common', 'en');
 const SAVED_WAITLIST = getStrings('waitlist', 'en');
 
 function isInvalid(field, value) {
@@ -60,9 +75,19 @@ function isInvalid(field, value) {
   return !String(value).trim();
 }
 
+// The category names saved with a registration. The page now shows shorter
+// names (common.categories); these stay as they were, so earlier and later
+// rows in the team's sheet use the same labels.
+const SAVED_CATEGORY = {
+  boutique: 'Boutique & studio',
+  handloom: 'Handloom & textiles',
+  cafe: 'Café & quick bites',
+  salon: 'Salon',
+};
+
 function savedContext(side, context) {
   if (!context?.category || context.side !== side) return null;
-  const parts = [SAVED_COMMON.categories[context.category]];
+  const parts = [SAVED_CATEGORY[context.category]];
   if (side === 'business' && context.hours) parts.push(`${context.hours} hours`);
   return `[${parts.join(' · ')}]`;
 }
@@ -105,6 +130,7 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
   const doneRef = useRef(null);
   const formHeadingRef = useRef(null);
   const returnToForm = useRef(false);
+  const focusFormOnOpen = useRef(false);
 
   // After a successful submit, move focus to the confirmation so it is announced.
   useEffect(() => {
@@ -118,6 +144,19 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
       formHeadingRef.current?.focus();
     }
   }, [done]);
+
+  // A button in the chooser card removes the card it sits in: hand focus to the form that replaces it.
+  useEffect(() => {
+    if (side && focusFormOnOpen.current) {
+      focusFormOnOpen.current = false;
+      formHeadingRef.current?.focus();
+    }
+  }, [side]);
+
+  const choosePath = (next) => {
+    focusFormOnOpen.current = true;
+    onSideChange(next);
+  };
 
   const submitting = submittingSide === side;
   const failed = failedSide === side;
@@ -265,181 +304,229 @@ export default function Waitlist({ side, onSideChange, context, onClearContext, 
   const showDone = done && done.side === side && done.joinCount === joinCount;
 
   return (
-    <section id="waitlist" className="bg-page pb-16 pt-10 md:pb-28 md:pt-16">
-      <div className="mx-auto max-w-2xl px-4 sm:px-6">
-        <div className="mb-6 text-center">
+    <section id="waitlist" className="bg-page pb-16 pt-16 md:pb-28 md:pt-24">
+      {/* Wide for the two-path chooser; the form below keeps a narrow, readable column. */}
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto mb-8 max-w-2xl text-center">
           <h2 ref={headingRef} tabIndex={-1} className="text-[1.375rem] font-extrabold leading-tight tracking-tight text-ink min-[22.5rem]:text-2xl sm:text-4xl">
             {s.title}
           </h2>
           <p className="mt-3 text-base leading-relaxed text-body sm:text-lg">{s.sub}</p>
         </div>
 
-        <Segmented
-          ariaLabel={s.chooserLabel}
-          value={side}
-          onChange={onSideChange}
-          options={[
-            // The same words as the join buttons that lead here.
-            { value: 'business', label: c.cta.needWorkers, tone: 'biz' },
-            { value: 'worker', label: c.cta.wantWork, tone: 'worker' },
-          ]}
-          className="mb-5"
-        />
-
+        {/*
+          Before a side is chosen: one card with both paths side by side, equal
+          weight, each in its own colour. Choosing one opens its form below,
+          where the switch lets the visitor change their mind.
+        */}
         {!side && (
-          <Card className="text-center">
-            <p className="text-base text-body">{s.pickPrompt}</p>
-          </Card>
-        )}
-
-        {showDone && (
-          <Card key={`done-${side}`} className="animate-swap" role="status">
-            <span className={cx('mb-4 flex h-12 w-12 items-center justify-center rounded-2xl', tone === 'worker' ? 'bg-worker-pale text-worker' : 'bg-biz-pale text-biz')}>
-              <CheckCircle2 className="h-6 w-6" aria-hidden="true" />
-            </span>
-            <h3 ref={doneRef} tabIndex={-1} className="text-xl font-bold text-ink">
-              {fmt(s.success.title, { name: done.name })}
-            </h3>
-            <p className="mt-2 text-base text-body">
-              {done.business
-                ? fmt(s.success.business, { business: done.business, place: done.place })
-                : fmt(s.success.worker, { place: done.place })}
-            </p>
-            <p className="mt-2 text-base text-body">{fmt(s.success.next, { phone: done.phone })}</p>
-            {done.mock && (
-              <p className="mt-4 rounded-xl border border-gold/40 bg-gold-pale p-3 text-sm text-gold-ink">{s.success.demo}</p>
-            )}
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Button variant="whatsapp" href={whatsappUrl(done.side === 'worker' ? c.whatsapp.joinedWorker : c.whatsapp.joinedBusiness)} target="_blank" rel="noopener noreferrer">
-                <WhatsAppIcon className="h-5 w-5" />
-                {s.success.whatsapp}
-              </Button>
-              <Button
-                variant={tone === 'worker' ? 'link-worker' : 'link-biz'}
-                onClick={() => {
-                  returnToForm.current = true;
-                  setDone(null);
-                }}
-              >
-                {s.success.again}
-              </Button>
+          <div className="overflow-hidden rounded-3xl border border-line bg-white">
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 bg-biz px-6 py-3.5 text-white sm:px-8">
+              <p className="flex min-w-0 items-start gap-2 text-sm font-semibold sm:text-base">
+                <span className="mt-[0.45em] h-2 w-2 shrink-0 rounded-full bg-worker-glow" aria-hidden="true" />
+                <span className="min-w-0">{s.chooser.band}</span>
+              </p>
+              <p className="text-sm text-navy-soft">{s.chooser.bandNote}</p>
             </div>
-          </Card>
+
+            <div className="grid grid-cols-1 divide-y divide-line md:grid-cols-2 md:divide-x md:divide-y-0">
+              {PATHS.map(({ side: pathSide, tone: pathTone, icon }) => {
+                const path = s.chooser[pathSide];
+                return (
+                  <div key={pathSide} className="flex min-w-0 flex-col p-6 sm:p-8 lg:p-10">
+                    <div className="flex flex-wrap gap-2">
+                      <Pill tone={pathTone} icon={icon}>{c.side[pathSide]}</Pill>
+                    </div>
+                    <h3 className="mt-4 text-xl font-bold text-ink sm:text-2xl">{path.title}</h3>
+                    <p className="mt-2 text-base leading-relaxed text-body">
+                      {fmt(path.body, { range: WORKER_PAY_RANGE, hours: SHIFT_HOURS })}
+                    </p>
+                    <ul className="mt-4 space-y-2.5">
+                      {path.points.map((point) => (
+                        <CheckItem key={point} tone={pathTone} className="text-ink">{point}</CheckItem>
+                      ))}
+                    </ul>
+                    <div className="mt-auto pt-8">
+                      <div className="border-t border-line pt-6">
+                        <Button variant={pathTone} size="lg" className="w-full" onClick={() => choosePath(pathSide)}>
+                          {pathSide === 'worker' ? c.cta.wantWork : c.cta.needWorkers}
+                          <ArrowRight className="h-5 w-5 shrink-0" aria-hidden="true" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <p className="border-t border-line bg-page px-6 py-4 text-center text-sm text-body sm:px-8">{c.exampleRateNote}</p>
+          </div>
         )}
 
-        {side && !showDone && (
-          <Card key={side} className="animate-swap">
-            <h3 ref={formHeadingRef} tabIndex={-1} className="text-xl font-bold text-ink">{copy.heading}</h3>
-            <p className="mt-1 text-base text-body">{copy.sub}</p>
+        {side && (
+          <div className="mx-auto max-w-2xl">
+            <Segmented
+              ariaLabel={s.chooserLabel}
+              value={side}
+              onChange={onSideChange}
+              options={[
+                // The same words as the join buttons that lead here.
+                { value: 'business', label: c.cta.needWorkers, tone: 'biz' },
+                { value: 'worker', label: c.cta.wantWork, tone: 'worker' },
+              ]}
+              className="mb-5"
+            />
 
-            {showContext && (
-              <div className={cx('mt-5 flex items-center justify-between gap-3 rounded-xl px-4 py-2 text-sm', tone === 'worker' ? 'bg-worker-pale text-worker-dark' : 'bg-biz-pale text-biz')}>
-                <p className="min-w-0">
-                  {s.context.label}: <span className="font-semibold">{contextText}</span>
+            {showDone && (
+              <Card key={`done-${side}`} className="animate-swap" role="status">
+                <span className={cx('mb-4 flex h-12 w-12 items-center justify-center rounded-2xl', tone === 'worker' ? 'bg-worker-pale text-worker' : 'bg-biz-pale text-biz')}>
+                  <CheckCircle2 className="h-6 w-6" aria-hidden="true" />
+                </span>
+                <h3 ref={doneRef} tabIndex={-1} className="text-xl font-bold text-ink">
+                  {fmt(s.success.title, { name: done.name })}
+                </h3>
+                <p className="mt-2 text-base text-body">
+                  {done.business
+                    ? fmt(s.success.business, { business: done.business, place: done.place })
+                    : fmt(s.success.worker, { place: done.place })}
                 </p>
-                <button
-                  type="button"
-                  onClick={onClearContext}
-                  aria-label={s.context.remove}
-                  className="-mr-2 inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-lg hover:bg-white"
-                >
-                  <X className="h-5 w-5" aria-hidden="true" />
-                </button>
-              </div>
+                <p className="mt-2 text-base text-body">{fmt(s.success.next, { phone: done.phone })}</p>
+                {done.mock && (
+                  <p className="mt-4 rounded-xl border border-gold/40 bg-gold-pale p-3 text-sm text-gold-ink">{s.success.demo}</p>
+                )}
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <Button variant="whatsapp" href={whatsappUrl(done.side === 'worker' ? c.whatsapp.joinedWorker : c.whatsapp.joinedBusiness)} target="_blank" rel="noopener noreferrer">
+                    <WhatsAppIcon className="h-5 w-5" />
+                    {s.success.whatsapp}
+                  </Button>
+                  <Button
+                    variant={tone === 'worker' ? 'link-worker' : 'link-biz'}
+                    onClick={() => {
+                      returnToForm.current = true;
+                      setDone(null);
+                    }}
+                  >
+                    {s.success.again}
+                  </Button>
+                </div>
+              </Card>
             )}
 
-            <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-5">
-              {side === 'business' ? (
-                <>
-                  <Field {...fieldProps('businessName')}>
-                    <input type="text" autoComplete="organization" {...inputProps('businessName')} />
-                  </Field>
-                  <Field {...fieldProps('contactName')}>
-                    <input type="text" autoComplete="name" {...inputProps('contactName')} />
-                  </Field>
-                </>
-              ) : (
-                <Field {...fieldProps('fullName')}>
-                  <input type="text" autoComplete="name" {...inputProps('fullName')} />
-                </Field>
-              )}
+            {side && !showDone && (
+              <Card key={side} className="animate-swap">
+                <h3 ref={formHeadingRef} tabIndex={-1} className="text-xl font-bold text-ink">{copy.heading}</h3>
+                <p className="mt-1 text-base text-body">{copy.sub}</p>
 
-              <Field {...fieldProps('phone')}>
-                <div className="flex">
-                  <span className="inline-flex select-none items-center rounded-l-xl border border-r-0 border-line-strong bg-page px-3.5 text-base font-semibold text-ink">
-                    +91
-                  </span>
-                  <input type="tel" inputMode="tel" autoComplete="tel-national" {...inputProps('phone', { className: cx(INPUT_BASE, 'min-w-0 rounded-l-none', formErrors.phone ? 'border-danger' : 'border-line-strong hover:border-ink') })} />
-                </div>
-              </Field>
-
-              <Field {...fieldProps('email')}>
-                <input type="email" inputMode="email" autoComplete="email" autoCapitalize="none" spellCheck={false} {...inputProps('email')} />
-              </Field>
-
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <Field {...fieldProps('city')}>
-                  <input type="text" autoComplete="address-level2" {...inputProps('city')} />
-                </Field>
-                <Field {...fieldProps('state')}>
-                  <input type="text" autoComplete="address-level1" {...inputProps('state')} />
-                </Field>
-              </div>
-
-              <Field {...fieldProps('locality')}>
-                <input type="text" {...inputProps('locality')} />
-              </Field>
-
-              {side === 'business' ? (
-                <Field {...fieldProps('supportNeed')}>
-                  <textarea rows={3} {...inputProps('supportNeed', { className: cx(INPUT_BASE, 'resize-none border-line-strong hover:border-ink') })} />
-                </Field>
-              ) : (
-                <>
-                  <Field {...fieldProps('experience')}>
-                    <input type="text" {...inputProps('experience')} />
-                  </Field>
-                  <fieldset>
-                    <legend className="mb-1.5 text-sm font-semibold text-ink">
-                      {s.fields.availability.label}
-                      <span className="font-normal text-body"> ({s.optional})</span>
-                    </legend>
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-                      {AVAILABILITY_KEYS.map((key) => (
-                        <Choice key={key} tone="worker" selected={form.availability.includes(key)} onClick={() => toggleAvailability(key)}>
-                          <span className="text-sm font-semibold">{s.availabilityOptions[key]}</span>
-                        </Choice>
-                      ))}
-                    </div>
-                    <p className="mt-1.5 text-sm text-body">{s.fields.availability.hint}</p>
-                  </fieldset>
-                </>
-              )}
-
-              {failed && (
-                <div role="alert" className="flex items-start gap-2 rounded-xl border border-danger/30 bg-white p-3.5 text-sm text-danger">
-                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-                  <span>{s.errors.submit}</span>
-                </div>
-              )}
-
-              <Button type="submit" variant={tone === 'worker' ? 'worker' : 'biz'} size="lg" disabled={submitting} className="w-full">
-                {submitting ? (
-                  <>
-                    <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
-                    {s.submitting}
-                  </>
-                ) : (
-                  <>
-                    {copy.submit}
-                    <ArrowRight className="h-5 w-5" aria-hidden="true" />
-                  </>
+                {showContext && (
+                  <div className={cx('mt-5 flex items-center justify-between gap-3 rounded-xl px-4 py-2 text-sm', tone === 'worker' ? 'bg-worker-pale text-worker-dark' : 'bg-biz-pale text-biz')}>
+                    <p className="min-w-0">
+                      {s.context.label}: <span className="font-semibold">{contextText}</span>
+                    </p>
+                    <button
+                      type="button"
+                      onClick={onClearContext}
+                      aria-label={s.context.remove}
+                      className="-mr-2 inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-lg hover:bg-white"
+                    >
+                      <X className="h-5 w-5" aria-hidden="true" />
+                    </button>
+                  </div>
                 )}
-              </Button>
-            </form>
 
-            <p className="mt-4 text-center text-sm text-body">{copy.disclaimer}</p>
-          </Card>
+                <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-5">
+                  {side === 'business' ? (
+                    <>
+                      <Field {...fieldProps('businessName')}>
+                        <input type="text" autoComplete="organization" {...inputProps('businessName')} />
+                      </Field>
+                      <Field {...fieldProps('contactName')}>
+                        <input type="text" autoComplete="name" {...inputProps('contactName')} />
+                      </Field>
+                    </>
+                  ) : (
+                    <Field {...fieldProps('fullName')}>
+                      <input type="text" autoComplete="name" {...inputProps('fullName')} />
+                    </Field>
+                  )}
+
+                  <Field {...fieldProps('phone')}>
+                    <div className="flex">
+                      <span className="inline-flex select-none items-center rounded-l-xl border border-r-0 border-line-strong bg-page px-3.5 text-base font-semibold text-ink">
+                        +91
+                      </span>
+                      <input type="tel" inputMode="tel" autoComplete="tel-national" {...inputProps('phone', { className: cx(INPUT_BASE, 'min-w-0 rounded-l-none', formErrors.phone ? 'border-danger' : 'border-line-strong hover:border-ink') })} />
+                    </div>
+                  </Field>
+
+                  <Field {...fieldProps('email')}>
+                    <input type="email" inputMode="email" autoComplete="email" autoCapitalize="none" spellCheck={false} {...inputProps('email')} />
+                  </Field>
+
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <Field {...fieldProps('city')}>
+                      <input type="text" autoComplete="address-level2" {...inputProps('city')} />
+                    </Field>
+                    <Field {...fieldProps('state')}>
+                      <input type="text" autoComplete="address-level1" {...inputProps('state')} />
+                    </Field>
+                  </div>
+
+                  <Field {...fieldProps('locality')}>
+                    <input type="text" {...inputProps('locality')} />
+                  </Field>
+
+                  {side === 'business' ? (
+                    <Field {...fieldProps('supportNeed')}>
+                      <textarea rows={3} {...inputProps('supportNeed', { className: cx(INPUT_BASE, 'resize-none border-line-strong hover:border-ink') })} />
+                    </Field>
+                  ) : (
+                    <>
+                      <Field {...fieldProps('experience')}>
+                        <input type="text" {...inputProps('experience')} />
+                      </Field>
+                      <fieldset>
+                        <legend className="mb-1.5 text-sm font-semibold text-ink">
+                          {s.fields.availability.label}
+                          <span className="font-normal text-body"> ({s.optional})</span>
+                        </legend>
+                        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                          {AVAILABILITY_KEYS.map((key) => (
+                            <Choice key={key} tone="worker" selected={form.availability.includes(key)} onClick={() => toggleAvailability(key)}>
+                              <span className="text-sm font-semibold">{s.availabilityOptions[key]}</span>
+                            </Choice>
+                          ))}
+                        </div>
+                        <p className="mt-1.5 text-sm text-body">{s.fields.availability.hint}</p>
+                      </fieldset>
+                    </>
+                  )}
+
+                  {failed && (
+                    <div role="alert" className="flex items-start gap-2 rounded-xl border border-danger/30 bg-white p-3.5 text-sm text-danger">
+                      <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                      <span>{s.errors.submit}</span>
+                    </div>
+                  )}
+
+                  <Button type="submit" variant={tone === 'worker' ? 'worker' : 'biz'} size="lg" disabled={submitting} className="w-full">
+                    {submitting ? (
+                      <>
+                        <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
+                        {s.submitting}
+                      </>
+                    ) : (
+                      <>
+                        {copy.submit}
+                        <ArrowRight className="h-5 w-5" aria-hidden="true" />
+                      </>
+                    )}
+                  </Button>
+                </form>
+
+                <p className="mt-4 text-center text-sm text-body">{copy.disclaimer}</p>
+              </Card>
+            )}
+          </div>
         )}
       </div>
     </section>

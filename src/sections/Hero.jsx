@@ -11,6 +11,13 @@ const SCENARIO_IDS = ['handloom', 'boutique', 'cafe'];
 /** Invented travel time for each example worker, in minutes. */
 const WORKER_MINUTES = { handloom: 15, boutique: 12, cafe: 18 };
 
+/** The three promises under the buttons, in order. Text lives in strings (hero.trust). */
+const TRUST_CHIPS = [
+  { key: 'adults', icon: ShieldCheck, color: 'text-biz', tile: 'lg:bg-biz-pale' },
+  { key: 'zeroFee', icon: BadgeIndianRupee, color: 'text-worker-bright', tile: 'lg:bg-worker-pale lg:text-worker' },
+  { key: 'daytime', icon: Sun, color: 'text-worker-bright', tile: 'lg:bg-worker-pale lg:text-worker' },
+];
+
 const SHIFT_HOURS = 4;
 const TARGET_MINUTES = 30;
 
@@ -28,27 +35,32 @@ export default function Hero({ onJoin }) {
   return (
     <section className="bg-white border-b border-line pt-10 pb-14 md:pt-20 md:pb-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Pill wrap tone="biz" icon={MapPin}>{s.pilot}</Pill>
-
         {/*
-          The headline runs the full width above both columns. From desktop
-          width (lg) it fits on one line. Below that it takes two lines (lead,
-          then accent), so it can stay larger than the section headings.
-          Sizes are in rem and nothing is nowrap, so enlarged text wraps instead of overflowing.
+          From desktop width (lg) the copy and the example card sit side by
+          side from the top: the headline lives in the left column, with the
+          card level with it. Below lg everything stacks in reading order.
         */}
-        <h1 className="mt-5 text-[1.5rem] min-[22.5rem]:text-[1.75rem] min-[25rem]:text-[1.875rem] sm:text-[2.5rem] md:text-[2.75rem] xl:text-[3.5rem] font-extrabold tracking-tight leading-[1.15] text-ink">
-          <span className="block lg:inline">{s.headline.lead}</span>{' '}
-          <span className="block text-biz lg:inline">{s.headline.accent}</span>
-        </h1>
-
-        {/* One line on phones too: sized to fit from 320px wide. */}
-        <p className="mt-3 text-sm min-[22.5rem]:text-base min-[25rem]:text-[1.0625rem] sm:text-xl lg:text-2xl font-semibold tracking-tight text-biz">
-          {c.tagline}
-        </p>
-
-        <div className="mt-6 grid grid-cols-1 gap-10 items-start lg:mt-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
+        <div className="grid grid-cols-1 gap-10 items-start lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
           <div className="min-w-0">
-            <p className="max-w-2xl text-base sm:text-lg lg:text-xl leading-relaxed lg:leading-relaxed text-body break-words">
+            <Pill wrap tone="biz" icon={MapPin}>{s.pilot}</Pill>
+
+            {/*
+              Below lg the headline takes two lines (lead, then accent), so it
+              can stay larger than the section headings. From lg it flows as
+              one sentence and wraps within the left column.
+              Sizes are in rem and nothing is nowrap, so enlarged text wraps instead of overflowing.
+            */}
+            <h1 className="mt-5 text-[1.5rem] min-[22.5rem]:text-[1.75rem] min-[25rem]:text-[1.875rem] sm:text-[2.5rem] md:text-[2.75rem] xl:text-[3.5rem] font-extrabold tracking-tight leading-[1.15] text-ink">
+              <span className="block lg:inline">{s.headline.lead}</span>{' '}
+              <span className="block text-biz lg:inline">{s.headline.accent}</span>
+            </h1>
+
+            {/* One line on phones too: sized to fit from 320px wide. */}
+            <p className="mt-3 text-sm min-[22.5rem]:text-base min-[25rem]:text-[1.0625rem] sm:text-xl lg:text-2xl font-semibold tracking-tight text-biz">
+              {c.tagline}
+            </p>
+
+            <p className="mt-6 max-w-2xl text-base sm:text-lg lg:mt-8 lg:text-xl leading-relaxed lg:leading-relaxed text-body break-words">
               {s.intro}
             </p>
 
@@ -64,30 +76,20 @@ export default function Hero({ onJoin }) {
               </Button>
             </div>
 
-            {/* A wrapping row on phones and tablets; a stacked list with icon tiles on desktop. */}
-            <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-body lg:mt-12 lg:flex-col lg:gap-4 lg:border-t lg:border-line lg:pt-8 lg:text-base lg:text-ink">
-              <li className="flex items-start gap-1.5 min-w-0 lg:items-center lg:gap-3">
-                <span className="shrink-0 mt-0.5 text-biz lg:mt-0 lg:flex lg:h-10 lg:w-10 lg:items-center lg:justify-center lg:rounded-xl lg:bg-biz-pale">
-                  <ShieldCheck className="w-4 h-4 lg:w-5 lg:h-5" aria-hidden="true" />
-                </span>
-                <span className="break-words">{s.trust.adults}</span>
-              </li>
-              <li className="flex items-start gap-1.5 min-w-0 lg:items-center lg:gap-3">
-                <span className="shrink-0 mt-0.5 text-worker-bright lg:mt-0 lg:flex lg:h-10 lg:w-10 lg:items-center lg:justify-center lg:rounded-xl lg:bg-worker-pale lg:text-worker">
-                  <BadgeIndianRupee className="w-4 h-4 lg:w-5 lg:h-5" aria-hidden="true" />
-                </span>
-                <span className="break-words">{s.trust.zeroFee}</span>
-              </li>
-              <li className="flex items-start gap-1.5 min-w-0 lg:items-center lg:gap-3">
-                <span className="shrink-0 mt-0.5 text-worker-bright lg:mt-0 lg:flex lg:h-10 lg:w-10 lg:items-center lg:justify-center lg:rounded-xl lg:bg-worker-pale lg:text-worker">
-                  <Sun className="w-4 h-4 lg:w-5 lg:h-5" aria-hidden="true" />
-                </span>
-                <span className="break-words">{s.trust.daytime}</span>
-              </li>
+            {/* A plain wrapping row on phones and tablets; flat chips under a hairline on desktop. */}
+            <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-body lg:mt-10 lg:gap-2.5 lg:border-t lg:border-line lg:pt-8 lg:text-ink">
+              {TRUST_CHIPS.map(({ key, icon: Icon, color, tile }) => (
+                <li key={key} className="flex max-w-full min-w-0 items-start gap-1.5 lg:items-center lg:gap-2 lg:rounded-xl lg:border lg:border-line lg:bg-page lg:px-3.5 lg:py-2">
+                  <span className={`shrink-0 mt-0.5 ${color} lg:mt-0 lg:flex lg:h-6 lg:w-6 lg:items-center lg:justify-center lg:rounded-md ${tile}`}>
+                    <Icon className="w-4 h-4" aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0 break-words">{s.trust[key]}</span>
+                </li>
+              ))}
             </ul>
           </div>
 
-          <div className="min-w-0">
+          <div className="min-w-0 lg:mt-12">
             <Card>
               <h2 className="sr-only">{s.card.title}</h2>
               <Segmented

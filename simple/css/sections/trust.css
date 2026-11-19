@@ -1,0 +1,34 @@
+.trust__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+@media (min-width: 40rem) { .trust__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 64rem) {
+  .trust__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; }
+  .trust.section { padding-block: 7rem; }
+}
+
+.trust__card {
+  min-width: 0; overflow-wrap: break-word; word-break: break-word; background: #fff; color: var(--ink);
+  border-radius: var(--radius-3xl); padding: 1.5rem; border-top: 4px solid;
+}
+.trust__card--business { border-top-color: var(--biz); }
+.trust__card--worker { border-top-color: var(--worker-bright); }
+.trust__tile {
+  width: 2.75rem; height: 2.75rem; border-radius: var(--radius-2xl); display: flex; align-items: center; justify-content: center; color: #fff;
+}
+.trust__card--business .trust__tile { background: var(--biz); }
+.trust__card--worker .trust__tile { background: var(--worker); }
+.trust__side { margin-top: 1rem; font-size: 0.875rem; line-height: 1.25rem; font-weight: 600; }
+.trust__card--business .trust__side { color: var(--biz); }
+.trust__card--worker .trust__side { color: var(--worker); }
+.trust__title { margin-top: 0.25rem; font-size: 1.125rem; line-height: 1.75rem; font-weight: 700; color: var(--ink); }
+.trust__body { margin-top: 0.5rem; font-size: 1rem; line-height: 1.5rem; color: var(--body); }
+
+.trust__dont { margin-top: 2rem; border-radius: var(--radius-3xl); border: 1px solid rgb(255 255 255 / 0.2); padding: 1.5rem; }
+.trust__dont-title { font-size: 1.25rem; line-height: 1.75rem; font-weight: 700; color: #fff; }
+.trust__dont-list { margin-top: 1rem; display: grid; grid-template-columns: minmax(0, 1fr); column-gap: 1.5rem; row-gap: 0.75rem; }
+@media (min-width: 40rem) { .trust__dont-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.trust__dont-item {
+  display: flex; align-items: flex-start; gap: 0.625rem; min-width: 0; font-size: 1rem; line-height: 1.5rem;
+  color: var(--navy-soft); overflow-wrap: break-word; word-break: break-word;
+}
+.trust__x { margin-top: 0.125rem; color: var(--worker-glow); }
+.trust__cta { margin-top: 2.5rem; display: flex; justify-content: center; }

@@ -1,0 +1,26 @@
+.contact { border-bottom: 1px solid var(--biz-15); background: var(--biz-pale); padding-block: 2.5rem; }
+@media (min-width: 48rem) { .contact { padding-block: 4rem; } }
+.contact__container { margin-inline: auto; max-width: 80rem; padding-inline: 1rem; }
+@media (min-width: 40rem) { .contact__container { padding-inline: 1.5rem; } }
+@media (min-width: 64rem) { .contact__container { padding-inline: 2rem; } }
+
+.card.contact__card { display: flex; flex-direction: column; gap: 1.25rem; }
+@media (min-width: 48rem) {
+  .card.contact__card { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+}
+
+.contact__lead { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 1rem; }
+@media (min-width: 40rem) { .contact__lead { flex-direction: row; } }
+@media (min-width: 48rem) { .contact__lead { flex: 1 1 20rem; } }
+
+.contact__icon {
+  display: flex; height: 3rem; width: 3rem; flex-shrink: 0; align-items: center; justify-content: center;
+  border-radius: var(--radius-2xl); background: var(--whatsapp-pale); color: var(--whatsapp);
+}
+.contact__text { min-width: 0; overflow-wrap: anywhere; }
+.contact__title { font-size: 1.25rem; line-height: 1.75rem; font-weight: 700; color: var(--ink); }
+@media (min-width: 40rem) { .contact__title { font-size: 1.5rem; line-height: 2rem; } }
+.contact__body { margin-top: 0.25rem; font-size: 1rem; line-height: 1.5; color: var(--body); }
+
+.contact__actions { display: flex; min-width: 0; max-width: 100%; flex-direction: column; gap: 0.75rem; }
+@media (min-width: 40rem) { .contact__actions { flex-direction: row; flex-wrap: wrap; } }

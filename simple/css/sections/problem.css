@@ -1,0 +1,20 @@
+.problem__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+@media (min-width: 48rem) { .problem__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 64rem) { .problem__grid { gap: 2rem; } }
+
+.problem__card-title { font-size: 1.25rem; line-height: 1.75rem; font-weight: 700; color: var(--ink); }
+.problem__list { margin-top: 1.25rem; }
+.problem__list--usual { color: var(--body); }
+.problem__list--biz { color: var(--biz-body); }
+.problem__list--usual > * + * { margin-top: 0.625rem; }
+
+.problem__item { display: flex; align-items: flex-start; gap: 0.625rem; font-size: 1rem; line-height: 1.5rem; }
+.problem__x { margin-top: 0.125rem; color: var(--body); }
+.problem__text { overflow-wrap: break-word; word-break: break-word; }
+
+.problem__slogan-wrap { margin-top: 2.5rem; text-align: center; }
+.problem__slogan {
+  font-size: 1.25rem; line-height: 1.75rem; font-weight: 700; color: var(--biz); overflow-wrap: break-word; word-break: break-word;
+}
+@media (min-width: 40rem) { .problem__slogan { font-size: 1.5rem; line-height: 2rem; } }
+.problem__note { margin-top: 0.5rem; font-size: 0.875rem; line-height: 1.25rem; color: var(--body); }

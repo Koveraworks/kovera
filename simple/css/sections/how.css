@@ -1,0 +1,10 @@
+.how__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+@media (min-width: 48rem) { .how__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 64rem) { .how__grid { gap: 2rem; } }
+.how__num {
+  width: 2.75rem; height: 2.75rem; border-radius: var(--radius-2xl); display: flex; align-items: center; justify-content: center;
+  font-size: 1.125rem; line-height: 1.75rem; font-weight: 700; background: var(--biz-pale); color: var(--biz);
+}
+.how__title { margin-top: 1rem; font-size: 1.25rem; line-height: 1.75rem; font-weight: 700; color: var(--ink); }
+.how__body { margin-top: 0.5rem; font-size: 1rem; line-height: 1.5rem; color: var(--body); }
+.how__note { margin-top: 2rem; text-align: center; font-size: 0.875rem; line-height: 1.25rem; color: var(--body); }

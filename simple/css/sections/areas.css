@@ -1,0 +1,29 @@
+/* Areas section. Tailwind breakpoints: md 48rem, lg 64rem. */
+
+.areas__list { display: grid; grid-template-columns: 1fr; gap: 1rem; list-style: none; margin: 0; padding: 0; }
+@media (min-width: 48rem) { .areas__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 64rem) { .areas__list { gap: 1.5rem; } }
+
+.areas__item {
+  display: flex; align-items: flex-start; gap: 1rem; min-width: 0;
+  border: 1px solid var(--line); border-radius: var(--radius-3xl); background: var(--page); padding: 1.25rem;
+}
+@media (min-width: 64rem) { .areas__item { padding: 1.75rem; } }
+
+.areas__icon {
+  width: 2.75rem; height: 2.75rem; flex-shrink: 0; border-radius: var(--radius-2xl);
+  background: var(--biz-pale); color: var(--biz); display: flex; align-items: center; justify-content: center;
+}
+.areas__text { min-width: 0; overflow-wrap: break-word; }
+.areas__name { font-size: 1.25rem; line-height: 1.75rem; font-weight: 700; color: var(--ink); }
+.areas__shops { margin-top: 0.25rem; font-size: 1rem; line-height: 1.5rem; color: var(--body); }
+.areas__busy { margin-top: 0.25rem; font-size: 0.875rem; line-height: 1.25rem; color: var(--body); }
+.areas__busy-label { font-weight: 600; color: var(--ink); }
+
+.areas__strip { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+@media (min-width: 48rem) { .areas__strip { flex-direction: row; align-items: center; justify-content: space-between; } }
+@media (min-width: 64rem) { .areas__strip { margin-top: 2rem; } }
+.areas__strip-text { min-width: 0; overflow-wrap: break-word; }
+.areas__strip-title { font-size: 1.125rem; line-height: 1.75rem; font-weight: 700; color: var(--ink); }
+.areas__strip-body { margin-top: 0.25rem; font-size: 1rem; line-height: 1.5rem; color: var(--biz-body); }
+.areas__strip-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
